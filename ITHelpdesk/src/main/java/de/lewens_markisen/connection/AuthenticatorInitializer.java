@@ -1,4 +1,4 @@
-package connection;
+package de.lewens_markisen.connection;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;

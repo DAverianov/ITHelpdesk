@@ -1,4 +1,4 @@
-package timeRecordingSystems.domain;
+package de.lewens_markisen.timeRecordingSystems.domain;
 
 import java.util.Objects;
 
