@@ -6,18 +6,19 @@ import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class Connection {
+public class ConnectionBC implements ConnectionWeb{
 	@Value("${businesscentral.url}")
 	private String url;
 	@Autowired
 	private AuthenticatorInitializer authenticator;
+	
+	@Override
+	public String getFilter(String attribute, String value) {
+		return "?$filter="+attribute+" eq "+"'"+value+"'";
+	}
 	
 }

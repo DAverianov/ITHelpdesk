@@ -1,4 +1,4 @@
-package de.lewens_markisen.ITHelpdesk;
+package de.lewens_markisen;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
