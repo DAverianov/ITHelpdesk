@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import de.lewens_markisen.timeRecordingSystems.domain.Person;
+import de.lewens_markisen.domain.Person;
 
 @SpringBootTest
 class HTTPQueryTest {
