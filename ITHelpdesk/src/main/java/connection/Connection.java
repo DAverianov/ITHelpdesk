@@ -1,7 +1,9 @@
 package connection;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,18 +13,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Component
 public class Connection {
-	@Id
-	private Integer id;
+	@Value("${bc.url}")
 	private String url;
-	private String login;
-	private String password;
-	private String description;
-	
-	@Override
-	public String toString() {
-		return "Connection [url=" + url + ", login=" + login + ", description=" + description + "]";
-	}
+	@Autowired
+	private AuthenticatorInitializer authenticator;
 	
 }
