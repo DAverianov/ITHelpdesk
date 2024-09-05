@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Component
 public class Connection {
-	@Value("${bc.url}")
+	@Value("${businesscentral.url}")
 	private String url;
 	@Autowired
 	private AuthenticatorInitializer authenticator;

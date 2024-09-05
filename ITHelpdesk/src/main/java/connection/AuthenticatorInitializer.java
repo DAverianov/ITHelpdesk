@@ -16,10 +16,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Component
 public class AuthenticatorInitializer {
-	@Value("${bc.ntlm.user}")
+	@Value("${businesscentral.ntlm.user}")
 	String username;
 
-	@Value("${bc.ntlm.password}")
+	@Value("${businesscentral.ntlm.password}")
 	String password;
 
 	@PostConstruct
