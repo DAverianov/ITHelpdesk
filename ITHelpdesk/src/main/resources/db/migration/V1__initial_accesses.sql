@@ -1,7 +1,7 @@
-drop table if exists passwords;
-drop table if exists passwords_seq;
+drop table if exists accesses;
+drop table if exists accesses_seq;
 
-create table passwords (
+create table accesses (
       id SERIAL PRIMARY KEY,
       version int,
       name varchar(120),

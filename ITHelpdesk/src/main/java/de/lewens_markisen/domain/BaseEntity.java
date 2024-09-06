@@ -19,7 +19,7 @@ public abstract class BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false)
-	private Integer id;
+	private Long id;
 
 	@Version
 	@Column(name = "VERSION")
@@ -32,11 +32,11 @@ public abstract class BaseEntity {
 	@UpdateTimestamp
 	private Timestamp lastModifiedDate;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

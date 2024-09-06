@@ -3,22 +3,26 @@ package de.lewens_markisen.domain;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
-@Table(name = "passwords")
-public class Password extends BaseEntity {
+@Table(name = "accesses")
+public class Access extends BaseEntity {
 	@NotNull
 	@Size(min = 2, max = 120)
 	@Column(name = "name", length = 120)
@@ -26,7 +30,13 @@ public class Password extends BaseEntity {
 	@NotNull
 	@Size(min = 2, max = 50)
 	@Column(name = "password", length = 200)
+    @Convert(converter = PasswordConverter.class)
 	private String password;
+
+    @PrePersist
+    public void prePersistCallback(){
+        System.out.println("JPA PrePresist Callback was called");
+    }
 
 	@Override
 	public int hashCode() {
@@ -44,7 +54,7 @@ public class Password extends BaseEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Password other = (Password) obj;
+		Access other = (Access) obj;
 		return Objects.equals(name, other.name) && Objects.equals(password, other.password);
 	}
 
