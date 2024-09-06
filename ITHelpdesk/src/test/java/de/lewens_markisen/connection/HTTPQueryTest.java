@@ -34,7 +34,6 @@ class HTTPQueryTest {
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
 					+ connectionBC.getFilter("Person", person.getBcCode());
-//			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten();
 			String anser = connectionBC.getRequest(requestZeitpunktposten);
 			JSONObject o = new JSONObject(anser);
 			assertNotNull(anser);

@@ -95,25 +95,23 @@ public class ConnectionBC implements ConnectionWeb {
 		HttpUriRequest handshake = new HttpGet(url);
 		try {
 			CloseableHttpResponse r = httpClient.execute(handshake);
-			return getJSONFromResponse(r);
+			return getEntityFromResponse(r);
 
 //			if (log.isInfoEnabled()) {
 //				log.info("Handshake initiated, response headers: {}", Arrays.toString(r.getAllHeaders()));
 //			}
 		} catch (Exception e) {
 		}
-		return "";
+		return null;
 	}
 
-	private String getJSONFromResponse(CloseableHttpResponse response) throws ParseException, IOException {
+	private String getEntityFromResponse(CloseableHttpResponse response) throws ParseException, IOException {
 		HttpEntity entity = response.getEntity();
 		Header encodingHeader = entity.getContentEncoding();
 
-		// you need to know the encoding to parse correctly
 		Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8
 				: Charsets.toCharset(encodingHeader.getValue());
 
-		// use org.apache.http.util.EntityUtils to read json as string
 		String json = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 		return json;
 	}
