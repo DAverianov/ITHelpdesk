@@ -1,5 +1,5 @@
 
-insert into passwords (id, version, name, password) values (100, 0, 'pass BC', '0101010101');
+insert into passwords (id, version, name, accesses) values (100, 0, 'pass BC', '0101010101');
 
 insert into person (id, version, name, bc_code) values (100, 0, 'Ivan', '1000');
 insert into person (id, version, name, bc_code) values (101, 0, 'Dmytro Averianov', '250');

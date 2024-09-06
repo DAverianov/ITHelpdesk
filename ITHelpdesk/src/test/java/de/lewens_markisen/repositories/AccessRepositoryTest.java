@@ -19,38 +19,34 @@ import de.lewens_markisen.services.EncryptionService;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AccessRepositoryTest {
+	private final String PASSWORD = "ABC123";
+	@Autowired
+	private EncryptionService encryptionService;
+	@Autowired
+	private AccessRepository accessRepository;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
-	   final String PASSWORD = "ABC123";
+	@Test
+	public void testSaveAndStoreCreditCard() {
+		Access access = new Access("passwordBC", PASSWORD);
 
-	    @Autowired
-	    EncryptionService encryptionService;
+		Access savedAccess = accessRepository.saveAndFlush(access);
 
-	    @Autowired
-	    AccessRepository accessRepository;
+		System.out.println("Getting Acc from database: " + savedAccess.getPassword());
+		System.out.println("Acc Encrypted: " + encryptionService.encrypt(PASSWORD));
 
-	    @Autowired
-	    JdbcTemplate jdbcTemplate;
+		Map<String, Object> dbRow = jdbcTemplate
+				.queryForMap("SELECT * FROM accesses " + "WHERE id = " + savedAccess.getId());
 
-	    @Test
-	    void testSaveAndStoreCreditCard() {
-	        Access access = new Access("passwordBC", PASSWORD);
+		String dbPassword = (String) dbRow.get("password");
+		System.out.println("Password in DB: " + dbPassword);
 
-	        Access savedAccess = accessRepository.saveAndFlush(access);
+		assertThat(savedAccess.getPassword()).isNotEqualTo(dbPassword);
+		assertThat(dbPassword).isEqualTo(encryptionService.encrypt(PASSWORD));
 
-	        System.out.println("Getting Acc from database: " + savedAccess.getPassword());
-	        System.out.println("Acc Encrypted: " + encryptionService.encrypt(PASSWORD));
+		Access fetchedAcc = accessRepository.findById(savedAccess.getId()).get();
 
-	        Map<String, Object> dbRow = jdbcTemplate.queryForMap("SELECT * FROM accesses " +
-	                "WHERE id = " + savedAccess.getId());
-
-	        String dbPassword = (String) dbRow.get("password");
-	        System.out.println("Password in DB: " + dbPassword);
-
-	        assertThat(savedAccess.getPassword()).isNotEqualTo(dbPassword);
-	        assertThat(dbPassword).isEqualTo(encryptionService.encrypt(PASSWORD));
-
-	        Access fetchedAcc = accessRepository.findById(savedAccess.getId()).get();
-
-	        assertThat(savedAccess.getPassword()).isEqualTo(fetchedAcc.getPassword());
-	    }
+		assertThat(savedAccess.getPassword()).isEqualTo(fetchedAcc.getPassword());
+	}
 }
