@@ -2,6 +2,7 @@ package de.lewens_markisen.connection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,26 +16,27 @@ import de.lewens_markisen.domain.Person;
 
 @ActiveProfiles("test")
 @SpringBootTest
-@ContextConfiguration(classes = {ConnectionBC.class})
+@ContextConfiguration(classes = { ConnectionBC.class })
 @AutoConfigurationPackage
 @SpringBootConfiguration
 //@Sql(scripts = "classpath:insert-data.sql")
 class HTTPQueryTest {
-	
+
 	@Autowired
 	ConnectionBC connectionBC;
-	
-	@Value("${businesscentral.url}")
-	private String url;
+
 	@Value("${businesscentral.ws.zeitpunktposten}")
 	private String wsZeitpunktposten;
 
 	@Test
 	void getHTML_whenHook_thenBekommeAnser() {
-		Person person = new Person("user", "1071");
-		HTTPQuery query = new HTTPQuery();
+		Person person = new Person("user", "645");
 		try {
-			String anser = query.getHTML(url + "/" + wsZeitpunktposten+connectionBC.getFilter("Person", person.getBcCode()));
+			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
+					+ connectionBC.getFilter("Person", person.getBcCode());
+//			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten();
+			String anser = connectionBC.getRequest(requestZeitpunktposten);
+			JSONObject o = new JSONObject(anser);
 			assertNotNull(anser);
 		} catch (Exception e) {
 			e.printStackTrace();

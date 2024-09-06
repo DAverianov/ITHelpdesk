@@ -5,10 +5,20 @@ import org.apache.http.auth.NTCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.codec.Charsets;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.ParseException;
 import org.apache.http.auth.*;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.AuthSchemes;
@@ -20,7 +30,10 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.impl.auth.NTLMSchemeFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
-//
+
+import lombok.Getter;
+
+@Getter
 @Component
 public class ConnectionBC implements ConnectionWeb {
 	@Value("${businesscentral.url}")
@@ -34,13 +47,16 @@ public class ConnectionBC implements ConnectionWeb {
 	@Value("${businesscentral.timeout}")
 	private Integer timeout;
 
+	@Value("${businesscentral.ws.zeitpunktposten}")
+	private String wsZeitpunktposten;
+
 	private Credentials credentials() {
 		return new org.apache.http.auth.NTCredentials(username, password, "", domain);
 	}
 
 	@Override
 	public String getFilter(String attribute, String value) {
-		return "?$filter=" + attribute + " eq " + "'" + value + "'";
+		return "?$filter=" + attribute + "%20eq%20" + "%27" + value + "%27";
 	}
 
 	@Override
@@ -59,35 +75,46 @@ public class ConnectionBC implements ConnectionWeb {
 	public String getRequest(String url) {
 		HttpComponentsMessageSender messageSender = new HttpComponentsMessageSender();
 
-		CredentialsProvider credentialsProvider;
-		Registry<AuthSchemeProvider> registry;
-		RequestConfig requestConfig;
-
-		credentialsProvider = new BasicCredentialsProvider();
+		CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 		credentialsProvider.setCredentials(AuthScope.ANY, credentials());
 
-		registry = RegistryBuilder.<AuthSchemeProvider>create().register(AuthSchemes.NTLM, new NTLMSchemeFactory())
-				.build();
-
+		Registry<AuthSchemeProvider> registry = RegistryBuilder.<AuthSchemeProvider>create()
+				.register(AuthSchemes.NTLM, new NTLMSchemeFactory()).build();
 		HttpRequestInterceptor interceptor = (request, context) -> request.removeHeaders(HttpHeaders.CONTENT_LENGTH);
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
 
-		requestConfig = RequestConfig.custom().setConnectTimeout(timeout).build();
-
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
-				.setDefaultAuthSchemeRegistry(registry).setDefaultCredentialsProvider(credentialsProvider)
-				.addInterceptorFirst(interceptor).build();
-
+		//@formatter:off
+		CloseableHttpClient httpClient = HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.setDefaultAuthSchemeRegistry(registry)
+				.setDefaultCredentialsProvider(credentialsProvider)
+				.addInterceptorFirst(interceptor)
+				.build();
+		//@formatter:on
+		
 		HttpUriRequest handshake = new HttpGet(url);
 		try {
 			CloseableHttpResponse r = httpClient.execute(handshake);
+			return getJSONFromResponse(r);
+
 //			if (log.isInfoEnabled()) {
 //				log.info("Handshake initiated, response headers: {}", Arrays.toString(r.getAllHeaders()));
 //			}
 		} catch (Exception e) {
-
 		}
+		return "";
+	}
 
-		messageSender.setHttpClient(httpClient);
-		return messageSender.toString();
+	private String getJSONFromResponse(CloseableHttpResponse response) throws ParseException, IOException {
+		HttpEntity entity = response.getEntity();
+		Header encodingHeader = entity.getContentEncoding();
+
+		// you need to know the encoding to parse correctly
+		Charset encoding = encodingHeader == null ? StandardCharsets.UTF_8
+				: Charsets.toCharset(encodingHeader.getValue());
+
+		// use org.apache.http.util.EntityUtils to read json as string
+		String json = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+		return json;
 	}
 }
