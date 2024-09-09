@@ -5,6 +5,5 @@ import de.lewens_markisen.domain.Person;
 public interface PersonService {
 
     Iterable<Person> findAll();
-
 	
 }

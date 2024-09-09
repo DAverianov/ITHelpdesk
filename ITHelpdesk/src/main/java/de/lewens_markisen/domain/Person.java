@@ -1,30 +1,37 @@
 package de.lewens_markisen.domain;
 
+import java.sql.Timestamp;
 import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "person")
-public class Person extends BaseEntity{
+public class Person extends BaseEntity {
+
+	@Builder
+	public Person(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String name,
+			String bcCode) {
+		super(id, version, createdDate, lastModifiedDate);
+		this.name = name;
+		this.bcCode = bcCode;
+	}
 
 	@NotNull
 	@Size(min = 2, max = 120)
 	@Column(name = "name", length = 120)
 	private String name;
-	
+
 	@Size(min = 1, max = 4)
 	@Column(name = "bc_code", length = 4)
 	private String bcCode;

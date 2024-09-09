@@ -24,7 +24,7 @@ class HTTPQueryTest {
 
 	@Test
 	public void getHTML_whenHook_thenBekommeAnser() {
-		Person person = new Person("user", "645");
+		Person person = Person.builder().name("user").bcCode("643").build();
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
 					+ connectionBC.getFilter("Person", person.getBcCode());

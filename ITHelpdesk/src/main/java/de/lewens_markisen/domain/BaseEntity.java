@@ -2,7 +2,6 @@ package de.lewens_markisen.domain;
 
 import java.sql.Timestamp;
 import java.util.Objects;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,9 +11,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class BaseEntity {
+
+    public BaseEntity(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate) {
+        this.id = id;
+        this.version = version;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
+    }
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +35,7 @@ public abstract class BaseEntity {
 
 	@Version
 	@Column(name = "VERSION")
-	protected int version;
+	protected Long version;
 
 	@CreationTimestamp
 	@Column(name = "created_date", updatable = false)
@@ -40,11 +52,11 @@ public abstract class BaseEntity {
 		this.id = id;
 	}
 
-	public int getVersion() {
+	public Long getVersion() {
 		return version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Long version) {
 		this.version = version;
 	}
 
