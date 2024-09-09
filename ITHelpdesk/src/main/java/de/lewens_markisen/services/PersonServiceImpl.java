@@ -1,5 +1,7 @@
 package de.lewens_markisen.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import de.lewens_markisen.domain.Person;
@@ -16,7 +18,7 @@ public class PersonServiceImpl implements PersonService{
 	}
 
 	@Override
-	public Iterable<Person> findAll() {
+	public List<Person> findAll() {
 		return personRepository.findAll();
 	}
 

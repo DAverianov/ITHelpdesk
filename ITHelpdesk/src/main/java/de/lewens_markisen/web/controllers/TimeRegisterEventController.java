@@ -1,4 +1,4 @@
-package de.lewens_markisen.controller;
+package de.lewens_markisen.web.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,4 +1,4 @@
-package de.lewens_markisen.controller;
+package de.lewens_markisen.web.controllers;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,7 +19,7 @@ import de.lewens_markisen.services.PersonService;
 public class PersonController {
 
     public static Comparator<BaseEntity> COMPARATOR_BY_ID = Comparator.comparing(BaseEntity::getId);
-    public static Comparator<BaseEntity> COMPARATOR_BY_NAME = Comparator.comparing(BaseEntity::toString);
+    public static Comparator<Person> COMPARATOR_BY_NAME = Comparator.comparing(Person::getName);
 
     private final Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
 
@@ -30,7 +30,8 @@ public class PersonController {
     }
     @GetMapping(path = "/list")
     public String list(Model uiModel) {
-        Iterable<Person> persons = personService.findAll();
+        List<Person> persons = personService.findAll();
+        persons.sort(COMPARATOR_BY_NAME);
         uiModel.addAttribute("persons", persons);
 
         return "persons/list";

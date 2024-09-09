@@ -1,20 +1,16 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>IT Helpdesk</title>
+</head>
+<body>
+<h2 th:text="#{welcomemsg}">IT Helpdesk</h2>
 
-    <head th:replace="~{templates/layout :: pageTitle('Univercity Home Page')}"></head>
+<div class="row">
+    <div class="col-md-12">
+    </div>
+</div>
 
-    <body>
-        <div class="container">
-            <header th:replace="~{templates/layout :: pageHeader}" ></header>
-
-            <header th:replace="~{templates/layout :: pageMenu}" ></header>
-
-            <section th:fragment="~{templates/layout :: pageContent}">
-                <p th:text="#{home.caption}" ></p>
-                <p th:text="${message}" ></p>
-            </section>
-
-            <footer th:replace="~{templates/layout :: pageFooter}" ></footer>
-        </div>
-    </body>
+</body>
 </html>
