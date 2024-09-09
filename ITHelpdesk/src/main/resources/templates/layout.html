@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}, theme=${#themes.code('name')}" th:lang="${lang}" th:theme="${theme}">
+<head th:fragment="pageTitle(title)">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/bootstrap.min.css}">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="${title}"> Layout Page </title>
+    <link type="text/css" rel="stylesheet" th:with="cssStyle=${#themes.code('css.style')}" th:href="@{(${cssStyle})}" >
+    <link type="text/css" rel="stylesheet" th:href="@{/styles/general.css}" >
+</head>
+<body>
+        <header th:fragment="pageHeader" class="page-header">
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-sm-6">
+                    <div class="banner"></div>
+                 </div>
+            </div>
+        </header>
+
+
+        <section th:fragment="pageMenu">
+            <div class="menu">
+                <ul>
+                    <li><span th:if="${menuTab eq 'home'}">
+                            <strong><a th:href="@{/}" th:text="#{menu.home}">HOME</a></strong>
+                        </span>
+                        <span th:unless="${menuTab eq 'home'}">
+                            <a th:href="@{/}" th:text="#{menu.home}">HOME</a>
+                        </span>
+                    </li>
+                    <li><span th:if="${menuTab eq 'persons'}">
+                            <strong><a th:href="@{/persons/list}" th:text="#{menu.persons}">PERSONS</a></strong>
+                        </span>
+                        <span th:unless="${menuTab eq 'persons'}">
+                            <a th:href="@{/persons/list}" th:text="#{menu.persons}">PERSONS</a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section th:fragment="pageContent">
+            <div class="content">
+                <p>Page Content</p>
+            </div>
+        </section>
+
+        <footer th:fragment="pageFooter">
+            <div class="footer">
+                <p th:text="#{footer.text}"></p>
+            </div>
+        </footer>
+</body>
+</html>

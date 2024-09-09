@@ -72,7 +72,7 @@ public class ConnectionBC implements ConnectionWeb {
 	}
 
 	@Override
-	public String getRequest(String url) {
+	public String createGETRequest(String url) {
 		HttpComponentsMessageSender messageSender = new HttpComponentsMessageSender();
 
 		CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -96,10 +96,6 @@ public class ConnectionBC implements ConnectionWeb {
 		try {
 			CloseableHttpResponse r = httpClient.execute(handshake);
 			return getEntityFromResponse(r);
-
-//			if (log.isInfoEnabled()) {
-//				log.info("Handshake initiated, response headers: {}", Arrays.toString(r.getAllHeaders()));
-//			}
 		} catch (Exception e) {
 		}
 		return null;

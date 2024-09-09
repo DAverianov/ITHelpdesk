@@ -6,5 +6,5 @@ public interface ConnectionWeb {
 	public String getUrl();
 	public String getFilter(String attribute, String value);
 	public BasicCredentialsProvider getProvider();
-	public String getRequest(String url);
+	public String createGETRequest(String url);
 }

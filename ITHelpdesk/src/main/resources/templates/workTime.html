@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Work Times</title>
+</head>
+<body>
+<h1>Work Time List</h1>
+
+<table>
+    <tr>
+        <th>Person</th>
+        <th>Start</th>
+        <th>End</th>
+    </tr>
+    <tr th:each="workTime : ${workTime}">
+        <td th:text="${workTime.persone}">123</td>
+        <td th:text="${workTime.startDate}">08:00</td>
+        <td th:text="${workTime.endDate}">17:00</td>
+    </tr>
+</table>
+</body>
+</html>
