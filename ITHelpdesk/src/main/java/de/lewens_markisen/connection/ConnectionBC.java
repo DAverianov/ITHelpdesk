@@ -35,7 +35,7 @@ import lombok.Getter;
 
 @Getter
 @Component
-public class ConnectionBC implements ConnectionWeb {
+public class ConnectionBC implements ConnectionWebService {
 	@Value("${businesscentral.url}")
 	private String url;
 	@Value("${businesscentral.ntlm.user}")

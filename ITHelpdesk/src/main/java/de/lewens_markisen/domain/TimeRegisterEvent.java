@@ -1,7 +1,12 @@
 package de.lewens_markisen.domain;
 
-import java.time.LocalDateTime;
-
+import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -21,8 +26,18 @@ public class TimeRegisterEvent extends BaseEntity{
 	@ManyToOne
 	private Person person;
 	
+	@Column(name = "event_date")
+	@JsonProperty("Von_Datum")
+	@JsonSerialize(using = LocalDateSerializer.class)
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate eventDate;
+	
 	@Column(name = "start_date")
-	private LocalDateTime startDate;
+	@JsonProperty("Startzeit")
+	private String startDate;
+	
 	@Column(name = "end_date")
-	private LocalDateTime endDate;
+	@JsonProperty("Endezeit")
+	private String endDate;
 }

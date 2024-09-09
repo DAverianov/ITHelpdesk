@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{fragments/layout :: pageTitle('IT Helpdesk Error Page')}"></head>
+
+    <body>
+        <div class="container">
+            <header th:replace="~{fragments/layout :: pageHeader}" ></header>
+
+            <header th:replace="~{fragments/layout :: pageMenu}" ></header>
+
+            <section th:fragment="~{fragments/layout :: pageContent}">
+                <div class="content">
+                    <h3>Unexpected error!</h3>
+                    <div class="error" th:if="${not #strings.isEmpty(problem)}">
+                            <p th:text="${problem}" ></p>
+                    </div>
+                </div>
+            </section>
+
+            <footer th:replace="~{fragments/layout :: pageFooter}" ></footer>
+        </div>
+</body>
+</html>

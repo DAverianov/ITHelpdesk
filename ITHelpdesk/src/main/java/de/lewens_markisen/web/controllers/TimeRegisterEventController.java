@@ -24,7 +24,8 @@ public class TimeRegisterEventController {
     	if (personId==null) {
     		return "error";
     	}
+    	System.out.println("receivd query "+personId);
         model.addAttribute("workTime", timeRegisterEventService.findAll(personId));
-        return "workTime";
+        return "workTime/list";
     }
 }

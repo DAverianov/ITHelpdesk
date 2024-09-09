@@ -6,6 +6,7 @@ create table time_register_event (
       version int,
       
       person_id SERIAL,
+      event_date timestamp,
       start_date timestamp,
       end_date timestamp,
       
