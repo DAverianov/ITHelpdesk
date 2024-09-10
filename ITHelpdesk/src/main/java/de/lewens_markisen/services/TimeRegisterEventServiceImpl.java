@@ -5,12 +5,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.connection.BCWebService;
-import de.lewens_markisen.connection.ConnectionBC;
 import de.lewens_markisen.domain.Person;
 import de.lewens_markisen.domain.TimeRegisterEvent;
 import de.lewens_markisen.repositories.PersonRepository;
 import de.lewens_markisen.repositories.TimeRegisterEventRepository;
+import de.lewens_markisen.services.connection.BCWebService;
 
 @Service
 public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
@@ -27,15 +26,14 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 	}
 
 	@Override
-	public List<TimeRegisterEvent> findAll(Long personId) {
+	public Optional<List<TimeRegisterEvent>> findAll(Long personId) {
+		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		Optional<Person> person = personRepository.findById(personId);
 		if (person.isPresent()) {
 			readEventsProPerson(person.get());
-			return timeRegisterEventRepository.findAllByPerson(person.get());
+			result = Optional.of(timeRegisterEventRepository.findAllByPerson(person.get()));
 		}
-		else {
-			return null;
-		}
+		return result;
 	}
 
 	private void readEventsProPerson(Person person) {
@@ -43,9 +41,11 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPerson(person);
 		events.stream().forEach(e -> timeRegisterEventRepository.delete(e));
 		// read from BC
-		events = bcWebService.readTimeRegisterEventsFromBC(person);
+		Optional<List<TimeRegisterEvent>> eventsBC = bcWebService.readTimeRegisterEventsFromBC(person);
 		// save
-		events.stream().forEach(e -> timeRegisterEventRepository.save(e));
+		if (eventsBC.isPresent()) {
+			events.stream().forEach(e -> timeRegisterEventRepository.save(e));
+		}
 	}
 
 }

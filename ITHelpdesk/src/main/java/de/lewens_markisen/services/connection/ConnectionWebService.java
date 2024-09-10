@@ -1,4 +1,4 @@
-package de.lewens_markisen.connection;
+package de.lewens_markisen.services.connection;
 
 import org.apache.http.impl.client.BasicCredentialsProvider;
 
