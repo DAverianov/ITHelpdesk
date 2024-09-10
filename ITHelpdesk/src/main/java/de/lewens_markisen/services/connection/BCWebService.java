@@ -1,30 +1,21 @@
 package de.lewens_markisen.services.connection;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-
-import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.domain.Person;
 import de.lewens_markisen.domain.TimeRegisterEvent;
 import de.lewens_markisen.services.PersonService;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Component
 public class BCWebService {
@@ -39,14 +30,32 @@ public class BCWebService {
 	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		try {
+					
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
-					+ connectionBC.getFilter("Person", person.getBcCode());
+					+ connectionBC.getFilter(createFilter(person.getBcCode()));
 			String anser = connectionBC.createGETRequest(requestZeitpunktposten);
 			result = readTimeRegisterEventsFromJson(anser);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	private List<RestApiQueryFilter> createFilter(String bcCode) {
+		List<RestApiQueryFilter> filter = new ArrayList<RestApiQueryFilter>();
+		//@formatter:off
+		filter.add(RestApiQueryFilter.builder()
+				.attribute("Person")
+				.comparisonType("eq")
+				.value(bcCode)
+				.build());
+		filter.add(RestApiQueryFilter.builder()
+				.attribute("Von_datum")
+				.comparisonType("ge")
+				.value("2024-01-01")
+				.build());
+		//@formatter:on
+		return filter;
 	}
 
 	private Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromJson(String anser) {

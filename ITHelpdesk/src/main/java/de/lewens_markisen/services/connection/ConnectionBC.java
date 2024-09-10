@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
+import java.util.List;
 import org.apache.commons.codec.Charsets;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -55,8 +55,17 @@ public class ConnectionBC implements ConnectionWebService {
 	}
 
 	@Override
-	public String getFilter(String attribute, String value) {
-		return "?$filter=" + attribute + "%20eq%20" + "%27" + value + "%27";
+	public String getFilter(List<RestApiQueryFilter> filter) {
+		int i = 0;
+		StringBuilder sb = new StringBuilder("\"?$filter=\"");
+		for (RestApiQueryFilter f: filter) {
+			if (i>0) {
+				sb.append(" and ");
+			}
+			sb.append(f.getAttribute() + "%20"+f.getComparisonType()+"%20" + "%27" + f.getValue() + "%27");
+			i++;
+		}
+		return sb.toString();
 	}
 
 	@Override

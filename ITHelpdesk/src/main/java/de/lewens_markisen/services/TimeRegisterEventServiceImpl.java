@@ -36,7 +36,7 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 		return result;
 	}
 
-	private void readEventsProPerson(Person person) {
+	public void readEventsProPerson(Person person) {
 		// delete all records
 		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPerson(person);
 		events.stream().forEach(e -> timeRegisterEventRepository.delete(e));
