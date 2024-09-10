@@ -90,7 +90,7 @@ public class BCWebService {
 		if (value.size()==0) {
 			return Optional.empty();
 		}
-		Optional<Person> personOpt = personService.getPersonOrCreate(value.get(0).getPerson(), value.get(0).getName());
+		Optional<Person> personOpt = personService.findOrCreate(value.get(0).getPerson(), value.get(0).getName());
 		if (personOpt.isEmpty()) {
 			return Optional.empty();
 		}

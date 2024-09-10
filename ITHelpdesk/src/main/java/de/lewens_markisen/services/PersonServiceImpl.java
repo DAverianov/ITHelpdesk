@@ -23,7 +23,7 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public Optional<Person> getPersonOrCreate(String bcCode, String name) {
+	public Optional<Person> findOrCreate(String bcCode, String name) {
 		if (bcCode == "") {
 			return Optional.empty();
 		}
@@ -40,6 +40,11 @@ public class PersonServiceImpl implements PersonService {
 			return Optional.of(personSaved);
 			//@formatter:on
 		}
+	}
+
+	@Override
+	public Optional<Person> findByBcCode(String bcCode) {
+		return personRepository.findBybcCode(bcCode);
 	}
 
 }

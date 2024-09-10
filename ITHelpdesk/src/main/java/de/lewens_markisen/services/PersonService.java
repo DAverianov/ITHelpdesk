@@ -8,6 +8,7 @@ import de.lewens_markisen.domain.Person;
 public interface PersonService {
 
     List<Person> findAll();
-    Optional<Person> getPersonOrCreate(String bcCode, String name);
+    Optional<Person> findOrCreate(String bcCode, String name);
+    Optional<Person> findByBcCode(String bcCode);
 	
 }

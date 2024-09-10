@@ -36,7 +36,7 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 		return result;
 	}
 
-	public void readEventsProPerson(Person person) {
+	public Optional<String> readEventsProPerson(Person person) {
 		// delete all records
 		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPerson(person);
 		events.stream().forEach(e -> timeRegisterEventRepository.delete(e));
@@ -46,6 +46,7 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 		if (eventsBC.isPresent()) {
 			events.stream().forEach(e -> timeRegisterEventRepository.save(e));
 		}
+		return Optional.of(eventsBC.toString());
 	}
 
 }

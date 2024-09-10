@@ -29,7 +29,7 @@ class TimeRegisterEventServiceImplTest {
 
 	@Test
 	void readEventsProPerson_whenTimeEventsQuery_thenReceiveAndWrite() {
-		Optional<Person> personOpt = personService.getPersonOrCreate(BC_CODE, "TEST USER");
+		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
 		assertThat(personOpt.isPresent());
 		
 		timeRegisterEventServiceImpl.readEventsProPerson(personOpt.get());
