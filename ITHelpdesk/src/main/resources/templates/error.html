@@ -1,24 +1,11 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
 
-    <head th:replace="~{fragments/layout :: pageTitle('IT Helpdesk Error Page')}"></head>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'error')}">
 
-    <body>
-        <div class="container">
-            <header th:replace="~{fragments/layout :: pageHeader}" ></header>
+  <body>
+    <img src="../static/resources/images/it.png" th:src="@{/resources/images/it.png}"/>
+    <h2>Something happened...</h2>
+    <p th:text="${message}">Exception message</p>
+  </body>
 
-            <header th:replace="~{fragments/layout :: pageMenu}" ></header>
-
-            <section th:fragment="~{fragments/layout :: pageContent}">
-                <div class="content">
-                    <h3>Unexpected error!</h3>
-                    <div class="error" th:if="${not #strings.isEmpty(problem)}">
-                            <p th:text="${problem}" ></p>
-                    </div>
-                </div>
-            </section>
-
-            <footer th:replace="~{fragments/layout :: pageFooter}" ></footer>
-        </div>
-</body>
 </html>

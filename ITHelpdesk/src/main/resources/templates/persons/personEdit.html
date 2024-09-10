@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html  xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'persons')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Person</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<h1>Edit Person</h1>
+
+<form action="#" th:action="@{/update}" th:object="${person}" method="post">
+    <table>
+        <tr>
+            <td><label class="col-auto col-form-label control-label">Id</label></td>
+            <td><input type="text" th:field="*{id}" class="form-control"  placeholder="id" readonly></td>
+        </tr>
+        <tr>
+            <td><label class="col-auto col-form-label control-label">name <span class=sub>*</span></label></td>
+            <td><input type="text" th:field="*{name}" class="form-control"  placeholder="Name" required></td>
+        </tr>
+        <tr>
+            <td><label  class="col-auto col-form-label">bcCode <span class=sub>*</span></label></td>
+            <td><input type="text" th:field="*{bcCode}" class="form-control"  placeholder="bcCode"required></td>
+        </tr>
+    </table>
+    <p>
+        <button type="submit" name="action" value="update" class="btn btn-primary">Update</button>&nbsp;&nbsp;
+        <button type="submit" name="action" value="cancel" class="btn btn-info">Cancel</button>
+    </p>
+</form>
+</body>
+</html>

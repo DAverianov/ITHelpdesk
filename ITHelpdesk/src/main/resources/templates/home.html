@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 
-<head th:replace="~{fragments/layout :: pageTitle('IT Helpdesk')}"></head>
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 
-<body>
-	<h2 th:text="#{welcomemsg}">Welcome</h2>
+  <body>
 
-	<div class="row">
-	    <div class="col-md-12">
-	    </div>
-	</div>
+    <h2 th:text="#{welcome}">Welcome</h2>
+    <div class="row">
+        <div class="col-md-12">
+          <img class="img-responsive" src="../static/resources/images/it.png" th:src="@{/resources/images/it.png}"/>
+        </div>
+    </div>
 
-</body>
+  </body>
+
 </html>

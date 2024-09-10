@@ -1,9 +1,11 @@
 package de.lewens_markisen.services;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.domain.Person;
 import de.lewens_markisen.repositories.PersonRepository;
@@ -15,11 +17,6 @@ public class PersonServiceImpl implements PersonService {
 
 	public PersonServiceImpl(PersonRepository personRepository) {
 		this.personRepository = personRepository;
-	}
-
-	@Override
-	public List<Person> findAll() {
-		return personRepository.findAll();
 	}
 
 	@Override
@@ -45,6 +42,22 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public Optional<Person> findByBcCode(String bcCode) {
 		return personRepository.findBybcCode(bcCode);
+	}
+
+    @Transactional()
+    public Person updatePerson(Person person) {
+        personRepository.findById(person.getId());
+        return personRepository.save(person);
+    }
+
+	@Override
+	public Optional<Person> findById(Long id) {
+		return personRepository.findById(id);
+	}
+
+	@Override
+	public Page<Person> findAll(Pageable pageable) {
+		return personRepository.findAll(pageable);
 	}
 
 }
