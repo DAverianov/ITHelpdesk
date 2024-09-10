@@ -57,12 +57,17 @@ public class ConnectionBC implements ConnectionWebService {
 	@Override
 	public String getFilter(List<RestApiQueryFilter> filter) {
 		int i = 0;
-		StringBuilder sb = new StringBuilder("\"?$filter=\"");
+		StringBuilder sb = new StringBuilder("?$filter=");
 		for (RestApiQueryFilter f: filter) {
 			if (i>0) {
-				sb.append(" and ");
+				sb.append("%20and%20");
 			}
-			sb.append(f.getAttribute() + "%20"+f.getComparisonType()+"%20" + "%27" + f.getValue() + "%27");
+			if (f.getStringAttribute()) {
+				sb.append(f.getAttribute() + "%20"+f.getComparisonType()+"%20" + "%27" + f.getValue() + "%27");
+			}
+			else {
+				sb.append(f.getAttribute() + "%20"+f.getComparisonType()+"%20" + f.getValue());
+			}
 			i++;
 		}
 		return sb.toString();
