@@ -9,15 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.domain.Person;
 import de.lewens_markisen.repositories.PersonRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
 	private final PersonRepository personRepository;
-
-	public PersonServiceImpl(PersonRepository personRepository) {
-		this.personRepository = personRepository;
-	}
 
 	@Override
 	public Optional<Person> findOrCreate(String bcCode, String name) {
