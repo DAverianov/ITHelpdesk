@@ -60,7 +60,7 @@ public class Access extends BaseEntity {
 
     @PrePersist
     public void prePersistCallback(){
-        System.out.println("JPA PrePresist Callback was called");
+        System.out.println("JPA PrePersist Callback was called");
     }
 
 	@Override

@@ -10,7 +10,7 @@ import de.lewens_markisen.web.model.AccessDto;
 @DecoratedWith(AccessMapperDecorator.class)
 public interface AccessMapper {
 
-    AccessDto accessToAccessDto(Access beer);
+    AccessDto accessToAccessDto(Access access);
 
-    Access accessDtoToAccess(AccessDto beerDto);
+    Access accessDtoToAccess(AccessDto accessDto);
 }

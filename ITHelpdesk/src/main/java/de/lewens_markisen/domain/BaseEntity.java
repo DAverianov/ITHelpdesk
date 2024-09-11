@@ -76,6 +76,10 @@ public abstract class BaseEntity {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
+    public boolean isNew() {
+        return this.id == null;
+    }
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

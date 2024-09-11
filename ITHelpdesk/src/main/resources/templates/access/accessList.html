@@ -16,14 +16,14 @@
         <th>Description</th>
     </tr>
     </thead>
-    <tbody>
+ 	<a class="btn btn-default" th:href="@{/accesses/new}">Add Access</a>   <tbody>
     <tr th:each="access : ${accesses}">
         <td>
-            <a th:href="@{/access/__${access.id}__}" th:text="${access.name}"/></a>
+            <a th:href="@{/accesses/__${access.id}__}" th:text="${access.name}"/></a>
         </td>
         <td th:text="${access.domain}"/>
         <td th:text="${access.user}"/>
-        <td th:text="${access.password}"/>
+        <td ******/>
         <td th:text="${access.description}"/>
     </tr>
     </tbody>

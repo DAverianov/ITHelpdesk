@@ -1,0 +1,34 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'access')}">
+
+<body>
+
+<h2>
+    <th:block th:if="${access['new']}">New Access</th:block>
+    Update Access
+</h2>
+<form th:object="${access}" class="form-horizontal" id="add-access-form" method="post">
+    <div class="form-group has-feedback">
+
+        <input
+                th:replace="~{fragments/inputField :: input ('Access Name', 'name', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Domain', 'domain', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('User', 'user', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Password', 'password', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
+    </div>
+   <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button
+                    th:with="text=${access['new']} ? 'Add Access' : 'Update Access'"
+                    class="btn btn-default" type="submit" th:text="${text}">Add
+                Beer</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

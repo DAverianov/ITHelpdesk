@@ -53,7 +53,7 @@ public class PersonController {
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("persons", persons);
-		return "persons/personsList";
+		return "/persons/personsList";
 	}
 
 	private Page<Person> findPaginated(int page) {
@@ -82,7 +82,7 @@ public class PersonController {
 		if (action.equals("update")) {
 			personService.updatePerson(person);
 		}
-		return "redirect:/";
+		return "redirect:/persons";
 	}
 
 	@RequestMapping(value = "/timereport/{bcCode}")

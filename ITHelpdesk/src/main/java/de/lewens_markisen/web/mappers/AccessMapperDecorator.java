@@ -12,7 +12,7 @@ public abstract class AccessMapperDecorator implements AccessMapper{
 
     @Autowired
     @Qualifier("delegate")
-    public void setBeerMapper(AccessMapper accessMapper) {
+    public void setAccessMapper(AccessMapper accessMapper) {
         this.accessMapper = accessMapper;
     }
 
