@@ -2,6 +2,8 @@ package de.lewens_markisen.services.connection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,8 +21,8 @@ class HTTPQueryTest {
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
 					+ "?$filter=Person%20eq%20%27645%27";
-			String anser = connectionBC.createGETRequest(requestZeitpunktposten);
-			assertNotNull(anser);
+			Optional<String> anser = connectionBC.createGETRequest(requestZeitpunktposten);
+			assertNotNull(anser.get());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

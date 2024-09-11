@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'persons')}">
+
+<body>
+
+<h2>Time</h2>
+
+<table id="time report" class="table table-striped">
+  <thead>
+  <tr>
+    <th>record</th>
+    <th>description</th>
+    <th scope="col">Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="record : ${timeRecords}">
+    <td th:text="${record}"></td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+
+
+</body>
+</html>

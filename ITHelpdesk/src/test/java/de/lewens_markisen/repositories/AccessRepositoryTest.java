@@ -1,8 +1,6 @@
 package de.lewens_markisen.repositories;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -29,7 +27,14 @@ class AccessRepositoryTest {
 
 	@Test
 	public void testSaveAndStoreCreditCard() {
-		Access access = new Access("passwordBC", PASSWORD);
+		//@formatter:off
+		Access access = Access.builder()
+				.name("passwordBC")
+				.domain("LSS")
+				.user("spring")
+				.password(PASSWORD)
+				.build();
+		//@formatter:on
 
 		Access savedAccess = accessRepository.saveAndFlush(access);
 

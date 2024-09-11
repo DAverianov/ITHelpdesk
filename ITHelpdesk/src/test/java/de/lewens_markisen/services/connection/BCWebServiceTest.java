@@ -27,4 +27,11 @@ class BCWebServiceTest {
 		assertThat(events.get()).isNotEmpty().hasAtLeastOneElementOfType(TimeRegisterEvent.class);
 	}
 
+	@Test
+	void createTimeReport_whenQuery_thenReceive() {
+		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
+		List<String> reportList = bcWebService.createTimeReport(person);
+		assertThat(reportList).isNotEmpty().hasAtLeastOneElementOfType(String.class);
+	}
+
 }

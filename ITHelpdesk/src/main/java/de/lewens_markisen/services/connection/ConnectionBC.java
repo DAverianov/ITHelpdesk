@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
+
 import org.apache.commons.codec.Charsets;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -86,7 +88,7 @@ public class ConnectionBC implements ConnectionWebService {
 	}
 
 	@Override
-	public String createGETRequest(String url) {
+	public Optional<String> createGETRequest(String url) {
 		HttpComponentsMessageSender messageSender = new HttpComponentsMessageSender();
 
 		CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -109,10 +111,10 @@ public class ConnectionBC implements ConnectionWebService {
 		HttpUriRequest handshake = new HttpGet(url);
 		try {
 			CloseableHttpResponse r = httpClient.execute(handshake);
-			return getEntityFromResponse(r);
+			return Optional.of(getEntityFromResponse(r));
 		} catch (Exception e) {
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private String getEntityFromResponse(CloseableHttpResponse response) throws ParseException, IOException {

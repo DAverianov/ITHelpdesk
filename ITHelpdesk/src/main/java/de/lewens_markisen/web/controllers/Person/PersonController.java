@@ -22,30 +22,30 @@ import org.springframework.web.servlet.ModelAndView;
 
 import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.domain.Person;
-import de.lewens_markisen.repositories.PersonRepository;
 import de.lewens_markisen.services.PersonService;
+import de.lewens_markisen.services.connection.BCWebService;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/persons")
 public class PersonController {
 
-    public static Comparator<BaseEntity> COMPARATOR_BY_ID = Comparator.comparing(BaseEntity::getId);
-    public static Comparator<Person> COMPARATOR_BY_NAME = Comparator.comparing(Person::getName);
+	public static Comparator<BaseEntity> COMPARATOR_BY_ID = Comparator.comparing(BaseEntity::getId);
+	public static Comparator<Person> COMPARATOR_BY_NAME = Comparator.comparing(Person::getName);
 
-    private final Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
 
-    private final PersonService personService;
+	private final PersonService personService;
+	private final BCWebService bcWebService;
 
-    public PersonController(PersonService personService) {
-        this.personService = personService;
-    }
-    @GetMapping(path = "/list")
-    public String list(@RequestParam(defaultValue = "1") int page, Model model) {
+	@GetMapping(path = "/list")
+	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		Persons persons = new Persons();
 		Page<Person> paginated = findPaginated(page);
 		persons.getPersonList().addAll(paginated.toList());
 		return addPaginationModel(page, paginated, model);
-    }
+	}
 
 	private String addPaginationModel(int page, Page<Person> paginated, Model model) {
 		List<Person> persons = paginated.getContent();
@@ -58,31 +58,46 @@ public class PersonController {
 
 	private Page<Person> findPaginated(int page) {
 		int pageSize = 12;
-	    Sort sort = Sort.by("name").ascending();
+		Sort sort = Sort.by("name").ascending();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
 		return personService.findAll(pageable);
 	}
 
-    @RequestMapping(value = "/edit/{id}")
-    public ModelAndView showEditPersonForm(@PathVariable(name = "id") Long id) {
-        ModelAndView modelAndView = new ModelAndView("persons/personEdit");
-        System.out.println("edit!");
-        Optional<Person> personOpt = personService.findById(id);
-        if (personOpt.isPresent()) {
-	        modelAndView.addObject("person", personOpt.get());
-        }
-        else {
-        	modelAndView.setViewName("error");
-         }
-        return modelAndView;
-   }
+	@RequestMapping(value = "/edit/{id}")
+	public ModelAndView showEditPersonForm(@PathVariable(name = "id") Long id) {
+		ModelAndView modelAndView = new ModelAndView("persons/personEdit");
+		System.out.println("edit!");
+		Optional<Person> personOpt = personService.findById(id);
+		if (personOpt.isPresent()) {
+			modelAndView.addObject("person", personOpt.get());
+		} else {
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateStudent(@ModelAttribute("person") Person person, @RequestParam(value="action", required=true) String action) {
-        if (action.equals("update")) {
-            personService.updatePerson(person);
-        }
-        return "redirect:/";
-    }
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String updatePerson(@ModelAttribute("person") Person person,
+			@RequestParam(value = "action", required = true) String action) {
+		if (action.equals("update")) {
+			personService.updatePerson(person);
+		}
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/timereport/{bcCode}")
+	public ModelAndView showTimeReport(@PathVariable(name = "bcCode") String bcCode) {
+		ModelAndView modelAndView = new ModelAndView("persons/timereport");
+		System.out.println("showTimeReport! "+bcCode);
+		Optional<Person> personOpt = personService.findByBcCode(bcCode);
+		if (personOpt.isPresent()) {
+			modelAndView.addObject("person", personOpt.get().toString());
+			modelAndView.addObject("timeRecords", bcWebService.createTimeReport(personOpt.get()));
+		} else {
+			modelAndView.setViewName("error");
+			System.out.println("person nicht gefunden! "+bcCode);
+		}
+		return modelAndView;
+	}
 
 }

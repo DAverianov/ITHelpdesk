@@ -30,11 +30,12 @@ public class BCWebService {
 	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		try {
-					
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
 					+ connectionBC.getFilter(createFilter(person.getBcCode()));
-			String anser = connectionBC.createGETRequest(requestZeitpunktposten);
-			result = readTimeRegisterEventsFromJson(anser);
+			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
+			if (anserOpt.isPresent()) {
+				result = readTimeRegisterEventsFromJson(anserOpt.get());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,6 +106,22 @@ public class BCWebService {
 					.build()));
 		//@formatter:on
 		return Optional.of(events);
+	}
+
+	public List<String> createTimeReport(Person person) {
+		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
+		if (eventsOpt.isPresent()) {
+			return formattTimeEventsToString(eventsOpt.get());
+		}
+		else {
+			return List.of("Es gibt keine Daten für Person "+person.toString()+"!");
+		}
+	}
+
+	private List<String> formattTimeEventsToString(List<TimeRegisterEvent> events) {
+		List<String> res = new ArrayList<String>();
+		events.stream().forEach(ev -> res.add(ev.toString()));
+		return res;
 	}
 
 }

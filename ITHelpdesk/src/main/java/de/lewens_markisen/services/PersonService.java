@@ -1,5 +1,6 @@
 package de.lewens_markisen.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;

@@ -17,20 +17,39 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
+import de.lewens_markisen.domain.Access;
 import de.lewens_markisen.domain.Person;
+import de.lewens_markisen.repositories.AccessRepository;
 import de.lewens_markisen.repositories.PersonRepository;
 import de.lewens_markisen.utils.FileOperations;
 
 @RequiredArgsConstructor
 @Component
-public class PersonLoader implements CommandLineRunner {
+public class initialFilling implements CommandLineRunner {
 
 	private static final String FILE_PERSON = "initialFilling/person.csv";
 	private final PersonRepository personRepository;
+	private final AccessRepository accessRepository;
 
 	@Override
 	public void run(String... args) {
 		loadPersonData();
+		loadAccesses();
+	}
+
+	private void loadAccesses() {
+		if (accessRepository.count() == 0) {
+			//@formatter:off
+			Access access = Access.builder()
+						.name("BC develop")
+						.domain("LSS.local")
+						.user("DmytroAverianov")
+						.password("11")
+						.description("autocreated record")
+						.build();
+			accessRepository.save(access);
+			//@formater:on
+		}
 	}
 
 	private void loadPersonData() {
