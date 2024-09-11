@@ -25,8 +25,12 @@ public class AccessServiceImpl implements AccessService {
 
 	@Override
 	@Transactional()
-	public Access updatePerson(Access access) {
-		accessRepository.findById(access.getId());
+	public Access update(Access access) {
+		try {
+			accessRepository.findById(access.getId()).orElseThrow(ObjectNotFoundException::new);
+		} catch (ObjectNotFoundException e) {
+			e.printStackTrace();
+		}
 		return accessRepository.save(access);
 	}
 

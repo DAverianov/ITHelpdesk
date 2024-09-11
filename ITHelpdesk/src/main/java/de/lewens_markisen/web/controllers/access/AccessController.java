@@ -70,7 +70,7 @@ public class AccessController {
         if (action.equals("save")) {
         	accessService.save(access);
         }
-        return "redirect:/";
+        return "redirect:/accesses/list";
     }
 
 	@GetMapping("/new")
@@ -93,5 +93,13 @@ public class AccessController {
 		Access savedAccess = accessService.save(newAccess);
 		return "redirect:/accesses/list";
 	}
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String update(@ModelAttribute("access") Access access, @RequestParam(value="action", required=true) String action) {
+        if (action.equals("update")) {
+        	accessService.update(access);
+        }
+        return "redirect:/accesses/list";
+    }
 
 }

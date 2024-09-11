@@ -9,7 +9,7 @@ import de.lewens_markisen.domain.Access;
 
 public interface AccessService {
 	public Access save(Access access);
-	public Access updatePerson(Access access);
 	public Optional<Access> findById(Long id);
 	public Page<Access> findAll(Pageable pageable);
+	public Access update(Access access);
 }
