@@ -1,5 +1,6 @@
 package de.lewens_markisen.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -42,6 +43,16 @@ public class AccessServiceImpl implements AccessService {
 	@Override
 	public Page<Access> findAll(Pageable pageable) {
 		return accessRepository.findAll(pageable);
+	}
+
+	@Override
+	public Optional<Access> findByName(String name) {
+		List<Access> access = accessRepository.findByName(name);
+		Optional<Access> result = Optional.empty();
+		if (access.size()>0) {
+			result = Optional.of(access.get(0));
+		}
+		return result;
 	}
 
 }

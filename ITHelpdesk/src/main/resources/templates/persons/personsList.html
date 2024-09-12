@@ -21,8 +21,11 @@
         <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
     </td>
     <td th:text="${person.bcCode}"></td>
-    <td><a th:href="@{/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
-            <a th:href="@{/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a></td>
+    <td><a th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
+            <a th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a></td>
+    <td>
+       <a th:href="@{/zeiterfassungsystem(Person=${person.bcCode})}" class="btn btn-info">Timereport</a>
+    </td>
   </tr>
   </tbody>
 </table>

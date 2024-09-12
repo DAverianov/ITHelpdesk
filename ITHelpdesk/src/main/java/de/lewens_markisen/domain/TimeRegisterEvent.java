@@ -41,6 +41,14 @@ public class TimeRegisterEvent extends BaseEntity {
 
 	@Column(name = "end_date")
 	private String endDate;
+    
+	public String getMo() {
+        return this.endDate;
+    }
+    
+	public String getDi() {
+        return this.endDate;
+    }
 
 	@Override
 	public String toString() {

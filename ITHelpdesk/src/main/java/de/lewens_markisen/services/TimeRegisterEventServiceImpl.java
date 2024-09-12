@@ -36,7 +36,7 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 		return result;
 	}
 
-	public Optional<String> readEventsProPerson(Person person) {
+	public Optional<List<TimeRegisterEvent>> readEventsProPerson(Person person) {
 		// delete all records
 		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPerson(person);
 		events.stream().forEach(e -> timeRegisterEventRepository.delete(e));
@@ -44,9 +44,14 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 		Optional<List<TimeRegisterEvent>> eventsBC = bcWebService.readTimeRegisterEventsFromBC(person);
 		// save
 		if (eventsBC.isPresent()) {
-			events.stream().forEach(e -> timeRegisterEventRepository.save(e));
+			eventsBC.get().stream().forEach(e -> timeRegisterEventRepository.save(e));
 		}
-		return Optional.of(eventsBC.toString());
+		return eventsBC;
+	}
+
+	@Override
+	public Optional<List<TimeRegisterEvent>> findAllByPersonWithoutDubl(Person person) {
+		return Optional.of(timeRegisterEventRepository.findAllByPersonWithoutDubl(person.getId()));
 	}
 
 }

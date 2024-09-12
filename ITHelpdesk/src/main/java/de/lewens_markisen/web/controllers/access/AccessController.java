@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -65,14 +64,6 @@ public class AccessController {
 		return modelAndView;
 	}
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String SaveAccess(@ModelAttribute("access") Access access, @RequestParam(value="action", required=true) String action) {
-        if (action.equals("save")) {
-        	accessService.save(access);
-        }
-        return "redirect:/accesses/list";
-    }
-
 	@GetMapping("/new")
 	public String initCreationForm(Model model) {
 		model.addAttribute("access", Access.builder().build());
@@ -84,6 +75,7 @@ public class AccessController {
 		//@formatter:off
 		Access newAccess = Access.builder()
 				.name(access.getName())
+				.url(access.getUrl())
 				.domain(access.getDomain())
 				.user(access.getUser())
 				.password(access.getPassword())
@@ -94,9 +86,10 @@ public class AccessController {
 		return "redirect:/accesses/list";
 	}
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+	@PostMapping(value = "/update")
     public String update(@ModelAttribute("access") Access access, @RequestParam(value="action", required=true) String action) {
-        if (action.equals("update")) {
+		System.out.println("ich bin bei Update");
+     	if (action.equals("update")) {
         	accessService.update(access);
         }
         return "redirect:/accesses/list";

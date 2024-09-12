@@ -12,4 +12,5 @@ public interface AccessService {
 	public Optional<Access> findById(Long id);
 	public Page<Access> findAll(Pageable pageable);
 	public Access update(Access access);
+	public Optional<Access> findByName(String name); 
 }

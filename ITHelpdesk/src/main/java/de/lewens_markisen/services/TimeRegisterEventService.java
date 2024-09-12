@@ -9,5 +9,6 @@ import de.lewens_markisen.domain.TimeRegisterEvent;
 public interface TimeRegisterEventService {
 
 	Optional<List<TimeRegisterEvent>> findAll(Long personId);
-	Optional<String> readEventsProPerson(Person person);
+	Optional<List<TimeRegisterEvent>> readEventsProPerson(Person person);
+	Optional<List<TimeRegisterEvent>> findAllByPersonWithoutDubl(Person person);
 }

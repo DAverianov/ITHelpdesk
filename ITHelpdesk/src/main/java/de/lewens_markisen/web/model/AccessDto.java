@@ -14,9 +14,10 @@ public class AccessDto extends BaseItem {
 
     @Builder
     public AccessDto(Long id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, String name,
-    		String domain, String user, String password, String description) {
+    		String url, String domain, String user, String password, String description) {
         super(id, version, createdDate, lastModifiedDate);
         this.name = name;
+        this.url = url;
         this.domain = domain;
         this.user = user;
         this.password = password;
@@ -24,6 +25,7 @@ public class AccessDto extends BaseItem {
     }
 
     private String name;
+    private String url;
     private String domain;
     private String user;
     private String password;

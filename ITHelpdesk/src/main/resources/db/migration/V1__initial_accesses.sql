@@ -5,6 +5,7 @@ create table accesses (
       id SERIAL PRIMARY KEY,
       version int,
       name varchar(120),
+      url varchar(300),
       domain varchar(60),
       user_ varchar(120),
       password varchar(200),

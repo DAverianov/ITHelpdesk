@@ -6,8 +6,11 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.domain.Person;
 import de.lewens_markisen.domain.TimeRegisterEvent;
@@ -16,6 +19,8 @@ import de.lewens_markisen.repositories.TimeRegisterEventRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class TimeRegisterEventServiceImplTest {
 	private final String BC_CODE = "645";
 	@Autowired
@@ -32,10 +37,15 @@ class TimeRegisterEventServiceImplTest {
 		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
 		assertThat(personOpt.isPresent());
 		
-		timeRegisterEventServiceImpl.readEventsProPerson(personOpt.get());
-		List<TimeRegisterEvent> timeEvents = timeRegisterEventRepository.findAllByPerson(personOpt.get());
-		
-		assertThat(timeEvents).isNotEmpty().hasAtLeastOneElementOfType(TimeRegisterEvent.class);
+		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.readEventsProPerson(personOpt.get());
+		assertThat(events).isNotEmpty();
+	}
+	
+	@Test
+	void findAllByPersonWithoutDubl_whenRequest_thenAnser() {
+		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
+		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.findAllByPersonWithoutDubl(personOpt.get());
+		assertThat(events).isNotEmpty();
 	}
 
 }

@@ -9,6 +9,7 @@
         <div class="col-sm-10">
             <div th:switch="${type}">
                 <input th:case="'text'" class="form-control" type="text" th:field="*{__${name}__}" />
+                <input th:case="'password'" class="form-control form-control-lg" type="password" placeholder="******" th:field="*{password}" />
                 <input th:case="'number'" class="form-control" type="text" th:field="*{__${name}__}"
                        pattern="^[1-9]\d*$"/>
                 <input th:case="'monetory'" class="form-control" type="text" th:field="*{__${name}__}"

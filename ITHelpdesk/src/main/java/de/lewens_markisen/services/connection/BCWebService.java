@@ -48,7 +48,7 @@ public class BCWebService {
 		filter.add(RestApiQueryFilter.builder()
 				.attribute("Von_Datum")
 				.comparisonType("ge")
-				.value("2024-01-01")
+				.value("2024-09-01")
 				.stringAttribute(false)
 				.build());
 		filter.add(RestApiQueryFilter.builder()

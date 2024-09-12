@@ -21,14 +21,20 @@ import lombok.Setter;
 @Entity
 @Table(name = "accesses")
 public class Access extends BaseEntity {
-	
+
 	@Builder
+	//@formatter:off
 	public Access(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate,
-			@NotNull @Size(min = 2, max = 120) String name, @Size(min = 2, max = 60) String domain,
-			@Size(min = 2, max = 120) String user, @NotNull @Size(min = 2, max = 50) String password,
+			@NotNull @Size(min = 2, max = 120) String name, 
+			@Size(min = 2, max = 300) String url, 
+			@Size(min = 2, max = 60) String domain,
+			@Size(min = 2, max = 120) String user, 
+			@Size(min = 2, max = 50) String password,
 			@Size(min = 2, max = 200) String description) {
+	//@formatter:on
 		super(id, version, createdDate, lastModifiedDate);
 		this.name = name;
+		this.url = url;
 		this.domain = domain;
 		this.user = user;
 		this.password = password;
@@ -39,29 +45,32 @@ public class Access extends BaseEntity {
 	@Size(min = 2, max = 120)
 	@Column(name = "name", length = 120)
 	private String name;
-	
+
+	@Size(min = 2, max = 300)
+	@Column(name = "url", length = 300)
+	private String url;
+
 	@Size(min = 2, max = 60)
 	@Column(name = "domain", length = 60)
 	private String domain;
-	
+
 	@Size(min = 2, max = 120)
 	@Column(name = "user_", length = 120)
 	private String user;
-	
-	@NotNull
+
 	@Size(min = 2, max = 50)
 	@Column(name = "password", length = 200)
-    @Convert(converter = PasswordConverter.class)
+	@Convert(converter = PasswordConverter.class)
 	private String password;
-	
+
 	@Size(min = 2, max = 200)
 	@Column(name = "description", length = 200)
 	private String description;
 
-    @PrePersist
-    public void prePersistCallback(){
-        System.out.println("JPA PrePersist Callback was called");
-    }
+	@PrePersist
+	public void prePersistCallback() {
+		System.out.println("JPA PrePersist Callback was called");
+	}
 
 	@Override
 	public int hashCode() {

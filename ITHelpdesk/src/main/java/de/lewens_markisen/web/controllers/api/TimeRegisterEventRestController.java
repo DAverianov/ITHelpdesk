@@ -1,5 +1,6 @@
 package de.lewens_markisen.web.controllers.api;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.lewens_markisen.domain.Person;
+import de.lewens_markisen.domain.TimeRegisterEvent;
 import de.lewens_markisen.services.PersonService;
 import de.lewens_markisen.services.TimeRegisterEventService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ public class TimeRegisterEventRestController {
 		String antwort = "";
 		Optional<Person> personOpt = personService.findByBcCode(person);
 		if (personOpt.isPresent()) {
-			Optional<String> timeRecords = timeRegisterEventService.readEventsProPerson(personOpt.get());
+			Optional<List<TimeRegisterEvent>> timeRecords = timeRegisterEventService.readEventsProPerson(personOpt.get());
 			if (timeRecords.isPresent()) {
 				antwort = "Hello "
 						+ personOpt.get().getName() 

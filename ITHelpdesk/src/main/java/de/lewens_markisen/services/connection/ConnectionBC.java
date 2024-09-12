@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,42 +34,61 @@ import org.apache.http.impl.auth.NTLMSchemeFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
+import de.lewens_markisen.domain.Access;
+import de.lewens_markisen.services.AccessService;
 import lombok.Getter;
 
 @Getter
 @Component
 public class ConnectionBC implements ConnectionWebService {
-	@Value("${businesscentral.url}")
-	private String url;
-	@Value("${businesscentral.ntlm.user}")
-	private String username;
-	@Value("${businesscentral.ntlm.domain}")
-	private String domain;
-	@Value("${businesscentral.ntlm.password}")
-	private String password;
+
 	@Value("${businesscentral.timeout}")
 	private Integer timeout;
 
-	@Value("${businesscentral.ws.zeitpunktposten}")
-	private String wsZeitpunktposten;
+	private final Access bcAccess;
+	private final String wsZeitpunktposten;
+	@Autowired
+	private final AccessService accessService;
+
+	//@formatter:off
+	public ConnectionBC(
+			@Value("${businesscentral.bcAccessName}") String bcAccessName,
+			@Value("${businesscentral.ws.zeitpunktposten}") String wsZeitpunktposten, 
+			AccessService accessService) {
+		//@formatter:on
+		super();
+		this.accessService = accessService;
+		Optional<Access> accessOpt = accessService.findByName(bcAccessName);
+		if (accessOpt.isPresent()) {
+			this.bcAccess = accessOpt.get();
+		} else {
+			//@formatter:off
+			this.bcAccess = Access.builder()
+					.url("not found field bcAccessName!")
+					.name("not found property bcAccessName")
+					.build();
+			//@formatter:on
+		}
+		this.wsZeitpunktposten = wsZeitpunktposten;
+	}
 
 	private Credentials credentials() {
-		return new org.apache.http.auth.NTCredentials(username, password, "", domain);
+		return new org.apache.http.auth.NTCredentials(bcAccess.getUser(), bcAccess.getPassword(), "",
+				bcAccess.getDomain());
 	}
 
 	@Override
 	public String getFilter(List<RestApiQueryFilter> filter) {
 		int i = 0;
 		StringBuilder sb = new StringBuilder("?$filter=");
-		for (RestApiQueryFilter f: filter) {
-			if (i>0) {
+		for (RestApiQueryFilter f : filter) {
+			if (i > 0) {
 				sb.append("%20and%20");
 			}
 			if (f.getStringAttribute()) {
-				sb.append(f.getAttribute() + "%20"+f.getComparisonType()+"%20" + "%27" + f.getValue() + "%27");
-			}
-			else {
-				sb.append(f.getAttribute() + "%20"+f.getComparisonType()+"%20" + f.getValue());
+				sb.append(f.getAttribute() + "%20" + f.getComparisonType() + "%20" + "%27" + f.getValue() + "%27");
+			} else {
+				sb.append(f.getAttribute() + "%20" + f.getComparisonType() + "%20" + f.getValue());
 			}
 			i++;
 		}
@@ -78,13 +98,14 @@ public class ConnectionBC implements ConnectionWebService {
 	@Override
 	public BasicCredentialsProvider getProvider() {
 		var credentialsProvider = new BasicCredentialsProvider();
-		credentialsProvider.setCredentials(AuthScope.ANY, new NTCredentials(username, password, "", domain));
+		credentialsProvider.setCredentials(AuthScope.ANY,
+				new NTCredentials(bcAccess.getUser(), bcAccess.getPassword(), "", bcAccess.getDomain()));
 		return credentialsProvider;
 	}
 
 	@Override
 	public String getUrl() {
-		return url;
+		return bcAccess.getUrl();
 	}
 
 	@Override
@@ -107,7 +128,7 @@ public class ConnectionBC implements ConnectionWebService {
 				.addInterceptorFirst(interceptor)
 				.build();
 		//@formatter:on
-		
+
 		HttpUriRequest handshake = new HttpGet(url);
 		try {
 			CloseableHttpResponse r = httpClient.execute(handshake);
