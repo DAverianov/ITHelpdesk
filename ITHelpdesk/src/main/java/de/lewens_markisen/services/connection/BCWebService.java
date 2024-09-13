@@ -11,11 +11,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import de.lewens_markisen.domain.Person;
-import de.lewens_markisen.domain.TimeRegisterEvent;
-import de.lewens_markisen.services.PersonService;
+
+import de.lewens_markisen.person.Person;
+import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 
 @Component
 public class BCWebService {
@@ -101,8 +102,8 @@ public class BCWebService {
 				TimeRegisterEvent.builder()
 					.person(personOpt.get())
 					.eventDate(tR.getEventDate())
-					.startDate(tR.getStartDate())
-					.endDate(tR.getEndDate())
+					.startTime(tR.getStartDate())
+					.endTime(tR.getEndDate())
 					.build()));
 		//@formatter:on
 		return Optional.of(events);

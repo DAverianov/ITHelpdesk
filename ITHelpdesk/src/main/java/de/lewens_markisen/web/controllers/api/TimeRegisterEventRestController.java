@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.lewens_markisen.domain.Person;
-import de.lewens_markisen.domain.TimeRegisterEvent;
-import de.lewens_markisen.services.PersonService;
-import de.lewens_markisen.services.TimeRegisterEventService;
+import de.lewens_markisen.person.Person;
+import de.lewens_markisen.person.PersonService;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

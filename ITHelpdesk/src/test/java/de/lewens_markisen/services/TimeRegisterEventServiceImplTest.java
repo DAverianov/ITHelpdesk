@@ -12,10 +12,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.domain.Person;
-import de.lewens_markisen.domain.TimeRegisterEvent;
-import de.lewens_markisen.repositories.PersonRepository;
-import de.lewens_markisen.repositories.TimeRegisterEventRepository;
+import de.lewens_markisen.person.Person;
+import de.lewens_markisen.person.PersonRepository;
+import de.lewens_markisen.person.PersonService;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventRepository;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventServiceImpl;
 
 @ActiveProfiles("test")
 @SpringBootTest

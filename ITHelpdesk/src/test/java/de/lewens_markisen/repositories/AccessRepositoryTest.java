@@ -10,7 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.domain.Access;
+import de.lewens_markisen.access.Access;
+import de.lewens_markisen.access.AccessRepository;
 import de.lewens_markisen.services.EncryptionService;
 
 @SpringBootTest

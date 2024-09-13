@@ -17,10 +17,10 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
-import de.lewens_markisen.domain.Access;
-import de.lewens_markisen.domain.Person;
-import de.lewens_markisen.repositories.AccessRepository;
-import de.lewens_markisen.repositories.PersonRepository;
+import de.lewens_markisen.access.Access;
+import de.lewens_markisen.access.AccessRepository;
+import de.lewens_markisen.person.Person;
+import de.lewens_markisen.person.PersonRepository;
 import de.lewens_markisen.utils.FileOperations;
 
 @RequiredArgsConstructor
@@ -42,6 +42,7 @@ public class initialFilling implements CommandLineRunner {
 			//@formatter:off
 			Access access = Access.builder()
 						.name("BC develop")
+						.url("http://lss-bc-app.lss.local:7048/BC21-LEWENS/ODataV4/Company('LSS%20Produktiv')")
 						.domain("LSS.local")
 						.user("DmytroAverianov")
 						.password("11")

@@ -7,8 +7,8 @@ create table time_register_event (
       
       person_id SERIAL,
       event_date timestamp,
-      start_date timestamp,
-      end_date timestamp,
+      start_time timestamp,
+      end_time timestamp,
       
       created_date timestamp,
       last_modified_date timestamp

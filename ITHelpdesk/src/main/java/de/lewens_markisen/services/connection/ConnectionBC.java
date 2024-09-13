@@ -34,8 +34,8 @@ import org.apache.http.impl.auth.NTLMSchemeFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
-import de.lewens_markisen.domain.Access;
-import de.lewens_markisen.services.AccessService;
+import de.lewens_markisen.access.Access;
+import de.lewens_markisen.access.AccessService;
 import lombok.Getter;
 
 @Getter

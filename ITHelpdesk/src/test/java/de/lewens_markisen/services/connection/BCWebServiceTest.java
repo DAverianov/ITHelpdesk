@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.domain.Person;
-import de.lewens_markisen.domain.TimeRegisterEvent;
+import de.lewens_markisen.person.Person;
+import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 
 @ActiveProfiles("test")
 @SpringBootTest()
