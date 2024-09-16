@@ -89,7 +89,7 @@ public class BCWebService {
 	}
 
 	private Optional<List<TimeRegisterEvent>> convertToTimeRegisterEvent(List<TimeRegisterEventJson> value) {
-		if (value.size()==0) {
+		if (value.size() == 0) {
 			return Optional.empty();
 		}
 		Optional<Person> personOpt = personService.findOrCreate(value.get(0).getPerson(), value.get(0).getName());
@@ -97,25 +97,49 @@ public class BCWebService {
 			return Optional.empty();
 		}
 		List<TimeRegisterEvent> events = new ArrayList<TimeRegisterEvent>();
-		//@formatter:0ff
-		value.stream().forEach(tR -> events.add(
-				TimeRegisterEvent.builder()
-					.person(personOpt.get())
-					.eventDate(tR.getEventDate())
-					.startTime(tR.getStartDate())
-					.endTime(tR.getEndDate())
-					.build()));
+		// @formatter:0ff
+		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder().person(personOpt.get())
+				.eventDate(tR.getEventDate()).startTime(tR.getStartDate()).endTime(tR.getEndDate()).build()));
 		//@formatter:on
-		return Optional.of(events);
+		return Optional.of(compoundDublRecords(events));
+	}
+
+	public List<TimeRegisterEvent> compoundDublRecords(List<TimeRegisterEvent> events) {
+		List<TimeRegisterEvent> eventsCompound = new ArrayList<TimeRegisterEvent>();
+		//@formatter:off
+		events.stream().filter(ev -> ev.getEndTime() == "").forEach(ev -> {
+			eventsCompound.add(TimeRegisterEvent.builder()
+				.person(ev.getPerson())
+				.eventDate(ev.getEventDate())
+				.startTime(ev.getStartTime())
+				.endTime(findEndTime(events, ev))
+				.build());
+		});
+		//@formatter:on
+		return eventsCompound;
+	}
+
+	private String findEndTime(List<TimeRegisterEvent> events, TimeRegisterEvent currentEvent) {
+		String result = "";
+		for (TimeRegisterEvent ev : events) {
+			//@formatter:off
+			if (ev.getPerson().equals(currentEvent.getPerson()) 
+					&& ev.getEventDate().equals(currentEvent.getEventDate())
+					&& ev.getStartTime().equals("")) {
+				result = ev.getEndTime();
+				break;
+			}
+			//@formatter:on
+		}
+		return result;
 	}
 
 	public List<String> createTimeReport(Person person) {
 		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
 		if (eventsOpt.isPresent()) {
 			return formattTimeEventsToString(eventsOpt.get());
-		}
-		else {
-			return List.of("Es gibt keine Daten für Person "+person.toString()+"!");
+		} else {
+			return List.of("Es gibt keine Daten für Person " + person.toString() + "!");
 		}
 	}
 

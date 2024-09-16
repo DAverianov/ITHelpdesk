@@ -37,7 +37,7 @@ public class TimeReportService {
 		if (personOpt.isEmpty()) {
 			return Optional.empty();
 		} else {
-//			timeRegisterEventService.readEventsProPerson(personOpt.get());
+			timeRegisterEventService.readEventsProPerson(personOpt.get());
 			return Optional.of(TimeReport.builder()
 					.person(personOpt.get())
 					.period(period)
