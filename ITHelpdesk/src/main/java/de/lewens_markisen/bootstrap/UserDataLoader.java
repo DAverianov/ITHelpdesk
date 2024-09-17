@@ -18,30 +18,30 @@ public class UserDataLoader implements CommandLineRunner {
 
 	private final AuthorityRepository authorityRepository;
 	private final UserRepository userRepository;
-//	private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) throws Exception {
 		if (authorityRepository.count() == 0) {
-//			loadSecurityData();
+			loadSecurityData();
 		}
 	}
 
-//	private void loadSecurityData() {
-//		Authority admin = authorityRepository.save(Authority.builder().role("ADMIN").build());
-//		Authority userRole = authorityRepository.save(Authority.builder().role("USER").build());
-//		Authority customer = authorityRepository.save(Authority.builder().role("CUSTOMER").build());
-//
-//		userRepository.save(
-//				User.builder().username("spring").password(passwordEncoder.encode("1")).authority(admin).build());
-//
-//		userRepository.save(User.builder().username("user").password(passwordEncoder.encode("password"))
-//				.authority(userRole).build());
-//
-//		userRepository.save(
-//				User.builder().username("scott").password(passwordEncoder.encode("tiger")).authority(customer).build());
-//
-//		log.debug("Users Loaded: " + userRepository.count());
-//	}
+	private void loadSecurityData() {
+		Authority admin = authorityRepository.save(Authority.builder().role("ADMIN").build());
+		Authority userRole = authorityRepository.save(Authority.builder().role("USER").build());
+		Authority customer = authorityRepository.save(Authority.builder().role("CUSTOMER").build());
+
+		userRepository.save(
+				User.builder().username("spring").password(passwordEncoder.encode("1")).authority(admin).build());
+
+		userRepository.save(User.builder().username("user").password(passwordEncoder.encode("password"))
+				.authority(userRole).build());
+
+		userRepository.save(
+				User.builder().username("scott").password(passwordEncoder.encode("tiger")).authority(customer).build());
+
+		log.debug("Users Loaded: " + userRepository.count());
+	}
 
 }
