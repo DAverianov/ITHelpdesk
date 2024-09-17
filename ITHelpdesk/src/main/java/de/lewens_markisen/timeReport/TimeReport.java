@@ -2,6 +2,7 @@ package de.lewens_markisen.timeReport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,33 @@ public class TimeReport {
 	}
 	private Person person;
 	private List<TimeRegisterEvent> timeRecords;
-	private List<TimeRegisterMonths> timeMonths;
 	private String comment;
 	private PeriodReport period;
+	
+	public List<TimeRecordReport> getWeeks() {
+		List<TimeRecordReport> weeks = new ArrayList<TimeRecordReport>();
+		for (TimeRegisterEvent tr: timeRecords) {
+			addWeek(weeks, tr);
+		}
+		return weeks;
+	}
+
+	private void addWeek(List<TimeRecordReport> weeks, TimeRegisterEvent tr) {
+		String yearWeek = tr.getYearWeek();
+		//@formatter:off
+		Optional<TimeRecordReport> week = weeks.stream()
+			.filter(r-> r.getName().equals(yearWeek))
+			.findFirst();
+		if (week.isPresent()) {
+			week.get().addRecord(tr);
+		}
+		else {
+			TimeRecordReport timeRecordWeek = TimeRecordReport.builder()
+				.name(yearWeek).build();
+			timeRecordWeek.addRecord(tr);
+			weeks.add(timeRecordWeek);
+		}
+		//@formatter:on
+	}
+	
 }

@@ -1,4 +1,4 @@
-package de.lewens_markisen.services;
+package de.lewens_markisen.timeReport;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +9,10 @@ import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
-import de.lewens_markisen.timeReport.PeriodReport;
-import de.lewens_markisen.timeReport.TimeReport;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TimeReportService {
@@ -31,6 +31,7 @@ public class TimeReportService {
 	}
 
 	public Optional<TimeReport> createReport(String bcCode) {
+		log.info("Create TimeReport for "+bcCode);
 		//@formatter:off
 		PeriodReport period = PeriodReport.PeriodReportMonth();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);

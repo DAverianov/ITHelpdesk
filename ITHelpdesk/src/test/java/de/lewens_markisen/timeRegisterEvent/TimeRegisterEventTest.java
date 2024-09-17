@@ -43,17 +43,17 @@ class TimeRegisterEventTest {
 		assertEquals("--", tr.getMo());
 	}
 	
-	@Test
-	void timeOfWork() {
-		TimeRegisterEvent tr = TimeRegisterEvent.builder()
-				.eventDate(LocalDate.of(2024, 9, 9))
-				.startTime("7:00")
-				.endTime("7:30")
-				.build();
-		String time = tr.timeOfWork(true);
-		assertEquals("0,50", time);
-		time = tr.timeOfWork(false);
-		assertEquals("0:30", time);
-	}
+//	@Test
+//	void timeOfWork() {
+//		TimeRegisterEvent tr = TimeRegisterEvent.builder()
+//				.eventDate(LocalDate.of(2024, 9, 9))
+//				.startTime("7:00")
+//				.endTime("7:30")
+//				.build();
+//		String time = tr.timeOfWork(true);
+//		assertEquals("0,50", time);
+//		time = tr.timeOfWork(false);
+//		assertEquals("0:30", time);
+//	}
 
 }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.lewens_markisen.repository.AccessRepository;
 import de.lewens_markisen.services.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 

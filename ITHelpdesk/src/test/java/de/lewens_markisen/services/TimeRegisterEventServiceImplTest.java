@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.person.Person;
-import de.lewens_markisen.person.PersonRepository;
 import de.lewens_markisen.person.PersonService;
+import de.lewens_markisen.repository.PersonRepository;
+import de.lewens_markisen.repository.TimeRegisterEventRepository;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
-import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventRepository;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventServiceImpl;
 
 @ActiveProfiles("test")

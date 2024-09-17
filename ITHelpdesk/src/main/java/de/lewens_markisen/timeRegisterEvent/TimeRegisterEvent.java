@@ -6,10 +6,16 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.person.Person;
+import de.lewens_markisen.utils.TimeUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -25,9 +31,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "time_register_event")
 public class TimeRegisterEvent extends BaseEntity {
-	static final int MINUTES_PER_HOUR = 60;
-	static final int SECONDS_PER_MINUTE = 60;
-	static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 
 	@Builder
 	public TimeRegisterEvent(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, Person person,
@@ -51,88 +54,133 @@ public class TimeRegisterEvent extends BaseEntity {
 	@Column(name = "end_time")
 	private String endTime;
 
-	public String getMo() {
+	public String getYearWeek() {
+		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+		return "" + getEventDate().getYear() + " w " + getEventDate().get(woy);
+	}
+
+	public Long getMo() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.MONDAY);
 	}
 
-	public String getDi() {
+	public Long getTu() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.TUESDAY);
 	}
 
-	public String getMi() {
+	public Long getWe() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.WEDNESDAY);
 	}
 
-	public String getDo() {
+	public Long getTh() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.THURSDAY);
 	}
 
-	public String getFr() {
+	public Long getFr() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.FRIDAY);
 	}
 
-	public String getSa() {
+	public Long getSa() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.SATURDAY);
 	}
 
-	public String getSo() {
+	public Long getSo() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.SUNDAY);
 	}
 
-	private String timeOfWorkInDayOfWeek(DayOfWeek dayOfWeek) {
+	public String getMoDecimal() {
+		return TimeUtils.secondsToHourMinutes(getMo(), true);
+	}
+
+	public String getTuDecimal() {
+		return TimeUtils.secondsToHourMinutes(getTu(), true);
+	}
+
+	public String getWeDecimal() {
+		return TimeUtils.secondsToHourMinutes(getWe(), true);
+	}
+
+	public String getThDecimal() {
+		return TimeUtils.secondsToHourMinutes(getTh(), true);
+	}
+
+	public String getFrDecimal() {
+		return TimeUtils.secondsToHourMinutes(getFr(), true);
+	}
+
+	public String getSaDecimal() {
+		return TimeUtils.secondsToHourMinutes(getSo(), true);
+	}
+
+	public String getSoDecimal() {
+		return TimeUtils.secondsToHourMinutes(getSo(), true);
+	}
+	public String getSumDecimal() {
+		return TimeUtils.secondsToHourMinutes(getSum(), true);
+	}
+
+	private Long timeOfWorkInDayOfWeek(DayOfWeek dayOfWeek) {
 		if (this.eventDate.getDayOfWeek().equals(dayOfWeek)) {
-			return timeOfWork(true);
-		} else {
-			return "";
-		}
-	}
-
-	public String timeOfWork(boolean inDecimal) {
-		if (this.startTime != null & !this.startTime.equals("") & this.endTime != null & !this.endTime.equals("")) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H[H]:mm");
-			LocalDateTime startDateTime = LocalDateTime.parse(this.eventDate + " " + this.startTime, formatter);
-			LocalDateTime endDateTime = LocalDateTime.parse(this.eventDate + " " + this.endTime, formatter);
-			Duration duration = Duration.between(startDateTime, endDateTime);
-			long seconds = duration.getSeconds() - pauseLang();
-
-			return secondsToHourMinutes(seconds, inDecimal);
-		} else {
-			return "";
-		}
-	}
-
-	public String secondsToHourMinutes(long seconds, boolean inDecimal) {
-		if (seconds > 0) {
-			if (inDecimal) {
-				return "" + String.format("%.2f", (double) seconds / SECONDS_PER_HOUR);
-			}
-			else {
-				int hours = (int) (seconds / SECONDS_PER_HOUR);
-				int minutes = (int) seconds % SECONDS_PER_HOUR / 60;
-				return "" + hours + ":" + String.format("%02d", minutes);
-			}
-		} else {
-			return "--";
-		}
-	}
-
-	private Long pauseLang() {
-		DayOfWeek dw = this.eventDate.getDayOfWeek();
-		if (dw.equals(DayOfWeek.FRIDAY)) {
-			return 15l * SECONDS_PER_MINUTE;
-		} else if (dw.equals(DayOfWeek.MONDAY)
-				|| dw.equals(DayOfWeek.TUESDAY)
-				|| dw.equals(DayOfWeek.WEDNESDAY)
-				|| dw.equals(DayOfWeek.THURSDAY)) {
-			return 45l * SECONDS_PER_MINUTE;
+			return timeOfWorkInDay(true);
 		} else {
 			return 0l;
 		}
 	}
 
+	public Long timeOfWorkInDay(boolean inDecimal) {
+		//@formatter:off
+		if (this.startTime != null 
+				&& !this.startTime.equals("") 
+				&& this.endTime != null 
+				&& !this.endTime.equals("")) {
+//			return secondsToHourMinutes(seconds, inDecimal);
+			return timeOfWork();
+		} else {
+			return 0l;
+		}
+		//@formatter:on
+	}
+
+	public Long timeOfWork() {
+		long seconds = 0l;
+		//@formatter:off
+		if (this.eventDate != null 
+				&& this.startTime != null 
+				&& !this.startTime.equals("") 
+				&& this.endTime != null
+				&& !this.endTime.equals("")) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H[H]:mm");
+			LocalDateTime startDateTime = LocalDateTime.parse(this.eventDate + " " + this.startTime, formatter);
+			LocalDateTime endDateTime = LocalDateTime.parse(this.eventDate + " " + this.endTime, formatter);
+			Duration duration = Duration.between(startDateTime, endDateTime);
+			seconds = duration.getSeconds() - pauseLang();
+		}
+		//@formatter:on
+		return seconds;
+	}
+
+	public Long getSum() {
+		return timeOfWork();
+	}
+
+	private Long pauseLang() {
+		//@formatter:off
+		DayOfWeek dw = this.eventDate.getDayOfWeek();
+		if (dw.equals(DayOfWeek.FRIDAY)) {
+			return 15l * TimeUtils.SECONDS_PER_MINUTE;
+		} else if (dw.equals(DayOfWeek.MONDAY) 
+				|| dw.equals(DayOfWeek.TUESDAY) 
+				|| dw.equals(DayOfWeek.WEDNESDAY)
+				|| dw.equals(DayOfWeek.THURSDAY)) {
+			return 45l * TimeUtils.SECONDS_PER_MINUTE;
+		} else {
+			return 0l;
+		}
+		//@formatter:on
+	}
+
 	public String toStringReport() {
 		return "" + getEventDate() + " " + getStartTime() + " - " + getEndTime() + " - "
-				+ secondsToHourMinutes(pauseLang(), false) + " = " + timeOfWork(false);
+				+ TimeUtils.secondsToHourMinutes(pauseLang(), false) + " = " + timeOfWork();
 	}
 
 	@Override

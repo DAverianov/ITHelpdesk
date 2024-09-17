@@ -18,9 +18,9 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
 import de.lewens_markisen.access.Access;
-import de.lewens_markisen.access.AccessRepository;
 import de.lewens_markisen.person.Person;
-import de.lewens_markisen.person.PersonRepository;
+import de.lewens_markisen.repository.AccessRepository;
+import de.lewens_markisen.repository.PersonRepository;
 import de.lewens_markisen.utils.FileOperations;
 
 @RequiredArgsConstructor
