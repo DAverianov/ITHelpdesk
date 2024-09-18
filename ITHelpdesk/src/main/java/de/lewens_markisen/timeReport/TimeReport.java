@@ -19,6 +19,11 @@ import lombok.Setter;
 @Component
 public class TimeReport {
 
+	private Person person;
+	private List<TimeRegisterEvent> timeRecords;
+	private String comment;
+	private PeriodReport period;
+
 	@Builder
 	public TimeReport(Person person, List<TimeRegisterEvent> timeRecords, String comment, PeriodReport period) {
 		super();
@@ -27,32 +32,28 @@ public class TimeReport {
 		this.comment = comment;
 		this.period = period;
 	}
-	private Person person;
-	private List<TimeRegisterEvent> timeRecords;
-	private String comment;
-	private PeriodReport period;
 	
-	public List<TimeRecordReport> getWeeks() {
-		List<TimeRecordReport> weeks = new ArrayList<TimeRecordReport>();
+	public List<TimeReportGroupRecords> getWeeks() {
+		List<TimeReportGroupRecords> weeks = new ArrayList<TimeReportGroupRecords>();
 		for (TimeRegisterEvent tr: timeRecords) {
 			addWeek(weeks, tr);
 		}
 		return weeks;
 	}
 
-	private void addWeek(List<TimeRecordReport> weeks, TimeRegisterEvent tr) {
+	private void addWeek(List<TimeReportGroupRecords> weeks, TimeRegisterEvent tr) {
 		String yearWeek = tr.getYearWeek();
 		//@formatter:off
-		Optional<TimeRecordReport> week = weeks.stream()
+		Optional<TimeReportGroupRecords> week = weeks.stream()
 			.filter(r-> r.getName().equals(yearWeek))
 			.findFirst();
 		if (week.isPresent()) {
-			week.get().addRecord(tr);
+			week.get().addElement(new TimeReportRecord(tr));
 		}
 		else {
-			TimeRecordReport timeRecordWeek = TimeRecordReport.builder()
+			TimeReportGroupRecords timeRecordWeek = TimeReportGroupRecords.builder()
 				.name(yearWeek).build();
-			timeRecordWeek.addRecord(tr);
+			timeRecordWeek.addElement(new TimeReportRecord(tr));
 			weeks.add(timeRecordWeek);
 		}
 		//@formatter:on

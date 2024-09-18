@@ -21,7 +21,7 @@
     </tr>
     </thead>
     <tr th:each="week : ${timeReport.weeks}">
-        <td style="width:400px; font-weight:bold" th:text="${week.toString}"/>
+        <td style="width:400px; font-weight:bold" th:text="${week.name}"/>
         <td style="font-weight:bold" th:text="${week.moDecimal}"/>
         <td style="font-weight:bold" th:text="${week.tuDecimal}"/>
         <td style="font-weight:bold" th:text="${week.weDecimal}"/>
@@ -30,8 +30,9 @@
         <td style="font-weight:bold" th:text="${week.saDecimal}"/>
         <td style="font-weight:bold" th:text="${week.soDecimal}"/>
         <td style="font-weight:bold" align="right" th:text="${week.sumDecimal}"/>
+	    
     </tr>
-    <tr th:each="record : ${timeReport.timeRecords}">
+    <tr th:each="record : ${timeReport.timeRecords}" class="collapsible">
         <td style="width:400px" th:text="${record.toStringReport}"/>
         <td th:text="${record.moDecimal}"/>
         <td th:text="${record.tuDecimal}"/>

@@ -56,7 +56,7 @@ public class TimeRegisterEvent extends BaseEntity {
 
 	public String getYearWeek() {
 		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
-		return "" + getEventDate().getYear() + " w " + getEventDate().get(woy);
+		return "" + getEventDate().getYear() + " Woche " + getEventDate().get(woy);
 	}
 
 	public Long getMo() {
@@ -180,7 +180,9 @@ public class TimeRegisterEvent extends BaseEntity {
 
 	public String toStringReport() {
 		return "" + getEventDate() + " " + getStartTime() + " - " + getEndTime() + " - "
-				+ TimeUtils.secondsToHourMinutes(pauseLang(), false) + " = " + timeOfWork();
+				+ TimeUtils.secondsToHourMinutes(pauseLang(), false) 
+				+ " = " 
+				+ TimeUtils.secondsToHourMinutes(timeOfWork(), false);
 	}
 
 	@Override

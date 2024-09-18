@@ -17,7 +17,6 @@ import org.springframework.security.ldap.userdetails.PersonContextMapper;
 import org.springframework.security.web.SecurityFilterChain;
 
 import de.lewens_markisen.security.ExampleAuthenticationSuccessEventListener;
-import de.lewens_markisen.security.SfgPasswordEncoderFactories;
 import de.lewens_markisen.services.security.UserService;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -29,30 +28,25 @@ import org.springframework.security.authentication.ProviderManager;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	@Bean
-	public ActiveDirectoryLdapAuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
-		ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider(
-				"LSS.local", "ldap://192.168.0.2:389/DC=lss,DC=com");
-		provider.setConvertSubErrorCodesToExceptions(true);
-		provider.setUseAuthenticationRequestCredentials(true);
-		provider.setConvertSubErrorCodesToExceptions(true);
-		return provider;
-	}
+//	@Bean
+//	public ActiveDirectoryLdapAuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
+//		ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider(
+//				"LSS.local", "ldap://192.168.0.19");
+//		provider.setConvertSubErrorCodesToExceptions(true);
+//		provider.setUseAuthenticationRequestCredentials(true);
+//		provider.setConvertSubErrorCodesToExceptions(true);
+//		return provider;
+//	}
 
-	@Bean
-	public AuthenticationManager authenticationManager() {
-		return new ProviderManager(Arrays.asList(activeDirectoryLdapAuthenticationProvider()));
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
+//	@Bean
+//	public AuthenticationManager authenticationManager() {
+//		return new ProviderManager(Arrays.asList(activeDirectoryLdapAuthenticationProvider()));
+//	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/", "/webjars/**", "/login", "/resources/**")
-				.permitAll().anyRequest().authenticated()).httpBasic(withDefaults());
+//		http.authorizeHttpRequests((authz) -> authz.requestMatchers("/", "/webjars/**", "/login", "/resources/**")
+//				.permitAll().anyRequest().authenticated()).httpBasic(withDefaults());
 		return http.build();
 	}
 

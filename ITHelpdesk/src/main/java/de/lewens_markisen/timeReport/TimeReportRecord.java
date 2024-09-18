@@ -12,12 +12,23 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TimeRecordReport {
+public class TimeReportRecord {
 
 	@Builder
-	public TimeRecordReport(String name) {
+	public TimeReportRecord(String name) {
 		super();
 		this.name = name;
+	}
+
+	public TimeReportRecord(TimeRegisterEvent tr) {
+		this.name = tr.toStringReport();
+		this.mo = tr.getMo();
+		this.tu = tr.getTu();
+		this.we = tr.getWe();
+		this.th = tr.getTh();
+		this.fr = tr.getFr();
+		this.sa = tr.getSa();
+		this.so = tr.getSo();
 	}
 
 	private String name;
@@ -68,20 +79,6 @@ public class TimeRecordReport {
 		setSa(this.getSa()+tr.getSa());
 	}
 
-	public String secondsToHourMinutes(long seconds, boolean inDecimal) {
-		if (seconds > 0) {
-			if (inDecimal) {
-				return "" + String.format("%.2f", (double) seconds / TimeUtils.SECONDS_PER_HOUR);
-			} else {
-				int hours = (int) (seconds / TimeUtils.SECONDS_PER_HOUR);
-				int minutes = (int) seconds % TimeUtils.SECONDS_PER_HOUR / 60;
-				return "" + hours + ":" + String.format("%02d", minutes);
-			}
-		} else {
-			return "--";
-		}
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(fr, mo, name, sa, so, th, tu, we);
@@ -95,7 +92,7 @@ public class TimeRecordReport {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TimeRecordReport other = (TimeRecordReport) obj;
+		TimeReportRecord other = (TimeReportRecord) obj;
 		return Objects.equals(fr, other.fr) && Objects.equals(mo, other.mo) && Objects.equals(name, other.name)
 				&& Objects.equals(sa, other.sa) && Objects.equals(so, other.so) && Objects.equals(th, other.th)
 				&& Objects.equals(tu, other.tu) && Objects.equals(we, other.we);

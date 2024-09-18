@@ -31,7 +31,11 @@ class TimeReportServiceTest {
 		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<TimeReport> timeReport = timeReportService.createReport(BC_CODE);
 		assertThat(timeReport).isNotEmpty();
-		List<TimeRecordReport> weeks= timeReport.get().getWeeks();
+		List<TimeReportGroupRecords> weeks= timeReport.get().getWeeks();
 		assertThat(weeks).isNotEmpty();
+		assertThat(weeks.get(0).getElements()).isNotEmpty();
+		for (TimeReportGroupRecords gr: weeks) {
+			assertThat(gr.getElements()).isNotEmpty();
+		}
 	}
 }
