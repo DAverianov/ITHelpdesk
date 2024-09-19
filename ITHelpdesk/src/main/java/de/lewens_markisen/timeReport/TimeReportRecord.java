@@ -1,5 +1,9 @@
 package de.lewens_markisen.timeReport;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ public class TimeReportRecord {
 
 	public TimeReportRecord(TimeRegisterEvent tr) {
 		this.name = tr.toStringReport();
+		this.eventDate = tr.getEventDate();
 		this.mo = tr.getMo();
 		this.tu = tr.getTu();
 		this.we = tr.getWe();
@@ -32,6 +37,7 @@ public class TimeReportRecord {
 	}
 
 	private String name;
+	private LocalDate eventDate;
 	private Long mo = 0l;
 	private Long tu = 0l;
 	private Long we = 0l;
@@ -77,6 +83,15 @@ public class TimeReportRecord {
 		setFr(this.getFr()+tr.getFr());
 		setSo(this.getSo()+tr.getSo());
 		setSa(this.getSa()+tr.getSa());
+	}
+
+	public String getYearWeek() {
+		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+		return "" + getEventDate().getYear() + " Woche " + getEventDate().get(woy);
+	}
+
+	public String getYearMonat() {
+		return "" + getEventDate().getYear() + " " + getEventDate().getMonthValue();
 	}
 
 	@Override

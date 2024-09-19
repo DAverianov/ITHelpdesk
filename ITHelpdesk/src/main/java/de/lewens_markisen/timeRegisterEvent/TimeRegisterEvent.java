@@ -54,11 +54,6 @@ public class TimeRegisterEvent extends BaseEntity {
 	@Column(name = "end_time")
 	private String endTime;
 
-	public String getYearWeek() {
-		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
-		return "" + getEventDate().getYear() + " Woche " + getEventDate().get(woy);
-	}
-
 	public Long getMo() {
 		return timeOfWorkInDayOfWeek(DayOfWeek.MONDAY);
 	}

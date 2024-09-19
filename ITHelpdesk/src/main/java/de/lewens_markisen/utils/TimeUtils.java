@@ -1,5 +1,10 @@
 package de.lewens_markisen.utils;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
+
 public class TimeUtils {
 	public static final int MINUTES_PER_HOUR = 60;
 	public static final int SECONDS_PER_MINUTE = 60;
@@ -17,6 +22,15 @@ public class TimeUtils {
 		} else {
 			return "--";
 		}
+	}
+
+	public static String getYearWeek(LocalDate eventDate) {
+		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+		return "" + eventDate.getYear() + " Woche " + eventDate.get(woy);
+	}
+
+	public static String getYearMonat(LocalDate eventDate) {
+		return "" + eventDate.getYear() + " " + eventDate.getMonthValue();
 	}
 
 }

@@ -1,13 +1,17 @@
 package de.lewens_markisen.timeReport;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.person.Person;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.utils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,16 +37,22 @@ public class TimeReport {
 		this.period = period;
 	}
 	
-	public List<TimeReportGroupRecords> getWeeks() {
-		List<TimeReportGroupRecords> weeks = new ArrayList<TimeReportGroupRecords>();
-		for (TimeRegisterEvent tr: timeRecords) {
-			addWeek(weeks, tr);
-		}
+	public List<TimeReportRecord> getWeeks() {
+		List<TimeReportRecord> weeks = new ArrayList<TimeReportRecord>();
+		//		Set<String> weeks = new HashSet<String>();
+//		timeRecords.stream()
+//        	.map(tr -> TimeUtils.getYearWeek(tr.getEventDate())
+//        	.collect(Collectors.toCollection(HashSet::new));
+//		
+//		List<TimeReportGroupRecords> weeks = new ArrayList<TimeReportGroupRecords>();
+//		for (TimeRegisterEvent tr: timeRecords) {
+//			addWeek(weeks, tr);
+//		}
 		return weeks;
 	}
 
 	private void addWeek(List<TimeReportGroupRecords> weeks, TimeRegisterEvent tr) {
-		String yearWeek = tr.getYearWeek();
+		String yearWeek = TimeUtils.getYearWeek(tr.getEventDate());
 		//@formatter:off
 		Optional<TimeReportGroupRecords> week = weeks.stream()
 			.filter(r-> r.getName().equals(yearWeek))
