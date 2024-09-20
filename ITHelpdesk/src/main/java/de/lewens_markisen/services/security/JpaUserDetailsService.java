@@ -1,4 +1,4 @@
-package de.lewens_markisen.security;
+package de.lewens_markisen.services.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,28 +13,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.User;
-import de.lewens_markisen.repository.security.UserRepository;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+//@Service
 public class JpaUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    	log.debug("Getting user info via Jpa!");
-        User user = userRepository.findByUsername(username).orElseThrow(() -> {
-            return new UsernameNotFoundException("User name: " + username + " not found");
-        });
-
+      	User user;
+    	Optional<User> userOpt = userService.getUserByName(username);
+    	if (userOpt.isPresent()) {
+	     	user = userOpt.get();
+    	}
+    	else {
+    		user = userService.createUser(username, "");
+    	}
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 user.getEnabled(), user.getAccountNonExpired(), user.getCredentialsNonExpired(),
                 user.getAccountNonLocked(), convertToSpringAuthorities(user.getAuthorities()));

@@ -1,4 +1,4 @@
-package de.lewens_markisen.timeReport;
+package de.lewens_markisen.web.controllers;
 
 import java.util.Optional;
 
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.lewens_markisen.timeReport.TimeReport;
+import de.lewens_markisen.timeReport.TimeReportService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

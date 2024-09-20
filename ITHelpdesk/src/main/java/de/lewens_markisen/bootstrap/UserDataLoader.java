@@ -18,7 +18,7 @@ public class UserDataLoader implements CommandLineRunner {
 
 	private final AuthorityRepository authorityRepository;
 	private final UserRepository userRepository;
-//	private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -32,15 +32,27 @@ public class UserDataLoader implements CommandLineRunner {
 		Authority userRole = authorityRepository.save(Authority.builder().role("USER").build());
 		Authority customer = authorityRepository.save(Authority.builder().role("CUSTOMER").build());
 
-		userRepository.save(
-				User.builder().username("spring").password("1").authority(admin).build());
+		//@formatter:off
+		userRepository.save(User.builder()
+				.username("spring")
+				.password(passwordEncoder.encode("1"))
+				.authority(admin)
+				.build()
+				);
 
-		userRepository.save(User.builder().username("user").password("password")
-				.authority(userRole).build());
+		userRepository.save(User.builder()
+				.username("user")
+				.password(passwordEncoder.encode("password"))
+				.authority(userRole)
+				.build());
 
-		userRepository.save(
-				User.builder().username("scott").password("tiger").authority(customer).build());
+		userRepository.save(User.builder()
+				.username("scott")
+				.password(passwordEncoder.encode("tiger"))
+				.authority(customer)
+				.build());
 
+		//@formatter:on
 		log.debug("Users Loaded: " + userRepository.count());
 	}
 

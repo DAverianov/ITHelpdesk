@@ -30,12 +30,15 @@ public class User {
     private Set<Authority> authorities;
 
     @Builder.Default
+    @Column(name = "account_non_expired")
     private Boolean accountNonExpired = true;
 
     @Builder.Default
+    @Column(name = "account_non_locked")
     private Boolean accountNonLocked = true;
 
     @Builder.Default
+    @Column(name = "credentials_non_expired")
     private Boolean credentialsNonExpired = true;
 
     @Builder.Default

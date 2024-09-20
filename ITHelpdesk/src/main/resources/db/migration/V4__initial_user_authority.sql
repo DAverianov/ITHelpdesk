@@ -6,9 +6,9 @@ create table user_spring (
       version int,
       username varchar(120),
       password varchar(200),
-      accountNonExpired boolean,
-      accountNonLocked boolean,
-      credentialsNonExpired boolean,
+      account_non_expired boolean,
+      account_non_locked boolean,
+      credentials_non_expired boolean,
       enabled boolean
 );
 
