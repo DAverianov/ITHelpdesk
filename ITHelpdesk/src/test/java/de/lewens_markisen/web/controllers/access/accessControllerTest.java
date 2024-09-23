@@ -34,8 +34,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import de.lewens_markisen.access.Access;
-import de.lewens_markisen.access.AccessController;
 import de.lewens_markisen.repository.AccessRepository;
+import de.lewens_markisen.web.controllers.AccessController;
 
 @ExtendWith(MockitoExtension.class)
 class accessControllerTest {

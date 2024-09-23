@@ -1,4 +1,4 @@
-package de.lewens_markisen.access;
+package de.lewens_markisen.web.controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.lewens_markisen.access.Access;
+import de.lewens_markisen.access.AccessService;
+import de.lewens_markisen.access.Accesses;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -57,6 +60,7 @@ public class AccessController {
 		if (accessOpt.isPresent()) {
 			modelAndView.addObject("access", accessOpt.get());
 		} else {
+			modelAndView.addObject("message", "Access mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
 		}
 		return modelAndView;

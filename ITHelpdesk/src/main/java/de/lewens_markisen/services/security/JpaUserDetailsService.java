@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.domain.security.Authority;
-import de.lewens_markisen.domain.security.User;
+import de.lewens_markisen.domain.security.UserSpring;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,8 +30,8 @@ public class JpaUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      	User user;
-    	Optional<User> userOpt = userService.getUserByName(username);
+      	UserSpring user;
+    	Optional<UserSpring> userOpt = userService.getUserByName(username);
     	if (userOpt.isPresent()) {
 	     	user = userOpt.get();
     	}

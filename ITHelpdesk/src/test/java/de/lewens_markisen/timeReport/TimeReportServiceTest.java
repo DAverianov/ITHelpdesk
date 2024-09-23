@@ -1,6 +1,7 @@
 package de.lewens_markisen.timeReport;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,9 +9,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 
+import de.lewens_markisen.config.SecurityConfiguration;
 import de.lewens_markisen.person.Person;
+import de.lewens_markisen.person.PersonService;
 
 @ActiveProfiles("test")
 @SpringBootTest()
@@ -18,6 +22,10 @@ class TimeReportServiceTest {
 	private final String BC_CODE = "645";
 	@Autowired
 	private TimeReportService timeReportService;
+	@Autowired
+	private PersonService personService;
+	@Autowired
+	SecurityConfiguration provider;
 
 	@Test
 	void createReport_whenCreate_then() {
@@ -38,4 +46,26 @@ class TimeReportServiceTest {
 //			assertThat(gr.getElements()).isNotEmpty();
 //		}
 	}
+	
+
+//	@Test
+	void getUserBcCode_whenGet_thenBekomm() {
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "Reboot2022#01");
+		personService.findOrCreate(BC_CODE, "it-team");
+		auth = (UsernamePasswordAuthenticationToken) provider.authenticate(auth);
+		Optional<String> bcCodeOpt = timeReportService.getUserBcCode();
+		assertThat(bcCodeOpt).isNotEmpty();
+		assertEquals(bcCodeOpt.get(), BC_CODE);
+	}
+
+	@Test
+	void createWeek_whenCreat_thenBekomm() {
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "Reboot2022#01");
+		personService.findOrCreate(BC_CODE, "it-team");
+		auth = (UsernamePasswordAuthenticationToken) provider.authenticate(auth);
+		Optional<String> bcCodeOpt = timeReportService.getUserBcCode();
+		assertThat(bcCodeOpt).isNotEmpty();
+		assertEquals(bcCodeOpt.get(), BC_CODE);
+	}
+
 }

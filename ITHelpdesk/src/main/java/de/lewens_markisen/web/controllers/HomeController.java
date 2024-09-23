@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class HomeController {
 
@@ -32,5 +34,14 @@ public class HomeController {
 		boolean isCurrentUserInRole = auth.getAuthorities().stream().anyMatch(role::equals);
 		// return Authentication object
 		return auth;
+	}
+
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			request.getSession().invalidate();
+		}
+		return "redirect:/";
 	}
 }

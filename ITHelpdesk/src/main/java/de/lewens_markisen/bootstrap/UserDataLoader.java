@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.security.Authority;
-import de.lewens_markisen.domain.security.User;
+import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.repository.security.AuthorityRepository;
 import de.lewens_markisen.repository.security.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class UserDataLoader implements CommandLineRunner {
 
 	private final AuthorityRepository authorityRepository;
 	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
+//	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -28,27 +28,27 @@ public class UserDataLoader implements CommandLineRunner {
 	}
 
 	private void loadSecurityData() {
-		Authority admin = authorityRepository.save(Authority.builder().role("ADMIN").build());
-		Authority userRole = authorityRepository.save(Authority.builder().role("USER").build());
-		Authority customer = authorityRepository.save(Authority.builder().role("CUSTOMER").build());
+		Authority admin = authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
+		Authority userRole = authorityRepository.save(Authority.builder().role("ROLE_USER").build());
+		Authority customer = authorityRepository.save(Authority.builder().role("ROLE_CUSTOMER").build());
 
 		//@formatter:off
-		userRepository.save(User.builder()
+		userRepository.save(UserSpring.builder()
 				.username("spring")
-				.password(passwordEncoder.encode("1"))
+				.password("1")
 				.authority(admin)
 				.build()
 				);
 
-		userRepository.save(User.builder()
+		userRepository.save(UserSpring.builder()
 				.username("user")
-				.password(passwordEncoder.encode("password"))
+				.password("password")
 				.authority(userRole)
 				.build());
 
-		userRepository.save(User.builder()
+		userRepository.save(UserSpring.builder()
 				.username("scott")
-				.password(passwordEncoder.encode("tiger"))
+				.password("tiger")
 				.authority(customer)
 				.build());
 

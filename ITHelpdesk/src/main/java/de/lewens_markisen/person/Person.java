@@ -27,12 +27,18 @@ public class Person extends BaseEntity {
 		super(id, version, createdDate, lastModifiedDate);
 		this.name = name;
 		this.bcCode = bcCode;
+		this.nameWithoutSpace = name.replaceAll(" ", "");
 	}
 
 	@NotNull
 	@Size(min = 2, max = 120)
 	@Column(name = "name", length = 120)
 	private String name;
+	
+	@NotNull
+	@Size(min = 2, max = 120)
+	@Column(name = "name_without_space", length = 120)
+	private String nameWithoutSpace;
 
 	@Size(min = 1, max = 4)
 	@Column(name = "bc_code", length = 4)

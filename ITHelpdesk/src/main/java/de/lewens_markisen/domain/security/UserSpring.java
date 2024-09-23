@@ -13,7 +13,7 @@ import jakarta.persistence.*;
 @Builder
 @Entity
 @Table(name = "user_spring")
-public class User {
+public class UserSpring {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

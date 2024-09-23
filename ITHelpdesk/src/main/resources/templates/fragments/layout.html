@@ -23,7 +23,7 @@
 </head>
 
 <body>
-
+  <div sec:authentication="name"></div>
   <nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
     <div class="container-fluid">
       <a class="navbar-brand" th:href="@{/}"><span></span></a>
@@ -49,21 +49,20 @@
             <span class="fa fa-home" aria-hidden="true"></span>
             <span>Home</span>
           </li>
-
-          <li th:replace="~{::menuItem ('/persons/list','persons','persons','th-list','Persons')}">
+          
+          <li th:replace="~{::menuItem ('/persons/list','persons','persons','th-list','Persons')}" sec:authorize="hasRole('ADMIN')">
+            <span class="fa fa-th-list" aria-hidden="true"></span>
+            <span>Person</span>
+          </li>
+          
+          <li th:replace="~{::menuItem ('/timeReport/me','timeReport','timeReport','th-list','Time Report')}" sec:authorize="hasRole('USER')">
             <span class="fa fa-th-list" aria-hidden="true"></span>
             <span>Person</span>
           </li>
  
-          <li th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
+          <li sec:authorize="hasRole('ADMIN')" th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
             <span class="fa fa-th-list" aria-hidden="true"></span>
             <span>Accesses</span>
-          </li>
- 
-          <li
-            th:replace="~{::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','exclamation-triangle','Error')}">
-            <span class="fa exclamation-triangle" aria-hidden="true"></span>
-            <span>Error</span>
           </li>
 
         </ul>

@@ -10,19 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.utils.TimeUtils;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 public class TimeReportRecord {
-
-	@Builder
-	public TimeReportRecord(String name) {
-		super();
-		this.name = name;
-	}
 
 	public TimeReportRecord(TimeRegisterEvent tr) {
 		this.name = tr.toStringReport();
@@ -34,18 +31,41 @@ public class TimeReportRecord {
 		this.fr = tr.getFr();
 		this.sa = tr.getSa();
 		this.so = tr.getSo();
+		this.group = 0;
+	}
+
+	public TimeReportRecord(TimeReportRecord tr) {
+		this.name = tr.getName();
+		this.eventDate = tr.getEventDate();
+		this.mo = tr.getMo();
+		this.tu = tr.getTu();
+		this.we = tr.getWe();
+		this.th = tr.getTh();
+		this.fr = tr.getFr();
+		this.sa = tr.getSa();
+		this.so = tr.getSo();
+		this.group = tr.getGroup();
 	}
 
 	private String name;
 	private LocalDate eventDate;
+	@Builder.Default
 	private Long mo = 0l;
+	@Builder.Default
 	private Long tu = 0l;
+	@Builder.Default
 	private Long we = 0l;
+	@Builder.Default
 	private Long th = 0l;
+	@Builder.Default
 	private Long fr = 0l;
+	@Builder.Default
 	private Long sa = 0l;
+	@Builder.Default
 	private Long so = 0l;
-	
+	@Builder.Default
+	private Integer group = 0;
+
 	public Long getSum() {
 		return mo + tu + we + th + fr + sa + so;
 	}
@@ -53,36 +73,43 @@ public class TimeReportRecord {
 	public String getMoDecimal() {
 		return TimeUtils.secondsToHourMinutes(getMo(), true);
 	}
+
 	public String getTuDecimal() {
 		return TimeUtils.secondsToHourMinutes(getTu(), true);
 	}
+
 	public String getWeDecimal() {
 		return TimeUtils.secondsToHourMinutes(getWe(), true);
 	}
+
 	public String getThDecimal() {
 		return TimeUtils.secondsToHourMinutes(getTh(), true);
 	}
+
 	public String getFrDecimal() {
 		return TimeUtils.secondsToHourMinutes(getFr(), true);
 	}
+
 	public String getSaDecimal() {
 		return TimeUtils.secondsToHourMinutes(getSa(), true);
 	}
+
 	public String getSoDecimal() {
 		return TimeUtils.secondsToHourMinutes(getSo(), true);
 	}
+
 	public String getSumDecimal() {
 		return TimeUtils.secondsToHourMinutes(getSum(), true);
 	}
-	
+
 	public void addRecord(TimeRegisterEvent tr) {
-		setMo(this.getMo()+tr.getMo());
-		setTu(this.getTu()+tr.getTu());
-		setWe(this.getWe()+tr.getWe());
-		setTh(this.getTh()+tr.getTh());
-		setFr(this.getFr()+tr.getFr());
-		setSo(this.getSo()+tr.getSo());
-		setSa(this.getSa()+tr.getSa());
+		setMo(this.getMo() + tr.getMo());
+		setTu(this.getTu() + tr.getTu());
+		setWe(this.getWe() + tr.getWe());
+		setTh(this.getTh() + tr.getTh());
+		setFr(this.getFr() + tr.getFr());
+		setSo(this.getSo() + tr.getSo());
+		setSa(this.getSa() + tr.getSa());
 	}
 
 	public String getYearWeek() {

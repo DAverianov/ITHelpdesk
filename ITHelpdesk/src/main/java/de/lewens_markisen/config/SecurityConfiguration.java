@@ -1,16 +1,20 @@
 package de.lewens_markisen.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
+import static org.springframework.security.config.Customizer.withDefaults;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -18,33 +22,51 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
-import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper;
-import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.security.web.SecurityFilterChain;
 
+import de.lewens_markisen.domain.security.Authority;
+import de.lewens_markisen.domain.security.UserSpring;
+import de.lewens_markisen.services.security.UserService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration implements AuthenticationProvider {
+	private final UserService userService;
 
 	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		//@formatter:off
+		http
+			.authorizeHttpRequests((authz) -> 
+				authz
+					.requestMatchers("/", "/webjars/**", "/login", "/logout", "/resources/**", "/error").permitAll()
+					.requestMatchers("/timeReport/me").hasAnyRole("USER")
+					.requestMatchers("/persons/**").hasAnyRole("ADMIN")
+					.requestMatchers("/accesses/**").hasAnyRole("ADMIN")
+					.anyRequest().authenticated()
+				)
+//            .formLogin((form) -> form
+//                    .loginPage("/login")
+//                    .permitAll()
+//                )
+            .logout((logout) -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                )
+			.httpBasic(withDefaults());
+			
+		//@formatter:on
+		return http.build();
+	}
+
 	public AuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
 		ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider("LSS.local",
 				"ldap://LSS-DC-2019.LSS.local", "ou=mybusiness,dc=lss,dc=local");
@@ -60,17 +82,45 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	public GrantedAuthoritiesMapper userAuthoritiesMapper() {
 		return (authorities) -> {
 			Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-			mappedAuthorities.add(new SimpleGrantedAuthority("USER"));
-			System.out.println("..auth"+authorities);
+			mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 			return mappedAuthorities;
 		};
 	}
 
 	@Override
+	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		Authentication auth = activeDirectoryLdapAuthenticationProvider().authenticate(authentication);
+		
+		String username = auth.getName();
+		Optional<UserSpring> userOpt = userService.getUserByName(username);
+		UserSpring user;
+		if (userOpt.isPresent()) {
+	     	user = userOpt.get();
+	        UserDetails principal = User.builder()
+	                .username(user.getUsername())
+	                .password("")
+	                .authorities(convertToSpringAuthorities(user.getAuthorities()))
+	                .build();
+	        return new UsernamePasswordAuthenticationToken(
+	        		principal, principal.getPassword(), principal.getAuthorities());
+
+		} else {
+    		user = userService.createUser(auth.getName(), "");
+		}
 		return auth;
 	}
+
+    private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
+        if (authorities != null && authorities.size() > 0){
+            return authorities.stream()
+                    .map(Authority::getRole)
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toSet());
+        } else {
+            return new HashSet<>();
+        }
+    }
 
 	@Override
 	public boolean supports(Class<?> authentication) {
@@ -82,22 +132,5 @@ public class SecurityConfiguration implements AuthenticationProvider {
 		return new ProviderManager(Arrays.asList(activeDirectoryLdapAuthenticationProvider()));
 	}
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		//@formatter:off
-		http
-			.authorizeHttpRequests((authz) -> 
-				authz.requestMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll().anyRequest().authenticated())
-			.httpBasic(withDefaults());
-			
-		//@formatter:on
-		return http.build();
-	}
-
- 
-    @Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
 }

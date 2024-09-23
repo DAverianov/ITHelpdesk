@@ -2,6 +2,7 @@ package de.lewens_markisen.web.controllers;
 
 import java.util.Optional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +27,27 @@ public class TimeReportController {
 		if (reportOpt.isPresent()) {
 			modelAndView.addObject("timeReport", reportOpt.get());
 		} else {
+			modelAndView.addObject("message", "Datem für user "+getUser()+" wurde nicht bekommen!");
 			modelAndView.setViewName("error");
 		}
 		return modelAndView;
+	}
+	
+	@GetMapping("/me")
+	public ModelAndView showEditAccessForm() {
+		ModelAndView modelAndView = new ModelAndView("timeReport/timeReport");
+		Optional<TimeReport> reportOpt = timeReportService.createReportCurrentUser();
+		if (reportOpt.isPresent()) {
+			modelAndView.addObject("timeReport", reportOpt.get());
+		} else {
+			modelAndView.addObject("message", "Person für user "+getUser()+" wurde nicht gefunden!");
+			modelAndView.setViewName("error");
+		}
+		return modelAndView;
+	}
+
+	private String getUser() {
+		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 }

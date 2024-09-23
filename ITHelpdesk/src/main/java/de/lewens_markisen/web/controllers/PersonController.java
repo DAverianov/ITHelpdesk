@@ -1,4 +1,4 @@
-package de.lewens_markisen.person;
+package de.lewens_markisen.web.controllers;
 
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.lewens_markisen.domain.BaseEntity;
+import de.lewens_markisen.person.Person;
+import de.lewens_markisen.person.PersonService;
+import de.lewens_markisen.person.Persons;
 import de.lewens_markisen.services.connection.BCWebService;
 import lombok.RequiredArgsConstructor;
 
@@ -69,6 +72,7 @@ public class PersonController {
 		if (personOpt.isPresent()) {
 			modelAndView.addObject("person", personOpt.get());
 		} else {
+			modelAndView.addObject("message", "Person mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
 		}
 		return modelAndView;
@@ -92,8 +96,8 @@ public class PersonController {
 			modelAndView.addObject("person", personOpt.get().toString());
 			modelAndView.addObject("timeRecords", bcWebService.createTimeReport(personOpt.get()));
 		} else {
+			modelAndView.addObject("message", "Person mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
-			System.out.println("person nicht gefunden! "+bcCode);
 		}
 		return modelAndView;
 	}

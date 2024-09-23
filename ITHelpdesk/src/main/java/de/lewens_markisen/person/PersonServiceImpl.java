@@ -41,12 +41,6 @@ public class PersonServiceImpl implements PersonService {
 		return personRepository.findBybcCode(bcCode);
 	}
 
-    @Transactional()
-    public Person updatePerson(Person person) {
-        personRepository.findById(person.getId());
-        return personRepository.save(person);
-    }
-
 	@Override
 	public Optional<Person> findById(Long id) {
 		return personRepository.findById(id);
@@ -56,5 +50,16 @@ public class PersonServiceImpl implements PersonService {
 	public Page<Person> findAll(Pageable pageable) {
 		return personRepository.findAll(pageable);
 	}
+
+	@Override
+	public Optional<Person> findByNameWithoutSpace(String name) {
+		return personRepository.findByNameWithoutSpace(name);
+	}
+
+    @Transactional()
+    public Person updatePerson(Person person) {
+        personRepository.findById(person.getId());
+        return personRepository.save(person);
+    }
 
 }
