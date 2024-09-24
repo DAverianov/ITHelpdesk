@@ -1,5 +1,8 @@
 package de.lewens_markisen.timeReport;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +36,7 @@ public class TimeReportService {
 	}
 
 	public Optional<TimeReport> createReport(String bcCode) {
-		log.info("Create TimeReport for "+bcCode);
+		log.info("Create TimeReport for " + bcCode);
 		//@formatter:off
 		PeriodReport period = PeriodReport.PeriodReportMonth();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
@@ -47,45 +50,47 @@ public class TimeReportService {
 					.period(period)
 					.timeRecords(timeRegisterEventService.findAllByPersonWithoutDubl(personOpt.get()).get())
 					.build();
-			timeReport.createRecordsWithGroups();
-			timeReport.createGroup(1, (tr) -> tr.getYearWeek());
-			timeReport.createGroup(2, (tr) -> tr.getYearMonat());
+			timeReport.createReportRecords();
+			timeReport.createGroup(1
+					, (tr) -> tr.getYearWeek()
+					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.with(DayOfWeek.MONDAY))); 
+			timeReport.createGroup(2
+					, (tr) -> tr.getYearMonat()
+					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.withDayOfMonth(1))); 
 			return Optional.of(timeReport);
 		}
 		//@formatter:on
-		
+
 	}
+
 	public Optional<TimeReport> createReportCurrentUser() {
 		Optional<String> bcCodeOpt = getUserBcCode();
 		if (bcCodeOpt.isPresent()) {
 			return createReport(bcCodeOpt.get());
-		}
-		else {
+		} else {
 			return Optional.empty();
 		}
 	}
 
 	public Optional<String> getUserBcCode() {
-		if (SecurityContextHolder.getContext().getAuthentication()!=null) {
-			Optional<Person> personOpt = personService.findByNameForSearch(Person.convertToNameForSearch(getUserName()));
+		if (SecurityContextHolder.getContext().getAuthentication() != null) {
+			Optional<Person> personOpt = personService
+					.findByNameForSearch(Person.convertToNameForSearch(getUserName()));
 			if (personOpt.isPresent()) {
 				return Optional.of(personOpt.get().getBcCode());
-			}
-			else {
+			} else {
 				return Optional.empty();
 			}
-		}
-		else {
+		} else {
 			return Optional.empty();
 		}
 	}
 
 	private String getUserName() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth==null) {
+		if (auth == null) {
 			return "";
-		}
-		else {
+		} else {
 			return auth.getName();
 		}
 	}

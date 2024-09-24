@@ -3,7 +3,9 @@ package de.lewens_markisen.timeReport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +22,24 @@ class TimeReportTest {
 	@Test
 	void createWeek_whenCreate_thenSorted() {
 		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
+		PeriodReport period = PeriodReport.PeriodReportMonth();
 		TimeReport timeReport = TimeReport.builder()
 				.person(person)
+				.period(period)
 				.timeRecords(createTimeRecords(person))
 				.build();
-		timeReport.createRecordsWithGroups();
-		timeReport.createGroup(1, (tr) -> tr.getYearWeek());
-		timeReport.createGroup(2, (tr) -> tr.getYearMonat());
+		timeReport.createReportRecords();
+		//@formatter:off
+		timeReport.createGroup(1
+				, (tr) -> tr.getYearWeek()
+				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.with(TemporalAdjusters.previous(DayOfWeek.MONDAY))));
+		timeReport.createGroup(2
+				, (tr) -> tr.getYearMonat()
+				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.withDayOfMonth(1))); 
+		//@formatter:on
+		
 		assertThat(timeReport.getRecordsWithGroups()).isNotEmpty();
 		assertThat(timeReport.getRecordsWithGroups()).hasSize(5);
-		
 	}
 
 	private List<TimeRegisterEvent> createTimeRecords(Person person) {

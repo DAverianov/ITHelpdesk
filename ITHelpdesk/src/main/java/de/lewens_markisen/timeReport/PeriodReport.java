@@ -1,6 +1,8 @@
 package de.lewens_markisen.timeReport;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +36,7 @@ public class PeriodReport {
 	}
 	
 	public String getPeriod() {
-		return "("+getStart()+" - "+getEnd()+")";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		return "("+getStart().format(formatter)+" - "+getEnd().format(formatter)+")";
 	}
 }
