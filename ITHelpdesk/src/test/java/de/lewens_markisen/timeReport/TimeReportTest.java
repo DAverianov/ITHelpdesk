@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import de.lewens_markisen.person.Person;
@@ -25,9 +24,11 @@ class TimeReportTest {
 				.person(person)
 				.timeRecords(createTimeRecords(person))
 				.build();
-		timeReport.createWeeks();
-		assertThat(timeReport.getWeeks()).isNotEmpty();
-		assertThat(timeReport.getWeeks()).hasSize(4);
+		timeReport.createRecordsWithGroups();
+		timeReport.createGroup(1, (tr) -> tr.getYearWeek());
+		timeReport.createGroup(2, (tr) -> tr.getYearMonat());
+		assertThat(timeReport.getRecordsWithGroups()).isNotEmpty();
+		assertThat(timeReport.getRecordsWithGroups()).hasSize(5);
 		
 	}
 

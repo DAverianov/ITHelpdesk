@@ -1,8 +1,11 @@
 package de.lewens_markisen.timeReport;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.person.Person;
@@ -20,7 +23,7 @@ public class TimeReport {
 
 	private Person person;
 	private List<TimeRegisterEvent> timeRecords;
-	private List<TimeReportRecord> weeks;
+	private List<TimeReportRecord> recordsWithGroups;
 	private String comment;
 	private PeriodReport period;
 
@@ -33,48 +36,47 @@ public class TimeReport {
 		this.period = period;
 	}
 	
-	public void createWeeks() {
-		String yearWeek = "";
-		this.weeks = new ArrayList<TimeReportRecord>();
-		timeRecords.stream().forEach(tr -> this.weeks.add(new TimeReportRecord(tr)));
+	public void createRecordsWithGroups() {
+		this.recordsWithGroups = new ArrayList<TimeReportRecord>();
+		this.timeRecords.stream().forEach(tr -> this.recordsWithGroups.add(new TimeReportRecord(tr)));
+	}
+
+	public void createGroup(int groupNummer, Function<TimeReportRecord, String> getGroupName) {
+		String groupName = "";
 		
 		TimeReportRecord tr;
-		int size = this.weeks.size();
+		int size = this.recordsWithGroups.size();
 		for (int i=0; i<size; i++) {
-			tr = this.weeks.get(i);
-			if (tr.getYearWeek().equals(yearWeek)) {
+			tr = this.recordsWithGroups.get(i);
+			if (getGroupName.apply(tr).equals(groupName)) {
 				continue;
 			}
 			else {
-				yearWeek = tr.getYearWeek();
+				groupName = getGroupName.apply(tr);
 				//@formatter:off
-				this.weeks.add(TimeReportRecord.builder()
-						 .name(yearWeek)
+				this.recordsWithGroups.add(TimeReportRecord.builder()
+						 .name(groupName)
 						 .eventDate(tr.getEventDate())
-						 .group(1)
+						 .group(groupNummer)
 						 .build());
 				//@formatter:on
 			}
 		}
-		this.weeks.sort(Comparator.comparing(TimeReportRecord::getEventDate).thenComparing(TimeReportRecord::getGroup));
+		this.recordsWithGroups.stream().filter(w -> w.getGroup()==groupNummer).forEach(w -> countGroupSumm(w, getGroupName));
+		Collections.sort(this.recordsWithGroups);
 	}
 
-//	private void addWeek(List<TimeReportGroupRecords> weeks, TimeRegisterEvent tr) {
-//		String yearWeek = TimeUtils.getYearWeek(tr.getEventDate());
-//		//@formatter:off
-//		Optional<TimeReportGroupRecords> week = weeks.stream()
-//			.filter(r-> r.getName().equals(yearWeek))
-//			.findFirst();
-//		if (week.isPresent()) {
-//			week.get().addElement(new TimeReportRecord(tr));
-//		}
-//		else {
-//			TimeReportGroupRecords timeRecordWeek = TimeReportGroupRecords.builder()
-//				.name(yearWeek).build();
-//			timeRecordWeek.addElement(new TimeReportRecord(tr));
-//			weeks.add(timeRecordWeek);
-//		}
-//		//@formatter:on
-//	}
+	private void countGroupSumm(TimeReportRecord groupRecord, Function<TimeReportRecord, String> getGroupName) {
+		String group = getGroupName.apply(groupRecord);
+		this.recordsWithGroups.stream().filter(w -> getGroupName.apply(w).equals(group) && w.getGroup()==0).forEach(w -> groupRecord.addSumm(w));
+	}
+	
+	public String header() {
+		return ""+getPerson().getName()+" "+getPeriod().getPeriod();
+	}
+	public String headerService() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		return ""+LocalDateTime.now().format(formatter);
+	}
 	
 }

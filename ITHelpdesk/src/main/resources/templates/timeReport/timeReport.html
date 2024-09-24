@@ -4,12 +4,13 @@
 
 <body>
 
-<h2 th:text="${timeReport.person.name}">Time Report>"</h2>
+<p align="left" th:text="${timeReport.headerService}"><small>created by>"</small></p>
+<h2 th:text="${timeReport.header}">Time Report>"</h2>
 
 <table id="timeReport" class="table table-striped border-2">
     <thead>
     <tr>
-        <th style="width: 400px;">Event</th>
+        <th style="width: 400px;">der Monat / die Woche / das Ereignis</th>
         <th style="width: 100px;">Mo</th>
         <th style="width: 100px;">Di</th>
         <th style="width: 100px;">Mi</th>
@@ -20,15 +21,15 @@
         <th style="width: 100px;">Insgesamt</th>
     </tr>
     </thead>
-    <tr th:each="week : ${timeReport.weeks}" class="collapsible" th:style="${week.group}>0? 'font-weight: bold;'">
+    <tr th:each="week : ${timeReport.recordsWithGroups}" class="collapsible" th:style="${week.group}>0? 'font-weight: bold;'">
         <td style="width:400px;" th:text="${week.name}"/>
-        <td th:text="${week.moDecimal}"/>
-        <td th:text="${week.tuDecimal}"/>
-        <td th:text="${week.weDecimal}"/>
-        <td th:text="${week.thDecimal}"/>
-        <td th:text="${week.frDecimal}"/>
-        <td th:text="${week.saDecimal}"/>
-        <td th:text="${week.soDecimal}"/>
+        <td align="right" th:text="${week.moDecimal}"/>
+        <td align="right" th:text="${week.tuDecimal}"/>
+        <td align="right" th:text="${week.weDecimal}"/>
+        <td align="right" th:text="${week.thDecimal}"/>
+        <td align="right" th:text="${week.frDecimal}"/>
+        <td align="right" th:text="${week.saDecimal}"/>
+        <td align="right" th:text="${week.soDecimal}"/>
         <td align="right" th:text="${week.sumDecimal}"/>
     </tr>
     </tbody>

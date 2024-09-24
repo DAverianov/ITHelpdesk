@@ -3,6 +3,8 @@ package de.lewens_markisen.person;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.lewens_markisen.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +29,7 @@ public class Person extends BaseEntity {
 		super(id, version, createdDate, lastModifiedDate);
 		this.name = name;
 		this.bcCode = bcCode;
-		this.nameWithoutSpace = name.replaceAll(" ", "");
+		this.nameForSearch = convertToNameForSearch(this.name); 
 	}
 
 	@NotNull
@@ -37,13 +39,17 @@ public class Person extends BaseEntity {
 	
 	@NotNull
 	@Size(min = 2, max = 120)
-	@Column(name = "name_without_space", length = 120)
-	private String nameWithoutSpace;
+	@Column(name = "name_for_search", length = 120)
+	private String nameForSearch;
 
 	@Size(min = 1, max = 4)
 	@Column(name = "bc_code", length = 4)
 	private String bcCode;
 
+	public static String convertToNameForSearch(String name) {
+		return StringUtils.lowerCase(StringUtils.deleteWhitespace(name));
+	}
+	
 	@Override
 	public String toString() {
 		return "Person [bcCode=" + bcCode + ", name=" + name + "]";

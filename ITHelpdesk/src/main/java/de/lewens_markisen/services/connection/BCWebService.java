@@ -1,5 +1,6 @@
 package de.lewens_markisen.services.connection;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class BCWebService {
 		filter.add(RestApiQueryFilter.builder()
 				.attribute("Von_Datum")
 				.comparisonType("ge")
-				.value("2024-09-01")
+				.value(getStartDateReport())
 				.stringAttribute(false)
 				.build());
 		filter.add(RestApiQueryFilter.builder()
@@ -60,6 +61,16 @@ public class BCWebService {
 				.build());
 		//@formatter:on
 		return filter;
+	}
+	
+	private String getStartDateReport() {
+		LocalDate now = LocalDate.now();
+		if (now.getDayOfMonth()>10) {
+			return now.withDayOfMonth(1).toString();
+		}
+		else {
+			return now.minusMonths(1).withDayOfMonth(1).toString();
+		}
 	}
 
 	private Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromJson(String anser) {

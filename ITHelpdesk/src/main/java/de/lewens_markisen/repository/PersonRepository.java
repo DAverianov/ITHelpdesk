@@ -20,6 +20,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 	public Page<Person> findAll(Pageable pageable) throws DataAccessException;
 
 	@Transactional(readOnly = true)
-	public Optional<Person> findByNameWithoutSpace(String name);
+	public Optional<Person> findByNameForSearch(String name);
 
 }

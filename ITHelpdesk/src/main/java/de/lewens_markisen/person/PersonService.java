@@ -12,5 +12,5 @@ public interface PersonService {
     Person updatePerson(Person person);
 	Optional<Person> findById(Long id);
 	Page<Person> findAll(Pageable pageable);
-	Optional<Person> findByNameWithoutSpace(String name);
+	Optional<Person> findByNameForSearch(String name);
 }

@@ -3,6 +3,7 @@ package de.lewens_markisen.timeReport;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,9 @@ public class TimeReportService {
 					.period(period)
 					.timeRecords(timeRegisterEventService.findAllByPersonWithoutDubl(personOpt.get()).get())
 					.build();
-			timeReport.createWeeks();
+			timeReport.createRecordsWithGroups();
+			timeReport.createGroup(1, (tr) -> tr.getYearWeek());
+			timeReport.createGroup(2, (tr) -> tr.getYearMonat());
 			return Optional.of(timeReport);
 		}
 		//@formatter:on
@@ -64,7 +67,7 @@ public class TimeReportService {
 
 	public Optional<String> getUserBcCode() {
 		if (SecurityContextHolder.getContext().getAuthentication()!=null) {
-			Optional<Person> personOpt = personService.findByNameWithoutSpace(SecurityContextHolder.getContext().getAuthentication().getName());
+			Optional<Person> personOpt = personService.findByNameForSearch(Person.convertToNameForSearch(getUserName()));
 			if (personOpt.isPresent()) {
 				return Optional.of(personOpt.get().getBcCode());
 			}
@@ -74,6 +77,16 @@ public class TimeReportService {
 		}
 		else {
 			return Optional.empty();
+		}
+	}
+
+	private String getUserName() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth==null) {
+			return "";
+		}
+		else {
+			return auth.getName();
 		}
 	}
 

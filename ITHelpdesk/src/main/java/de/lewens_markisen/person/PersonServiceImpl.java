@@ -52,8 +52,8 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public Optional<Person> findByNameWithoutSpace(String name) {
-		return personRepository.findByNameWithoutSpace(name);
+	public Optional<Person> findByNameForSearch(String name) {
+		return personRepository.findByNameForSearch(name);
 	}
 
     @Transactional()

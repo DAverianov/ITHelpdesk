@@ -6,8 +6,6 @@ import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.AllArgsConstructor;
@@ -19,7 +17,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class TimeReportRecord {
+public class TimeReportRecord implements Comparable<TimeReportRecord> {
 
 	public TimeReportRecord(TimeRegisterEvent tr) {
 		this.name = tr.toStringReport();
@@ -114,11 +112,15 @@ public class TimeReportRecord {
 
 	public String getYearWeek() {
 		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
-		return "" + getEventDate().getYear() + " Woche " + getEventDate().get(woy);
+		return "" + getEventDate().getYear() + " " + getEventDate().get(woy) + " woche";
 	}
 
 	public String getYearMonat() {
-		return "" + getEventDate().getYear() + " " + getEventDate().getMonthValue();
+		//@formatter:off
+		return "" + getEventDate().getYear() + " " 
+				+ String.format("%02d", getEventDate().getMonthValue()) + " " 
+				+ getEventDate().getMonth();
+		//@formatter:on
 	}
 
 	@Override
@@ -143,5 +145,32 @@ public class TimeReportRecord {
 	@Override
 	public String toString() {
 		return "" + name;
+	}
+
+	@Override
+	public int compareTo(TimeReportRecord o) {
+		if (this.getEventDate().isAfter(o.getEventDate())) {
+			return 1;
+		} else if (this.getEventDate().isBefore(o.getEventDate())) {
+			return -1;
+		} else {
+			if (this.getGroup() > o.getGroup()) {
+				return -1;
+			} else if (this.getGroup() < o.getGroup()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	}
+
+	public void addSumm(TimeReportRecord w) {
+		this.mo += w.getMo();
+		this.tu += w.getTu();
+		this.we += w.getWe();
+		this.th += w.getTh();
+		this.fr += w.getFr();
+		this.sa += w.getSa();
+		this.so += w.getSo();
 	}
 }

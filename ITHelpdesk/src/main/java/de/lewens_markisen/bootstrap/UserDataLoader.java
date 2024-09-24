@@ -1,7 +1,9 @@
 package de.lewens_markisen.bootstrap;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.security.Authority;
@@ -18,7 +20,6 @@ public class UserDataLoader implements CommandLineRunner {
 
 	private final AuthorityRepository authorityRepository;
 	private final UserRepository userRepository;
-//	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -28,30 +29,20 @@ public class UserDataLoader implements CommandLineRunner {
 	}
 
 	private void loadSecurityData() {
-		Authority admin = authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
+		Authority adminRole = authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
 		Authority userRole = authorityRepository.save(Authority.builder().role("ROLE_USER").build());
-		Authority customer = authorityRepository.save(Authority.builder().role("ROLE_CUSTOMER").build());
 
 		//@formatter:off
-		userRepository.save(UserSpring.builder()
-				.username("spring")
-				.password("1")
-				.authority(admin)
-				.build()
-				);
-
-		userRepository.save(UserSpring.builder()
-				.username("user")
-				.password("password")
-				.authority(userRole)
-				.build());
-
-		userRepository.save(UserSpring.builder()
-				.username("scott")
-				.password("tiger")
-				.authority(customer)
-				.build());
-
+		UserSpring user = UserSpring.builder()
+			.username("DmytroAverianov")
+			.password("1")
+			.build();
+		Set<Authority> auth = new HashSet<Authority>();
+		auth.add(userRole);
+		auth.add(adminRole);
+		user.setAuthorities(auth);
+		
+		userRepository.save(user);
 		//@formatter:on
 		log.debug("Users Loaded: " + userRepository.count());
 	}
