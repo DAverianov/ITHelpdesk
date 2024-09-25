@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,13 +33,26 @@ import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.services.security.UserService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration implements AuthenticationProvider {
+
 	private final UserService userService;
+	private final String AD_DOMAINE;
+	private final String AD_URL;
+	private final String AD_ROOTDN;
+
+	public SecurityConfiguration(@Autowired UserService userService,
+			@Value("${spring.security.ad.domain}") String AD_DOMAINE, 
+			@Value("${spring.security.ad.url}") String AD_URL,
+			@Value("${spring.security.ad.rootdn}") String AD_ROOTDN) {
+		super();
+		this.userService = userService;
+		this.AD_DOMAINE = AD_DOMAINE;
+		this.AD_URL = AD_URL;
+		this.AD_ROOTDN = AD_ROOTDN;
+	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,31 +60,21 @@ public class SecurityConfiguration implements AuthenticationProvider {
 		http
 			.authorizeHttpRequests((authz) -> 
 				authz
-					.requestMatchers("/", "/webjars/**", "/login", "/logout", "/resources/**", "/error").permitAll()
-					.requestMatchers("/timeReport/me").hasAnyRole("USER")
+					.requestMatchers("/webjars/**", "/login", "/logout", "/resources/**", "/error").permitAll()
+					.requestMatchers("/", "/timeReport/me").hasAnyRole("USER")
 					.requestMatchers("/persons/**").hasAnyRole("ADMIN")
 					.requestMatchers("/accesses/**").hasAnyRole("ADMIN")
 					.anyRequest().authenticated()
 				)
-//            .formLogin((form) -> form
-//                    .loginPage("/login")
-//                    .permitAll()
-//                )
-            .logout((logout) -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                )
-			.httpBasic(withDefaults());
+            .formLogin(withDefaults());
 			
 		//@formatter:on
 		return http.build();
 	}
 
 	public AuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
-		ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider("LSS.local",
-				"ldap://LSS-DC-2019.LSS.local", "ou=mybusiness,dc=lss,dc=local");
+		ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider(AD_DOMAINE,
+				AD_URL, AD_ROOTDN);
 		// VornameName without space
 		provider.setSearchFilter("(&(objectClass=user)(sAMAccountName={1}))");
 		provider.setConvertSubErrorCodesToExceptions(true);
@@ -91,36 +96,31 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	@Transactional
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		Authentication auth = activeDirectoryLdapAuthenticationProvider().authenticate(authentication);
-		
+
 		String username = auth.getName();
 		Optional<UserSpring> userOpt = userService.getUserByName(username);
 		UserSpring user;
 		if (userOpt.isPresent()) {
-	     	user = userOpt.get();
-	        UserDetails principal = User.builder()
-	                .username(user.getUsername())
-	                .password("")
-	                .authorities(convertToSpringAuthorities(user.getAuthorities()))
-	                .build();
-	        return new UsernamePasswordAuthenticationToken(
-	        		principal, principal.getPassword(), principal.getAuthorities());
+			user = userOpt.get();
+			UserDetails principal = User.builder().username(user.getUsername()).password("")
+					.authorities(convertToSpringAuthorities(user.getAuthorities())).build();
+			return new UsernamePasswordAuthenticationToken(principal, principal.getPassword(),
+					principal.getAuthorities());
 
 		} else {
-    		user = userService.createUser(auth.getName(), "");
+			user = userService.createUser(auth.getName(), "");
 		}
 		return auth;
 	}
 
-    private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
-        if (authorities != null && authorities.size() > 0){
-            return authorities.stream()
-                    .map(Authority::getRole)
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toSet());
-        } else {
-            return new HashSet<>();
-        }
-    }
+	private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
+		if (authorities != null && authorities.size() > 0) {
+			return authorities.stream().map(Authority::getRole).map(SimpleGrantedAuthority::new)
+					.collect(Collectors.toSet());
+		} else {
+			return new HashSet<>();
+		}
+	}
 
 	@Override
 	public boolean supports(Class<?> authentication) {
@@ -131,6 +131,5 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	public AuthenticationManager authenticationManager() {
 		return new ProviderManager(Arrays.asList(activeDirectoryLdapAuthenticationProvider()));
 	}
-
 
 }
