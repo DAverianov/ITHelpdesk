@@ -47,6 +47,7 @@ public class ConnectionBC implements ConnectionWebService {
 
 	private final Access bcAccess;
 	private final String wsZeitpunktposten;
+	private final String wsPersonenkarte;
 	@Autowired
 	private final AccessService accessService;
 
@@ -54,22 +55,30 @@ public class ConnectionBC implements ConnectionWebService {
 	public ConnectionBC(
 			@Value("${businesscentral.bcAccessName}") String bcAccessName,
 			@Value("${businesscentral.ws.zeitpunktposten}") String wsZeitpunktposten, 
+			@Value("${businesscentral.ws.personenkarte}") String wsPersonenkarte, 
 			AccessService accessService) {
 		//@formatter:on
 		super();
 		this.accessService = accessService;
+		this.bcAccess = createBCAccess(bcAccessName);
+		this.wsZeitpunktposten = wsZeitpunktposten;
+		this.wsPersonenkarte = wsPersonenkarte;
+	}
+
+	private Access createBCAccess(String bcAccessName) {
 		Optional<Access> accessOpt = accessService.findByName(bcAccessName);
+		Access bcAccess;
 		if (accessOpt.isPresent()) {
-			this.bcAccess = accessOpt.get();
+			bcAccess = accessOpt.get();
 		} else {
 			//@formatter:off
-			this.bcAccess = Access.builder()
+			bcAccess = Access.builder()
 					.url("not found field bcAccessName!")
 					.name("not found property bcAccessName")
 					.build();
 			//@formatter:on
 		}
-		this.wsZeitpunktposten = wsZeitpunktposten;
+		return bcAccess;
 	}
 
 	private Credentials credentials() {

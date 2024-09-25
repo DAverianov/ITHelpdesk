@@ -17,7 +17,8 @@
         <th>Description</th>
     </tr>
     </thead>
- 	<a class="btn btn-primary" th:href="@{/accesses/new}">New</a>   <tbody>
+ 	<a class="btn btn-primary" th:href="@{/accesses/new}">New</a>   
+ 	<tbody>
     <tr th:each="access : ${accesses}">
         <td>
             <a th:href="@{/accesses/__${access.id}__}" th:text="${access.name}"/></a>

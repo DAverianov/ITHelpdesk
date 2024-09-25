@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.lewens_markisen.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonServiceImpl implements PersonService {
@@ -61,5 +63,10 @@ public class PersonServiceImpl implements PersonService {
         personRepository.findById(person.getId());
         return personRepository.save(person);
     }
+
+	@Override
+	public Person save(Person p) {
+		return personRepository.save(p);
+	}
 
 }

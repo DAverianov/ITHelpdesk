@@ -9,8 +9,10 @@ public interface PersonService {
 
     Optional<Person> findOrCreate(String bcCode, String name);
     Optional<Person> findByBcCode(String bcCode);
-    Person updatePerson(Person person);
 	Optional<Person> findById(Long id);
 	Page<Person> findAll(Pageable pageable);
 	Optional<Person> findByNameForSearch(String name);
+	
+	Person save(Person p);
+    Person updatePerson(Person person);
 }

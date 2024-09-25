@@ -102,4 +102,11 @@ public class PersonController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/load", method = RequestMethod.GET)
+	public String loadPerson() {
+		bcWebService.loadPersonFromBC();
+		return "redirect:/persons";
+	}
+
+
 }

@@ -63,5 +63,12 @@ class BCWebServiceTest {
 		assertThat(events.get(0).getStartTime()).isEqualTo("7:00");
 		assertThat(events.get(0).getEndTime()).isEqualTo("17:00");
 	}
+	
+	@Test
+	void readPersonsFromBC_whenQuery_thenReceive() {
+		Optional<List<Person>> personsOpt = bcWebService.readPersonsFromBC();
+		assertThat(personsOpt).isNotEmpty();
+		assertThat(personsOpt.get()).isNotEmpty().hasAtLeastOneElementOfType(Person.class);
+	}
 
 }

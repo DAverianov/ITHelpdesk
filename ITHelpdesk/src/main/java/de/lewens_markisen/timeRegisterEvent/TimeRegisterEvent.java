@@ -8,13 +8,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.person.Person;
+import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.utils.TimeUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

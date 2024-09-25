@@ -9,24 +9,25 @@
 
 <table id="persons" class="table table-striped">
   <thead>
-  <tr>
-    <th>Name</th>
-    <th>bcCode</th>
-    <th scope="col">Action</th>
-  </tr>
+	  <tr>
+	    <th>Name</th>
+	    <th>bcCode</th>
+	    <th scope="col">Action</th>
+	  </tr>
   </thead>
+  <a class="btn btn-primary" th:href="@{/persons/load}">Load from BC</a>   
   <tbody>
-  <tr th:each="person : ${persons}">
-    <td>
-        <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
-    </td>
-    <td th:text="${person.bcCode}"></td>
-    <td><a th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
-        <a th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
-       	<a th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
-    	<a th:href="@{/zeiterfassungsystem(Person=${person.bcCode})}" class="btn btn-info">Timereport API</a>&nbsp;
-    </td>
-  </tr>
+	  <tr th:each="person : ${persons}">
+	    <td>
+	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
+	    </td>
+	    <td th:text="${person.bcCode}"></td>
+	    <td><a th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
+	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
+	       	<a th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
+	    	<a th:href="@{/zeiterfassungsystem(Person=${person.bcCode})}" class="btn btn-info">Timereport API</a>&nbsp;
+	    </td>
+	  </tr>
   </tbody>
 </table>
 
