@@ -19,6 +19,7 @@ public class PasswordConverter implements AttributeConverter<String, String> {
 	}
 
     private EncryptionService getEncryptionService(){
-        return SpringContextHelper.getApplicationContext().getBean(EncryptionService.class);
+     		
+    	return SpringContextHelper.getApplicationContext().getBean(EncryptionService.class);
     }
 }

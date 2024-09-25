@@ -37,51 +37,32 @@ import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import de.lewens_markisen.access.Access;
 import de.lewens_markisen.access.AccessService;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @Component
 public class ConnectionBC implements ConnectionWebService {
 
 	@Value("${businesscentral.timeout}")
 	private Integer timeout;
 
-	private final Access bcAccess;
-	private final String wsZeitpunktposten;
-	private final String wsPersonenkarte;
 	@Autowired
-	private final AccessService accessService;
+	private AccessService accessService;
 
-	//@formatter:off
-	public ConnectionBC(
-			@Value("${businesscentral.bcAccessName}") String bcAccessName,
-			@Value("${businesscentral.ws.zeitpunktposten}") String wsZeitpunktposten, 
-			@Value("${businesscentral.ws.personenkarte}") String wsPersonenkarte, 
-			AccessService accessService) {
-		//@formatter:on
-		super();
-		this.accessService = accessService;
-		this.bcAccess = createBCAccess(bcAccessName);
-		this.wsZeitpunktposten = wsZeitpunktposten;
-		this.wsPersonenkarte = wsPersonenkarte;
-	}
-
-	private Access createBCAccess(String bcAccessName) {
-		Optional<Access> accessOpt = accessService.findByName(bcAccessName);
-		Access bcAccess;
-		if (accessOpt.isPresent()) {
-			bcAccess = accessOpt.get();
-		} else {
-			//@formatter:off
-			bcAccess = Access.builder()
-					.url("not found field bcAccessName!")
-					.name("not found property bcAccessName")
-					.build();
-			//@formatter:on
-		}
-		return bcAccess;
-	}
+	@Value("${businesscentral.ws.zeitpunktposten}")
+	private String wsZeitpunktposten;
+	
+	@Value("${businesscentral.ws.personenkarte}")
+	private String wsPersonenkarte;
+	
+	@Value("${businesscentral.bcAccessName}") 
+	private String bcAccessName;
+	
+	private Access bcAccess;
 
 	private Credentials credentials() {
+		Access bcAccess = getBcAccess();
 		return new org.apache.http.auth.NTCredentials(bcAccess.getUser(), bcAccess.getPassword(), "",
 				bcAccess.getDomain());
 	}
@@ -107,6 +88,7 @@ public class ConnectionBC implements ConnectionWebService {
 	@Override
 	public BasicCredentialsProvider getProvider() {
 		var credentialsProvider = new BasicCredentialsProvider();
+		Access bcAccess = getBcAccess();
 		credentialsProvider.setCredentials(AuthScope.ANY,
 				new NTCredentials(bcAccess.getUser(), bcAccess.getPassword(), "", bcAccess.getDomain()));
 		return credentialsProvider;
@@ -114,6 +96,7 @@ public class ConnectionBC implements ConnectionWebService {
 
 	@Override
 	public String getUrl() {
+		Access bcAccess = getBcAccess();
 		return bcAccess.getUrl();
 	}
 
@@ -157,4 +140,29 @@ public class ConnectionBC implements ConnectionWebService {
 		String json = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 		return json;
 	}
+	
+	public Access getBcAccess() {
+		if (this.bcAccess==null) {
+			this.bcAccess = findBcAccess();
+		}
+		return this.bcAccess;
+	}
+	
+	public Access findBcAccess() {
+		Optional<Access> accessOpt = accessService.findByName(bcAccessName);
+		Access bcAccess;
+		if (accessOpt.isPresent()) {
+			bcAccess = accessOpt.get();
+		} else {
+			//@formatter:off
+			bcAccess = Access.builder()
+					.url("not found field bcAccessName!")
+					.name("not found property bcAccessName")
+					.build();
+			//@formatter:on
+		}
+		return bcAccess;
+	}
+
 }
+

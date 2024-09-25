@@ -26,8 +26,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
@@ -36,6 +39,7 @@ import jakarta.transaction.Transactional;
 
 @Configuration
 @EnableWebSecurity
+@Component
 public class SecurityConfiguration implements AuthenticationProvider {
 
 	private final UserService userService;
@@ -130,6 +134,11 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	@Bean
 	public AuthenticationManager authenticationManager() {
 		return new ProviderManager(Arrays.asList(activeDirectoryLdapAuthenticationProvider()));
+	}
+	
+	@Bean
+	public PasswordEncoder encoder() {
+	    return new BCryptPasswordEncoder();
 	}
 
 }
