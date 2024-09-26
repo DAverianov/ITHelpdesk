@@ -58,10 +58,10 @@ class BCWebServiceTest {
 				.endTime("17:00")
 				.build());
 		//@formatter:on
-		bcWebService.compoundDublRecords(events);
-		assertThat(events).isNotEmpty().hasSize(1);
-		assertThat(events.get(0).getStartTime()).isEqualTo("7:00");
-		assertThat(events.get(0).getEndTime()).isEqualTo("17:00");
+		List<TimeRegisterEvent> eventsWithoutDoubl = bcWebService.compoundDublRecords(events);
+		assertThat(eventsWithoutDoubl).isNotEmpty().hasSize(1);
+		assertThat(eventsWithoutDoubl.get(0).getStartTime()).isEqualTo("7:00");
+		assertThat(eventsWithoutDoubl.get(0).getEndTime()).isEqualTo("17:00");
 	}
 	
 	@Test

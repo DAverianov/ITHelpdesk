@@ -1,6 +1,7 @@
 package de.lewens_markisen.person;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 class PersonTest {

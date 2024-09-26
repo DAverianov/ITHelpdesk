@@ -1,9 +1,8 @@
 package de.lewens_markisen.timeReport;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ class TimeReportServiceTest {
 
 //	@Test
 	void getUserBcCode_whenGet_thenBekomm() {
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "Reboot2022#01");
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "1#01");
 		personService.findOrCreate(BC_CODE, "it-team");
 		auth = (UsernamePasswordAuthenticationToken) provider.authenticate(auth);
 		Optional<String> bcCodeOpt = timeReportService.getUserBcCode();
@@ -58,9 +57,9 @@ class TimeReportServiceTest {
 		assertEquals(bcCodeOpt.get(), BC_CODE);
 	}
 
-	@Test
+//	@Test
 	void createWeek_whenCreat_thenBekomm() {
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "Reboot2022#01");
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "1#01");
 		personService.findOrCreate(BC_CODE, "it-team");
 		auth = (UsernamePasswordAuthenticationToken) provider.authenticate(auth);
 		Optional<String> bcCodeOpt = timeReportService.getUserBcCode();

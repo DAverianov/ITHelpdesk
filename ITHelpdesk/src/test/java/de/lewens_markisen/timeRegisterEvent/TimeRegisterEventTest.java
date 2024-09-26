@@ -1,6 +1,7 @@
 package de.lewens_markisen.timeRegisterEvent;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,9 @@ class TimeRegisterEventTest {
 				.endTime("10:20")
 				.build();
 		//@formatter:on
-		assertEquals("2024-09-13 07:00 - 10:20", tr.toStringReport());
+		assertEquals("2024-09-13  /07:00 - 10:20/ - 0:15 = 3:05", tr.toStringReport());
 		tr.setEndTime("9:00");
-		assertEquals("2024-09-13 07:00 - 9:00", tr.toStringReport());
+		assertEquals("2024-09-13  /07:00 - 9:00/ - 0:15 = 1:45", tr.toStringReport());
 	}
 	
 	@Test
@@ -34,13 +35,13 @@ class TimeRegisterEventTest {
 				.endTime("10:20")
 				.build();
 		//@formatter:on
-		assertEquals("3:20", tr.getMo());
+		assertEquals("2,58", tr.getMoDecimal());
 		tr.setEndTime("");
-		assertEquals("", tr.getMo());
+		assertEquals(0l, tr.getMo());
 		tr.setEndTime(null);
-		assertEquals("", tr.getMo());
+		assertEquals(0l, tr.getMo());
 		tr.setEndTime("6:00");
-		assertEquals("--", tr.getMo());
+		assertEquals(-6300l, tr.getMo());
 	}
 	
 //	@Test
