@@ -54,7 +54,7 @@ public class PersonController {
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("persons", persons);
-		return "/persons/personsList";
+		return "persons/personsList";
 	}
 
 	private Page<Person> findPaginated(int page) {

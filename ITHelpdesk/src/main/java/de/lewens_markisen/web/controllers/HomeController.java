@@ -16,7 +16,7 @@ public class HomeController {
 
 	@GetMapping(path = { "/", "/home" })
 	public String home(Model model) {
-		model.addAttribute("message", "Spring Boot IT Helpdesk!");
+		model.addAttribute("message", "Welcome in IT Helpdesk!");
 		return "home";
 	}
 
