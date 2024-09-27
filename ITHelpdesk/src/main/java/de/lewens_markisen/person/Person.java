@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import de.lewens_markisen.domain.BaseEntity;
+import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -47,7 +48,7 @@ public class Person extends BaseEntity {
 	private String bcCode;
 
 	public static String convertToNameForSearch(String name) {
-		return StringUtils.lowerCase(StringUtils.deleteWhitespace(name));
+		return StringUtilsLSS.replaceUmlauts(StringUtils.lowerCase(StringUtils.deleteWhitespace(name)));
 	}
 	
 	@Override

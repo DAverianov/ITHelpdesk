@@ -21,6 +21,7 @@ import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -114,8 +115,12 @@ public class BCWebService {
 		}
 		List<TimeRegisterEvent> events = new ArrayList<TimeRegisterEvent>();
 		// @formatter:0ff
-		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder().person(personOpt.get())
-				.eventDate(tR.getEventDate()).startTime(tR.getStartDate()).endTime(tR.getEndDate()).build()));
+		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder()
+				.person(personOpt.get())
+				.eventDate(tR.getEventDate())
+				.startTime(tR.getStartDate())
+				.endTime(tR.getEndDate())
+				.build()));
 		//@formatter:on
 		return Optional.of(compoundDublRecords(events));
 	}
@@ -123,25 +128,40 @@ public class BCWebService {
 	public List<TimeRegisterEvent> compoundDublRecords(List<TimeRegisterEvent> events) {
 		List<TimeRegisterEvent> eventsCompound = new ArrayList<TimeRegisterEvent>();
 		//@formatter:off
-		events.stream().filter(ev -> ev.getEndTime() == "").forEach(ev -> {
+		// 1. Manual with Start and End Time
+		events.stream()
+			.filter(ev -> ev.getStartTime()!="" && ev.getEndTime()!="")
+			.forEach(ev -> {
+				eventsCompound.add(TimeRegisterEvent.builder()
+					.person(ev.getPerson())
+					.eventDate(ev.getEventDate())
+					.startTime(ev.getStartTime())
+					.endTime(ev.getEndTime())
+					.build());
+		});
+		// 2. Auto separately Start and End time
+		events.stream()
+		.filter(ev -> ev.getStartTime()!="" && ev.getEndTime()=="")
+		.forEach(ev -> {
 			eventsCompound.add(TimeRegisterEvent.builder()
-				.person(ev.getPerson())
-				.eventDate(ev.getEventDate())
-				.startTime(ev.getStartTime())
-				.endTime(findEndTime(events, ev))
-				.build());
+					.person(ev.getPerson())
+					.eventDate(ev.getEventDate())
+					.startTime(ev.getStartTime())
+					.endTime(findEndTime(events, ev, ev.getStartTime()))
+					.build());
 		});
 		//@formatter:on
 		return eventsCompound;
 	}
 
-	private String findEndTime(List<TimeRegisterEvent> events, TimeRegisterEvent currentEvent) {
+	private String findEndTime(List<TimeRegisterEvent> events, TimeRegisterEvent currentEvent, String startTime) {
 		String result = "";
 		for (TimeRegisterEvent ev : events) {
 			//@formatter:off
 			if (ev.getPerson().equals(currentEvent.getPerson()) 
 					&& ev.getEventDate().equals(currentEvent.getEventDate())
-					&& ev.getStartTime().equals("")) {
+					&& ev.getStartTime().equals("")
+					&& TimeUtils.convertTimeToInt(ev.getEndTime()) > TimeUtils.convertTimeToInt(ev.getStartTime()) ) {
 				result = ev.getEndTime();
 				break;
 			}
