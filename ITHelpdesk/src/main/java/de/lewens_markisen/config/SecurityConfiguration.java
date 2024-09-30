@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.services.security.UserService;
+import de.lewens_markisen.services.security.UserSpringService;
 import jakarta.transaction.Transactional;
 
 @Configuration
@@ -42,12 +42,12 @@ import jakarta.transaction.Transactional;
 @Component
 public class SecurityConfiguration implements AuthenticationProvider {
 
-	private final UserService userService;
+	private final UserSpringService userService;
 	private final String AD_DOMAINE;
 	private final String AD_URL;
 	private final String AD_ROOTDN;
 
-	public SecurityConfiguration(@Autowired UserService userService,
+	public SecurityConfiguration(@Autowired UserSpringService userService,
 			@Value("${spring.security.ad.domain}") String AD_DOMAINE, 
 			@Value("${spring.security.ad.url}") String AD_URL,
 			@Value("${spring.security.ad.rootdn}") String AD_ROOTDN) {

@@ -8,8 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import de.lewens_markisen.log.Log;
+import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
+import de.lewens_markisen.services.security.UserSpringService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,8 @@ public class TimeReportService {
 
 	private final TimeRegisterEventService timeRegisterEventService;
 	private final PersonService personService;
+	private final LogService logService;
+	private final UserSpringService userService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
@@ -34,7 +39,15 @@ public class TimeReportService {
 	}
 
 	public Optional<TimeReport> createReport(String bcCode) {
+		//@formatter:off
 		log.info("Create TimeReport for " + bcCode);
+		logService.save(Log.builder()
+				.user(userService.findByName(getUserName()).get())
+				.event("TimeReport")
+				.description("time report ")
+				.build());
+		//@formatter:on
+
 		//@formatter:off
 		PeriodReport period = PeriodReport.PeriodReportMonth();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);

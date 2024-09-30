@@ -27,7 +27,7 @@ import de.lewens_markisen.person.Person;
 import de.lewens_markisen.repository.AccessRepository;
 import de.lewens_markisen.repository.PersonRepository;
 import de.lewens_markisen.repository.security.AuthorityRepository;
-import de.lewens_markisen.repository.security.UserRepository;
+import de.lewens_markisen.repository.security.UserSpringRepository;
 import de.lewens_markisen.utils.FileOperations;
 
 @Slf4j
@@ -39,7 +39,7 @@ public class initialFilling implements CommandLineRunner {
 	private final PersonRepository personRepository;
 	private final AccessRepository accessRepository;
 	private final AuthorityRepository authorityRepository;
-	private final UserRepository userRepository;
+	private final UserSpringRepository userRepository;
 
 	@Override
 	public void run(String... args) {

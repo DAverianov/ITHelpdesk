@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
 //@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 	private final AuthenticationProvider authenticationProvider;
-	private final UserService userService;
+	private final UserSpringService userService;
 
 	public AuthenticationProvider activeDirectoryLdapAuthenticationProvider() {
 		ActiveDirectoryLdapAuthenticationProvider provider = new ActiveDirectoryLdapAuthenticationProvider("LSS.local",

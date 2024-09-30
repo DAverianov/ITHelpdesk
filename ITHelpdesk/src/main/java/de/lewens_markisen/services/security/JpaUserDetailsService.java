@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 //@Service
 public class JpaUserDetailsService implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserSpringService userService;
 
     @Override
     @Transactional

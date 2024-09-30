@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.timeReport.TimeReport;
 import de.lewens_markisen.timeReport.TimeReportService;
 import lombok.RequiredArgsConstructor;

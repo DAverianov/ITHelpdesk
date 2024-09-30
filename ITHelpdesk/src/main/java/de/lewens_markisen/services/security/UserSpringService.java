@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.repository.security.AuthorityRepository;
-import de.lewens_markisen.repository.security.UserRepository;
+import de.lewens_markisen.repository.security.UserSpringRepository;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-public class UserService {
+public class UserSpringService {
 	private final String USERROLE = "ROLE_USER";
 	private final AuthorityRepository authorityRepository;
-    private final UserRepository userRepository;
+    private final UserSpringRepository userRepository;
 //	private final PasswordEncoder passwordEncoder;
 
 	public Optional<UserSpring> getUserByName(String username) {
@@ -37,6 +37,10 @@ public class UserService {
 				.build();
 		//@formatter:on
 		return userRepository.save(user);
+	}
+
+	public Optional<UserSpring> findByName(String userName) {
+		return userRepository.findByUsername(userName);
 	}
 
 }
