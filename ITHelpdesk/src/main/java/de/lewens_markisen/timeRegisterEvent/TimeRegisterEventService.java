@@ -9,5 +9,5 @@ public interface TimeRegisterEventService {
 
 	Optional<List<TimeRegisterEvent>> findAll(Long personId);
 	Optional<List<TimeRegisterEvent>> readEventsProPerson(Person person);
-	Optional<List<TimeRegisterEvent>> findAllByPersonWithoutDubl(Person person);
+	Optional<List<TimeRegisterEvent>> findAllByPerson(Person person);
 }

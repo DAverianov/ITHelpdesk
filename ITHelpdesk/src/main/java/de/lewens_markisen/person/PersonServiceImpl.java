@@ -58,7 +58,6 @@ public class PersonServiceImpl implements PersonService {
 		return personRepository.findByNameForSearch(name);
 	}
 
-    @Transactional()
     public Person updatePerson(Person person) {
         personRepository.findById(person.getId());
         return personRepository.save(person);
@@ -67,6 +66,11 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public Person save(Person p) {
 		return personRepository.save(p);
+	}
+
+	@Override
+	public void delete(Person person) {
+		personRepository.delete(person);
 	}
 
 }

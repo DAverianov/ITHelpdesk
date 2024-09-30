@@ -44,9 +44,9 @@ class TimeRegisterEventServiceImplTest {
 	}
 	
 	@Test
-	void findAllByPersonWithoutDubl_whenRequest_thenAnser() {
+	void findAllByPerson_whenRequest_thenAnser() {
 		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
-		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.findAllByPersonWithoutDubl(personOpt.get());
+		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.findAllByPerson(personOpt.get());
 		assertThat(events).isNotEmpty();
 	}
 

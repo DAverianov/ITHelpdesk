@@ -25,6 +25,7 @@ import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.person.Persons;
 import de.lewens_markisen.services.connection.BCWebService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -65,9 +66,9 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "/edit/{id}")
+	@Transactional
 	public ModelAndView showEditPersonForm(@PathVariable(name = "id") Long id) {
 		ModelAndView modelAndView = new ModelAndView("persons/personEdit");
-		System.out.println("edit!");
 		Optional<Person> personOpt = personService.findById(id);
 		if (personOpt.isPresent()) {
 			modelAndView.addObject("person", personOpt.get());
@@ -79,10 +80,21 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@Transactional
 	public String updatePerson(@ModelAttribute("person") Person person,
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
 			personService.updatePerson(person);
+		}
+		return "redirect:/persons";
+	}
+
+	@RequestMapping(value = "/delete/{bcCode}", method = RequestMethod.GET)
+	public String deletePerson(@PathVariable(name = "id") Long id) {
+		Optional<Person> personOpt = personService.findById(id);
+		if (personOpt.isPresent()) {
+			personService.delete(personOpt.get());
+		} else {
 		}
 		return "redirect:/persons";
 	}

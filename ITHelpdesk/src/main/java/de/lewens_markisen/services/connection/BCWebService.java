@@ -161,7 +161,7 @@ public class BCWebService {
 			if (ev.getPerson().equals(currentEvent.getPerson()) 
 					&& ev.getEventDate().equals(currentEvent.getEventDate())
 					&& ev.getStartTime().equals("")
-					&& TimeUtils.convertTimeToInt(ev.getEndTime()) > TimeUtils.convertTimeToInt(ev.getStartTime()) ) {
+					&& TimeUtils.convertTimeToInt(ev.getEndTime()) > TimeUtils.convertTimeToInt(currentEvent.getStartTime()) ) {
 				result = ev.getEndTime();
 				break;
 			}

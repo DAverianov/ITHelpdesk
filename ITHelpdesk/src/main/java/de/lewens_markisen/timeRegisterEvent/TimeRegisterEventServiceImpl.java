@@ -58,8 +58,8 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 	}
 
 	@Override
-	public Optional<List<TimeRegisterEvent>> findAllByPersonWithoutDubl(Person person) {
-		return Optional.of(timeRegisterEventRepository.findAllByPersonWithoutDubl(person.getId()));
+	public Optional<List<TimeRegisterEvent>> findAllByPerson(Person person) {
+		return Optional.of(timeRegisterEventRepository.findAllByPerson(person));
 	}
 
 }

@@ -1,8 +1,6 @@
 package de.lewens_markisen.timeReport;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +26,7 @@ public class TimeReportService {
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isPresent()) {
-			return Optional.of(timeRegisterEventService.findAllByPersonWithoutDubl(personOpt.get()).get());
+			return Optional.of(timeRegisterEventService.findAllByPerson(personOpt.get()).get());
 
 		} else {
 			return Optional.empty();
@@ -48,7 +46,7 @@ public class TimeReportService {
 			TimeReport timeReport = TimeReport.builder()
 					.person(personOpt.get())
 					.period(period)
-					.timeRecords(timeRegisterEventService.findAllByPersonWithoutDubl(personOpt.get()).get())
+					.timeRecords(timeRegisterEventService.findAllByPerson(personOpt.get()).get())
 					.build();
 			timeReport.createReportRecords();
 			timeReport.createGroup(1

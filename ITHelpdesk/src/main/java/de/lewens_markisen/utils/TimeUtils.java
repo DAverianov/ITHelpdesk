@@ -38,7 +38,7 @@ public class TimeUtils {
 	public static Integer convertTimeToInt(String startTime) {
 		char delimiter = ':';
 		String hour = (startTime.indexOf(delimiter) != -1) ? startTime.substring(0, startTime.indexOf(delimiter)) : "0";
-		String minuts = (startTime.indexOf(delimiter) != -1) ? startTime.substring(startTime.indexOf(delimiter)+1, startTime.length()-1) : "0";
+		String minuts = (startTime.indexOf(delimiter) != -1) ? startTime.substring(startTime.indexOf(delimiter)+1, startTime.length()) : "0";
 		
 		return Integer.valueOf(hour)*100 + Integer.valueOf(minuts);
 	}

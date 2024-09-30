@@ -18,7 +18,7 @@ import de.lewens_markisen.person.PersonService;
 @ActiveProfiles("test")
 @SpringBootTest()
 class TimeReportServiceTest {
-	private final String BC_CODE = "645";
+	private final String BC_CODE = "667";
 	@Autowired
 	private TimeReportService timeReportService;
 	@Autowired
