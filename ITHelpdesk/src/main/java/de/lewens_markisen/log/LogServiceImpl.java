@@ -3,6 +3,7 @@ package de.lewens_markisen.log;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.lewens_markisen.repository.LogRepository;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class LogServiceImpl implements LogService{
 	private final LogRepository logRepository;
+	@Value("${logging_in_DB.saving_days}")
+	private Integer savingDays;
 	
 	@Override
 	public void save(Log log) {
@@ -22,7 +25,9 @@ public class LogServiceImpl implements LogService{
 
 	@Override
 	public void deleteAltRecords() {
-		List<Log> altRecords = logRepository.findAllByForCreationDate(LocalDate.now());
+		LocalDate grenze = LocalDate.now();
+		grenze = grenze.minusDays((long) savingDays);
+		List<Log> altRecords = logRepository.findAllByForCreationDate(grenze);
 		altRecords.stream().forEach(l -> logRepository.delete(l));
 	}
 
