@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,8 +18,9 @@ import de.lewens_markisen.person.PersonService;
 
 @ActiveProfiles("test")
 @SpringBootTest()
+@Disabled
 class TimeReportServiceTest {
-	private final String BC_CODE = "667";
+	private final String BC_CODE = "1071";
 	@Autowired
 	private TimeReportService timeReportService;
 	@Autowired

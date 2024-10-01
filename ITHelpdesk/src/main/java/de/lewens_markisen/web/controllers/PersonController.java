@@ -25,6 +25,7 @@ import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.person.Persons;
 import de.lewens_markisen.services.connection.BCWebService;
+import de.lewens_markisen.timeReport.TimeReportService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +41,7 @@ public class PersonController {
 
 	private final PersonService personService;
 	private final BCWebService bcWebService;
+	private final TimeReportService timeReportService;
 
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
@@ -106,7 +108,7 @@ public class PersonController {
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isPresent()) {
 			modelAndView.addObject("person", personOpt.get().toString());
-			modelAndView.addObject("timeRecords", bcWebService.createTimeReport(personOpt.get()));
+			modelAndView.addObject("timeRecords", timeReportService.createReport(personOpt.get().getBcCode()).get());
 		} else {
 			modelAndView.addObject("message", "Person mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");

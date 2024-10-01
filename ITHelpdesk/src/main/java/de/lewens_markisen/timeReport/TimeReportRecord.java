@@ -112,7 +112,9 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 
 	public String getYearWeek() {
 		TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
-		return "" + getEventDate().getYear() + " " + getEventDate().get(woy) + " woche";
+		return "" + getEventDate().getYear() + " " 
+				+ String.format("%02d", getEventDate().getMonthValue()) + " " 
+				+ getEventDate().get(woy) + " woche";
 	}
 
 	public String getYearMonat() {
@@ -159,7 +161,7 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 			} else if (this.getGroup() < o.getGroup()) {
 				return 1;
 			} else {
-				return 0;
+				return this.getName().compareTo(o.getName());
 			}
 		}
 	}

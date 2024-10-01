@@ -1,6 +1,8 @@
 package de.lewens_markisen.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,8 @@ import de.lewens_markisen.repository.PersonRepository;
 import de.lewens_markisen.repository.TimeRegisterEventRepository;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventServiceImpl;
+import de.lewens_markisen.timeReport.PeriodReport;
+import de.lewens_markisen.utils.DateUtils;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -36,17 +40,21 @@ class TimeRegisterEventServiceImplTest {
 
 	@Test
 	void readEventsProPerson_whenTimeEventsQuery_thenReceiveAndWrite() {
+		PeriodReport period = PeriodReport.thisMonat();
+		
 		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
 		assertThat(personOpt.isPresent());
 		
-		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.readEventsProPerson(personOpt.get());
+		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.readEventsProPerson(personOpt.get(), period);
 		assertThat(events).isNotEmpty();
 	}
 	
 	@Test
 	void findAllByPerson_whenRequest_thenAnser() {
+		PeriodReport period = PeriodReport.thisMonat();
+		
 		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
-		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.findAllByPerson(personOpt.get());
+		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.findAllByPerson(personOpt.get(), period);
 		assertThat(events).isNotEmpty();
 	}
 

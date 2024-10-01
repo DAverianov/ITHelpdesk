@@ -1,6 +1,7 @@
 package de.lewens_markisen.timeReport;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.services.security.UserSpringService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
+import de.lewens_markisen.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,9 +31,10 @@ public class TimeReportService {
 	private final UserSpringService userService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
+		PeriodReport period = PeriodReport.thisMonat();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isPresent()) {
-			return Optional.of(timeRegisterEventService.findAllByPerson(personOpt.get()).get());
+			return Optional.of(timeRegisterEventService.findAllByPerson(personOpt.get(), period).get());
 
 		} else {
 			return Optional.empty();
@@ -49,29 +52,43 @@ public class TimeReportService {
 		//@formatter:on
 
 		//@formatter:off
-		PeriodReport period = PeriodReport.PeriodReportMonth();
+		PeriodReport period = PeriodReport.builder()
+				.start(getStartDateReport())
+				.end(LocalDate.now())
+				.build();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isEmpty()) {
 			return Optional.empty();
 		} else {
-			timeRegisterEventService.readEventsProPerson(personOpt.get());
+			timeRegisterEventService.readEventsProPerson(personOpt.get(), period);
 			
 			TimeReport timeReport = TimeReport.builder()
 					.person(personOpt.get())
 					.period(period)
-					.timeRecords(timeRegisterEventService.findAllByPerson(personOpt.get()).get())
+					.timeRecords(timeRegisterEventService.findAllByPerson(personOpt.get(), period).get())
 					.build();
 			timeReport.createReportRecords();
 			timeReport.createGroup(1
 					, (tr) -> tr.getYearWeek()
-					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.with(DayOfWeek.MONDAY))); 
+					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startWeekInMonat(ld))); 
+//							ld.with(DayOfWeek.MONDAY)));
 			timeReport.createGroup(2
 					, (tr) -> tr.getYearMonat()
-					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.withDayOfMonth(1))); 
+					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
 			return Optional.of(timeReport);
 		}
 		//@formatter:on
 
+	}
+	
+	private LocalDate getStartDateReport() {
+		LocalDate now = LocalDate.now();
+		if (now.getDayOfMonth()>10) {
+			return now.withDayOfMonth(1);
+		}
+		else {
+			return now.minusMonths(1).withDayOfMonth(1);
+		}
 	}
 
 	public Optional<TimeReport> createReportCurrentUser() {

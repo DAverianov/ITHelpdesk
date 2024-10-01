@@ -59,16 +59,29 @@ public class TimeReport {
 			Function<TimeReportRecord, LocalDate> periodStart) {
 		//@formatter:off
 		for (String groupName : getDiversyOfGroups(getGroupName)) {
-			this.recordsWithGroups.stream()
-				.filter(r -> getGroupName.apply(r).equals(groupName) && r.getGroup() == 0)
-				.findFirst().stream()
-					.forEach(firstR -> 
-						this.recordsWithGroups.add(TimeReportRecord.builder()
-							.name(groupName)
-							.eventDate(periodStart.apply(firstR))
-							.group(groupNummer)
-							.build())
-						);
+			for (TimeReportRecord tr: this.recordsWithGroups) {
+				if (getGroupName.apply(tr).equals(groupName) && tr.getGroup() == 0) {
+					this.recordsWithGroups.add(
+							TimeReportRecord.builder()
+								.name(groupName)
+								.eventDate(periodStart.apply(tr))
+								.group(groupNummer)
+								.build());
+					break;
+				}
+			}
+			
+//			this.recordsWithGroups.stream()
+//				.filter(r -> getGroupName.apply(r).equals(groupName) && r.getGroup() == 0)
+//				.findFirst().stream()
+//					.forEach(firstR -> 
+//						this.recordsWithGroups.add(
+//							TimeReportRecord.builder()
+//								.name(groupName)
+//								.eventDate(periodStart.apply(firstR))
+//								.group(groupNummer)
+//								.build())
+//						);
 		}
 		//@formatter:on
 	}

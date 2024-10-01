@@ -21,6 +21,7 @@ import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.timeReport.PeriodReport;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,11 +36,11 @@ public class BCWebService {
 		this.personService = personService;
 	}
 
-	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person) {
+	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person, PeriodReport period) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
-					+ connectionBC.getFilter(createFilterPersonsTime(person.getBcCode()));
+					+ connectionBC.getFilter(createFilterPersonsTime(person.getBcCode(), period));
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
 			if (anserOpt.isPresent()) {
 				result = readTimeRegisterEventsFromJson(anserOpt.get());
@@ -50,13 +51,13 @@ public class BCWebService {
 		return result;
 	}
 
-	private List<RestApiQueryFilter> createFilterPersonsTime(String bcCode) {
+	private List<RestApiQueryFilter> createFilterPersonsTime(String bcCode, PeriodReport period) {
 		List<RestApiQueryFilter> filter = new ArrayList<RestApiQueryFilter>();
 		//@formatter:off
 		filter.add(RestApiQueryFilter.builder()
 				.attribute("Von_Datum")
 				.comparisonType("ge")
-				.value(getStartDateReport())
+				.value(period.getStart().toString())
 				.stringAttribute(false)
 				.build());
 		filter.add(RestApiQueryFilter.builder()
@@ -68,16 +69,16 @@ public class BCWebService {
 		//@formatter:on
 		return filter;
 	}
-	
-	private String getStartDateReport() {
-		LocalDate now = LocalDate.now();
-		if (now.getDayOfMonth()>10) {
-			return now.withDayOfMonth(1).toString();
-		}
-		else {
-			return now.minusMonths(1).withDayOfMonth(1).toString();
-		}
-	}
+//	
+//	private String getStartDateReport() {
+//		LocalDate now = LocalDate.now();
+//		if (now.getDayOfMonth()>10) {
+//			return now.withDayOfMonth(1).toString();
+//		}
+//		else {
+//			return now.minusMonths(1).withDayOfMonth(1).toString();
+//		}
+//	}
 
 	private Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromJson(String anser) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
@@ -169,21 +170,21 @@ public class BCWebService {
 		}
 		return result;
 	}
-
-	public List<String> createTimeReport(Person person) {
-		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
-		if (eventsOpt.isPresent()) {
-			return formattTimeEventsToString(eventsOpt.get());
-		} else {
-			return List.of("Es gibt keine Daten für Person " + person.toString() + "!");
-		}
-	}
-
-	private List<String> formattTimeEventsToString(List<TimeRegisterEvent> events) {
-		List<String> res = new ArrayList<String>();
-		events.stream().forEach(ev -> res.add(ev.toString()));
-		return res;
-	}
+//
+//	public List<String> createTimeReport(Person person) {
+//		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
+//		if (eventsOpt.isPresent()) {
+//			return formattTimeEventsToString(eventsOpt.get());
+//		} else {
+//			return List.of("Es gibt keine Daten für Person " + person.toString() + "!");
+//		}
+//	}
+//
+//	private List<String> formattTimeEventsToString(List<TimeRegisterEvent> events) {
+//		List<String> res = new ArrayList<String>();
+//		events.stream().forEach(ev -> res.add(ev.toString()));
+//		return res;
+//	}
 
 	public void loadPersonFromBC() {
 		Optional<List<Person>> personsBCOpt = readPersonsFromBC();
