@@ -2,6 +2,7 @@ package de.lewens_markisen.web.controllers;
 
 import java.util.Optional;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ public class TimeReportController {
 
 	private final TimeReportService timeReportService;
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{bcCode}")
 	public ModelAndView showEditAccessForm(@PathVariable(name = "bcCode") Integer bcCode) {
 		ModelAndView modelAndView = new ModelAndView("timeReport/timeReport");
@@ -34,6 +36,7 @@ public class TimeReportController {
 		return modelAndView;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping("/me")
 	public ModelAndView showEditAccessForm() {
 		ModelAndView modelAndView = new ModelAndView("timeReport/timeReport");

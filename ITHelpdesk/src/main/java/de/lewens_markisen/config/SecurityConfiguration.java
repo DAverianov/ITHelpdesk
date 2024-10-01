@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -37,11 +37,11 @@ import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.services.security.UserSpringService;
 import de.lewens_markisen.services.security.UserSpringServiceImpl;
-import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.transaction.Transactional;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @Component
 public class SecurityConfiguration implements AuthenticationProvider {
 
@@ -68,9 +68,6 @@ public class SecurityConfiguration implements AuthenticationProvider {
 			.authorizeHttpRequests((authz) -> 
 				authz
 					.requestMatchers("/webjars/**", "/login", "/logout", "/resources/**", "/error").permitAll()
-					.requestMatchers("/", "/timeReport/me").hasAnyRole("USER")
-					.requestMatchers("/persons/**").hasAnyRole("ADMIN")
-					.requestMatchers("/accesses/**").hasAnyRole("ADMIN")
 					.anyRequest().authenticated()
 				)
             .formLogin(withDefaults());

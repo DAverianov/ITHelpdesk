@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +44,7 @@ public class PersonController {
 	private final BCWebService bcWebService;
 	private final TimeReportService timeReportService;
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		Persons persons = new Persons();
@@ -67,6 +69,7 @@ public class PersonController {
 		return personService.findAll(pageable);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/edit/{id}")
 	@Transactional
 	public ModelAndView showEditPersonForm(@PathVariable(name = "id") Long id) {
@@ -81,6 +84,7 @@ public class PersonController {
 		return modelAndView;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@Transactional
 	public String updatePerson(@ModelAttribute("person") Person person,
@@ -91,6 +95,7 @@ public class PersonController {
 		return "redirect:/persons";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/delete/{bcCode}", method = RequestMethod.GET)
 	public String deletePerson(@PathVariable(name = "id") Long id) {
 		Optional<Person> personOpt = personService.findById(id);
@@ -101,6 +106,7 @@ public class PersonController {
 		return "redirect:/persons";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/timereport/{bcCode}")
 	public ModelAndView showTimeReport(@PathVariable(name = "bcCode") String bcCode) {
 		ModelAndView modelAndView = new ModelAndView("persons/timereport");
@@ -116,6 +122,7 @@ public class PersonController {
 		return modelAndView;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/load", method = RequestMethod.GET)
 	public String loadPerson() {
 		bcWebService.loadPersonFromBC();

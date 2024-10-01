@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,7 @@ public class UserController {
 
 	private final UserSpringService userSpringService;
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		UserSpringList users = new UserSpringList();
@@ -60,6 +62,7 @@ public class UserController {
 		return userSpringService.findAll(pageable);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/edit/{id}")
 	@Transactional
 	public ModelAndView showEditUserForm(@PathVariable(name = "id") Integer id) {
@@ -74,6 +77,7 @@ public class UserController {
 		return modelAndView;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@Transactional
 	public String updateUser(@ModelAttribute("user") UserSpring user,
@@ -84,6 +88,7 @@ public class UserController {
 		return "redirect:/users/list";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	public String deleteUser(@PathVariable(name = "id") Integer id) {
 		Optional<UserSpring> userSpringOpt = userSpringService.findById(id);
@@ -94,6 +99,7 @@ public class UserController {
 		return "redirect:/users/list";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(path = "/rewriteNames")
 	public String rewriteUsernames() {
 		userSpringService.rewriteUsernames();

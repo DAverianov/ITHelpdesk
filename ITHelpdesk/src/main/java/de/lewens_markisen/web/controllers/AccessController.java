@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class AccessController {
 
 	private final AccessService accessService;
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		Accesses accesses = new Accesses();
@@ -53,6 +55,7 @@ public class AccessController {
 		return accessService.findAll(pageable);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}")
 	public ModelAndView showEditAccessForm(@PathVariable(name = "id") Long id) {
 		ModelAndView modelAndView = new ModelAndView("access/accessEdit");
@@ -66,12 +69,14 @@ public class AccessController {
 		return modelAndView;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/new")
 	public String initCreationForm(Model model) {
 		model.addAttribute("access", Access.builder().build());
 		return "access/createAccess";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/new")
 	public String processCreationForm(Access access) {
 		//@formatter:off
@@ -88,6 +93,7 @@ public class AccessController {
 		return "redirect:/accesses/list";
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping(value = "/update")
     public String update(@ModelAttribute("access") Access access, @RequestParam(value="action", required=true) String action) {
 		System.out.println("ich bin bei Update");
