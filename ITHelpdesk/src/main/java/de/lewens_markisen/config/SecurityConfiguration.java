@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,8 @@ import org.springframework.stereotype.Component;
 import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.services.security.UserSpringService;
+import de.lewens_markisen.services.security.UserSpringServiceImpl;
+import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.transaction.Transactional;
 
 @Configuration
@@ -47,7 +50,7 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	private final String AD_URL;
 	private final String AD_ROOTDN;
 
-	public SecurityConfiguration(@Autowired UserSpringService userService,
+	public SecurityConfiguration(@Autowired UserSpringServiceImpl userService,
 			@Value("${spring.security.ad.domain}") String AD_DOMAINE, 
 			@Value("${spring.security.ad.url}") String AD_URL,
 			@Value("${spring.security.ad.rootdn}") String AD_ROOTDN) {
@@ -101,7 +104,7 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		Authentication auth = activeDirectoryLdapAuthenticationProvider().authenticate(authentication);
 
-		String username = auth.getName();
+		String username = userService.convertNameToLowCase(auth.getName());
 		Optional<UserSpring> userOpt = userService.getUserByName(username);
 		UserSpring user;
 		if (userOpt.isPresent()) {
@@ -112,7 +115,7 @@ public class SecurityConfiguration implements AuthenticationProvider {
 					principal.getAuthorities());
 
 		} else {
-			user = userService.createUser(auth.getName(), "");
+			user = userService.createUser(username, "");
 		}
 		return auth;
 	}

@@ -13,7 +13,7 @@ import de.lewens_markisen.log.Log;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
-import de.lewens_markisen.services.security.UserSpringService;
+import de.lewens_markisen.services.security.UserSpringServiceImpl;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
@@ -28,7 +28,7 @@ public class TimeReportService {
 	private final TimeRegisterEventService timeRegisterEventService;
 	private final PersonService personService;
 	private final LogService logService;
-	private final UserSpringService userService;
+	private final UserSpringServiceImpl userService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		PeriodReport period = PeriodReport.thisMonat();

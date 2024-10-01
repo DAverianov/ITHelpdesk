@@ -50,19 +50,24 @@
             <span>Home</span>
           </li>
           
-          <li th:replace="~{::menuItem ('/persons/list','persons','persons','th-list','Persons')}" sec:authorize="hasRole('ADMIN')">
+          <li sec:authorize="hasRole('ROLE_ADMIN')" th:replace="~{::menuItem ('/persons/list','persons','persons','th-list','Persons')}">
             <span class="fa fa-th-list" aria-hidden="true"></span>
             <span>Person</span>
           </li>
           
-          <li th:replace="~{::menuItem ('/timeReport/me','timeReport','timeReport','th-list','Time Report')}" sec:authorize="hasRole('USER')">
+          <li sec:authorize="hasRole('ROLE_USER')" th:replace="~{::menuItem ('/timeReport/me','timeReport','timeReport','th-list','Time Report')}">
             <span class="fa fa-th-list" aria-hidden="true"></span>
-            <span>Person</span>
+            <span>Time Report</span>
           </li>
  
-          <li sec:authorize="hasRole('ADMIN')" th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
+          <li sec:authorize="hasRole('ROLE_ADMIN')" th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
             <span class="fa fa-th-list" aria-hidden="true"></span>
             <span>Accesses</span>
+          </li>
+ 
+          <li sec:authorize="hasRole('ROLE_ADMIN')" th:replace="~{::menuItem ('/users/list','users','users','th-list','Users')}">
+            <span class="fa fa-th-list" aria-hidden="true"></span>
+            <span>Users</span>
           </li>
 
         </ul>

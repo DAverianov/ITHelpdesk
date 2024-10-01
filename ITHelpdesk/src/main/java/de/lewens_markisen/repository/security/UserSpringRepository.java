@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import de.lewens_markisen.domain.security.UserSpring;
 
 public interface UserSpringRepository extends JpaRepository<UserSpring, Integer>{
-    Optional<UserSpring> findByUsername(String username);
+    Optional<UserSpring> findFirstByUsername(String username);
 }
