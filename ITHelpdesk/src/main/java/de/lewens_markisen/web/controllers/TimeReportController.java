@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.timeReport.TimeReport;
 import de.lewens_markisen.timeReport.TimeReportService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class TimeReportController {
 
 	private final TimeReportService timeReportService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@GetMapping("/{bcCode}")
 	public ModelAndView showEditAccessForm(@PathVariable(name = "bcCode") Integer bcCode) {
 		ModelAndView modelAndView = new ModelAndView("timeReport/timeReport");

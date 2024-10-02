@@ -16,7 +16,7 @@ import de.lewens_markisen.services.EncryptionService;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AccessRepositoryTest {
 	private final String PASSWORD = "ABC123";
 	@Autowired

@@ -4,8 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,13 +36,11 @@ public class PersonController {
 	public static Comparator<BaseEntity> COMPARATOR_BY_ID = Comparator.comparing(BaseEntity::getId);
 	public static Comparator<Person> COMPARATOR_BY_NAME = Comparator.comparing(Person::getName);
 
-	private final Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
-
 	private final PersonService personService;
 	private final BCWebService bcWebService;
 	private final TimeReportService timeReportService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		Persons persons = new Persons();
@@ -69,7 +65,7 @@ public class PersonController {
 		return personService.findAll(pageable);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@RequestMapping(value = "/edit/{id}")
 	@Transactional
 	public ModelAndView showEditPersonForm(@PathVariable(name = "id") Long id) {
@@ -77,6 +73,8 @@ public class PersonController {
 		Optional<Person> personOpt = personService.findById(id);
 		if (personOpt.isPresent()) {
 			modelAndView.addObject("person", personOpt.get());
+			System.out.println(" save BE "+modelAndView.getModel());
+			
 		} else {
 			modelAndView.addObject("message", "Person mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
@@ -84,18 +82,19 @@ public class PersonController {
 		return modelAndView;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@Transactional
 	public String updatePerson(@ModelAttribute("person") Person person,
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
+			System.out.println("  save "+person+" v "+person.getVersion());
 			personService.updatePerson(person);
 		}
-		return "redirect:/persons";
+		return "redirect:/persons/list";
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@RequestMapping(value = "/delete/{bcCode}", method = RequestMethod.GET)
 	public String deletePerson(@PathVariable(name = "id") Long id) {
 		Optional<Person> personOpt = personService.findById(id);
@@ -103,14 +102,14 @@ public class PersonController {
 			personService.delete(personOpt.get());
 		} else {
 		}
-		return "redirect:/persons";
+		return "redirect:/persons/list";
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@RequestMapping(value = "/timereport/{bcCode}")
 	public ModelAndView showTimeReport(@PathVariable(name = "bcCode") String bcCode) {
 		ModelAndView modelAndView = new ModelAndView("persons/timereport");
-		System.out.println("showTimeReport! "+bcCode);
+		System.out.println("showTimeReport! " + bcCode);
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isPresent()) {
 			modelAndView.addObject("person", personOpt.get().toString());
@@ -122,12 +121,11 @@ public class PersonController {
 		return modelAndView;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
 	@RequestMapping(value = "/load", method = RequestMethod.GET)
 	public String loadPerson() {
 		bcWebService.loadPersonFromBC();
-		return "redirect:/persons";
+		return "redirect:/persons/list";
 	}
-
 
 }

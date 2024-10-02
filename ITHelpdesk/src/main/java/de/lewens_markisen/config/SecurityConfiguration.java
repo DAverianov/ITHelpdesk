@@ -67,11 +67,11 @@ public class SecurityConfiguration implements AuthenticationProvider {
 		http
 			.authorizeHttpRequests((authz) -> 
 				authz
-					.requestMatchers("/webjars/**", "/login", "/logout", "/resources/**", "/error").permitAll()
+					.requestMatchers("/webjars/**", "/login", "/resources/**", "/error").permitAll()
 					.anyRequest().authenticated()
 				)
             .formLogin(withDefaults());
-			
+
 		//@formatter:on
 		return http.build();
 	}

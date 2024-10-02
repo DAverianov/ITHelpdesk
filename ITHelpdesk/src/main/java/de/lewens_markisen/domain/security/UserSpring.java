@@ -23,7 +23,7 @@ public class UserSpring {
     private String password;
 
     @Singular
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinTable(name = "user_spring_authority",
         joinColumns = {@JoinColumn(name = "USER_SPRING_ID", referencedColumnName = "ID")},
         inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})

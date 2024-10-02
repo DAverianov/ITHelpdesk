@@ -58,10 +58,10 @@ public class PersonServiceImpl implements PersonService {
 		return personRepository.findByNameForSearch(name);
 	}
 
-    public Person updatePerson(Person person) {
-        personRepository.findById(person.getId());
-        return personRepository.save(person);
-    }
+	@Override
+	public Person updatePerson(Person person) {
+		return personRepository.save(person);
+	}
 
 	@Override
 	public Person save(Person p) {

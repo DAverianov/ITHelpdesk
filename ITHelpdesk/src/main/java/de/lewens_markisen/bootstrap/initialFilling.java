@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.opencsv.CSVParser;
@@ -40,6 +41,7 @@ public class initialFilling implements CommandLineRunner {
 	private final AccessRepository accessRepository;
 	private final AuthorityRepository authorityRepository;
 	private final UserSpringRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) {
@@ -54,6 +56,7 @@ public class initialFilling implements CommandLineRunner {
 		}
 		Authority adminRole = authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
 		Authority userRole = authorityRepository.save(Authority.builder().role("ROLE_USER").build());
+		Authority userPersonalAbteilungRole = authorityRepository.save(Authority.builder().role("ROLE_PERSONALABTEILUNG").build());
 
 		//@formatter:off
 		UserSpring user = UserSpring.builder()
@@ -64,9 +67,36 @@ public class initialFilling implements CommandLineRunner {
 		auth.add(userRole);
 		auth.add(adminRole);
 		user.setAuthorities(auth);
-		
 		userRepository.save(user);
-		//@formatter:on
+
+        // user Admin for Tests
+		user = UserSpring.builder()
+                .username("spring")
+                .password(passwordEncoder.encode("guru"))
+                .build();
+		auth.add(adminRole);
+		user.setAuthorities(auth);
+		userRepository.save(user);
+
+        // user User for Tests
+		user = UserSpring.builder()
+                .username("user")
+                .password(passwordEncoder.encode("password"))
+                .build();
+		auth.add(userRole);
+		user.setAuthorities(auth);
+		userRepository.save(user);
+
+        // user Personalabteilung for Tests
+		user = UserSpring.builder()
+                .username("personalabteilung")
+                .password(passwordEncoder.encode("Alfa Zentavra 00!"))
+                .build();
+		auth.add(userPersonalAbteilungRole);
+		user.setAuthorities(auth);
+		userRepository.save(user);
+
+ 		//@formatter:on
 		log.debug("Users Loaded: " + userRepository.count());
 	}
 
