@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'access')}">
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'access')}">
 
 <body>
 
-<h2>Access</h2>
+	<h2>Access</h2>
 
-<table id="access" class="table table-striped">
-    <thead>
-    <tr>
-        <th style="width: 150px;">Name</th>
-        <th style="width: 200px;">URL</th>
-        <th style="width: 200px;">Domain</th>
-        <th style="width: 120px">User</th>
-        <th style="width: 120px">Password</th>
-        <th>Description</th>
-    </tr>
-    </thead>
- 	<a class="btn btn-primary" th:href="@{/accesses/new}">New</a>   
- 	<tbody>
-    <tr th:each="access : ${accesses}">
-        <td>
-            <a th:href="@{/accesses/__${access.id}__}" th:text="${access.name}"/></a>
-        </td>
-        <td th:text="${access.url}"/>
-        <td th:text="${access.domain}"/>
-        <td th:text="${access.user}"/>
-        <td text="******"/>
-        <td th:text="${access.description}"/>
-	    </td>
-    </tr>
-    </tbody>
-</table>
+	<table id="access" class="table table-striped">
+		<thead>
+			<tr>
+				<th style="width: 150px;">No</th>
+				<th style="width: 150px;">Name</th>
+				<th style="width: 200px;">URL</th>
+				<th style="width: 200px;">Domain</th>
+				<th style="width: 120px">User</th>
+				<th style="width: 120px">Password</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<a class="btn btn-primary" th:href="@{/accesses/new}">New</a>
+		<tbody>
+			<tr th:each="access,stat : ${accesses}">
+				<td th:text="${stat.count}" />
+				<td><a th:href="@{/accesses/__${access.id}__}"
+					th:text="${access.name}" /></a></td>
+				<td th:text="${access.url}" />
+				<td th:text="${access.domain}" />
+				<td th:text="${access.user}" />
+				<td text="******" />
+				<td th:text="${access.description}" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
 </body>
 </html>

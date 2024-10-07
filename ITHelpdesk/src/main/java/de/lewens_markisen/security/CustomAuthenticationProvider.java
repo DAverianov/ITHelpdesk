@@ -1,4 +1,4 @@
-package de.lewens_markisen.services.security;
+package de.lewens_markisen.security;
 
 import java.util.HashSet;
 import java.util.Optional;

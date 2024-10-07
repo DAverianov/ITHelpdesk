@@ -3,12 +3,9 @@ package de.lewens_markisen.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,18 +22,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.domain.security.Authority;
 import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.services.security.UserSpringService;
-import de.lewens_markisen.services.security.UserSpringServiceImpl;
+import de.lewens_markisen.security.UserSpringService;
+import de.lewens_markisen.security.UserSpringServiceImpl;
 import jakarta.transaction.Transactional;
 
 @Configuration
@@ -101,29 +95,19 @@ public class SecurityConfiguration implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		Authentication auth = activeDirectoryLdapAuthenticationProvider().authenticate(authentication);
 
-		String username = userService.convertNameToLowCase(auth.getName());
-		Optional<UserSpring> userOpt = userService.getUserByName(username);
+		String userName = userService.convertNameToLowCase(auth.getName());
+		Optional<UserSpring> userOpt = userService.getUserByName(userName);
 		UserSpring user;
 		if (userOpt.isPresent()) {
 			user = userOpt.get();
-			UserDetails principal = User.builder().username(user.getUsername()).password("")
-					.authorities(convertToSpringAuthorities(user.getAuthorities())).build();
-			return new UsernamePasswordAuthenticationToken(principal, principal.getPassword(),
-					principal.getAuthorities());
+//			UserDetails principal = User.builder().username(user.getUsername()).password("")
+//					.authorities(convertToSpringAuthorities(user.getAuthorities())).build();
 
 		} else {
-			user = userService.createUser(username, "");
+			user = userService.createUser(userName, "");
 		}
-		return auth;
-	}
-
-	private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Authority> authorities) {
-		if (authorities != null && authorities.size() > 0) {
-			return authorities.stream().map(Authority::getRole).map(SimpleGrantedAuthority::new)
-					.collect(Collectors.toSet());
-		} else {
-			return new HashSet<>();
-		}
+		return new UsernamePasswordAuthenticationToken(user, user.getPassword(),
+				user.getAuthorities());
 	}
 
 	@Override

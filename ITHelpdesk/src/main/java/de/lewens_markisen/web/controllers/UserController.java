@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +23,8 @@ import org.springframework.web.servlet.ModelAndView;
 import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.domain.security.UserSpringList;
-import de.lewens_markisen.services.security.UserSpringService;
-import de.lewens_markisen.services.security.UserSpringServiceImpl;
+import de.lewens_markisen.security.UserSpringService;
+import de.lewens_markisen.security.UserSpringServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -63,7 +64,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/edit/{id}")
+	@GetMapping(value = "/edit/{id}")
 	@Transactional
 	public ModelAndView showEditUserForm(@PathVariable(name = "id") Integer id) {
 		ModelAndView modelAndView = new ModelAndView("users/userEdit");
@@ -78,7 +79,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@PostMapping(value = "/update")
 	@Transactional
 	public String updateUser(@ModelAttribute("user") UserSpring user,
 			@RequestParam(value = "action", required = true) String action) {
@@ -89,7 +90,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	@GetMapping(value = "/delete/{id}")
 	public String deleteUser(@PathVariable(name = "id") Integer id) {
 		Optional<UserSpring> userSpringOpt = userSpringService.findById(id);
 		if (userSpringOpt.isPresent()) {

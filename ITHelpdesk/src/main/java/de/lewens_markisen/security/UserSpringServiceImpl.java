@@ -1,4 +1,4 @@
-package de.lewens_markisen.services.security;
+package de.lewens_markisen.security;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.security.Authority;
+import de.lewens_markisen.domain.security.Role;
 import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.repository.security.AuthorityRepository;
+import de.lewens_markisen.repository.security.RoleRepository;
 import de.lewens_markisen.repository.security.UserSpringRepository;
 import de.lewens_markisen.utils.StringUtilsLSS;
 import lombok.AllArgsConstructor;
@@ -19,8 +19,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class UserSpringServiceImpl implements UserSpringService {
-	private final String USERROLE = "ROLE_USER";
-	private final AuthorityRepository authorityRepository;
+	private final String USERROLE = "USER";
+	private final RoleRepository roleRepository;
 	private final UserSpringRepository userSpringRepository;
 //	private final PasswordEncoder passwordEncoder;
 
@@ -29,7 +29,7 @@ public class UserSpringServiceImpl implements UserSpringService {
 	}
 
 	public UserSpring createUser(String username, String password) {
-		Optional<Authority> userRoleOpt = authorityRepository.findByRole(USERROLE);
+		Optional<Role> userRoleOpt = roleRepository.findByName(USERROLE);
 		if (userRoleOpt.isEmpty()) {
 			throw new UsernameNotFoundException("Role USER not found!");
 		}
@@ -37,7 +37,7 @@ public class UserSpringServiceImpl implements UserSpringService {
 		UserSpring user = UserSpring.builder()
 				.username(username)
 				.password(password)
-				.authority(userRoleOpt.get())
+				.role(userRoleOpt.get())
 				.build();
 		//@formatter:on
 		return userSpringRepository.save(user);
@@ -56,7 +56,7 @@ public class UserSpringServiceImpl implements UserSpringService {
 	}
 
 	public UserSpring updateUser(UserSpring user) {
-		userSpringRepository.findById(user.getId());
+		System.out.println("  "+user.getAuthorities());
 		return userSpringRepository.save(user);
 	}
 

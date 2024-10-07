@@ -3,6 +3,12 @@ package de.lewens_markisen.domain.security;
 import lombok.*;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 
@@ -13,9 +19,11 @@ import jakarta.persistence.*;
 @Builder
 @Entity
 @Table(name = "user_spring")
-public class UserSpring {
+public class UserSpring implements UserDetails, CredentialsContainer{
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
@@ -23,11 +31,22 @@ public class UserSpring {
     private String password;
 
     @Singular
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
-    @JoinTable(name = "user_spring_authority",
-        joinColumns = {@JoinColumn(name = "USER_SPRING_ID", referencedColumnName = "ID")},
-        inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
-    private Set<Authority> authorities;
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+        joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+        inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
+    private Set<Role> roles;
+
+    @Transient
+    public Set<GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(Role::getAuthorities)
+                .flatMap(Set::stream)
+                .map(authority -> {
+                    return new SimpleGrantedAuthority(authority.getPermission());
+                })
+                .collect(Collectors.toSet());
+    }
 
     @Builder.Default
     @Column(name = "account_non_expired")
@@ -43,5 +62,10 @@ public class UserSpring {
 
     @Builder.Default
     private Boolean enabled = true;
+
+	@Override
+	public void eraseCredentials() {
+        this.password = null;
+	}
 
 }

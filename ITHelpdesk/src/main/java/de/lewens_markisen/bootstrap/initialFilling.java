@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,11 +24,13 @@ import com.opencsv.exceptions.CsvException;
 
 import de.lewens_markisen.access.Access;
 import de.lewens_markisen.domain.security.Authority;
+import de.lewens_markisen.domain.security.Role;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.person.Person;
 import de.lewens_markisen.repository.AccessRepository;
 import de.lewens_markisen.repository.PersonRepository;
 import de.lewens_markisen.repository.security.AuthorityRepository;
+import de.lewens_markisen.repository.security.RoleRepository;
 import de.lewens_markisen.repository.security.UserSpringRepository;
 import de.lewens_markisen.utils.FileOperations;
 
@@ -39,9 +42,10 @@ public class initialFilling implements CommandLineRunner {
 	private static final String FILE_PERSON = "initialFilling/person.csv";
 	private final PersonRepository personRepository;
 	private final AccessRepository accessRepository;
+	private final RoleRepository roleRepository;
 	private final AuthorityRepository authorityRepository;
 	private final UserSpringRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public void run(String... args) {
@@ -54,46 +58,73 @@ public class initialFilling implements CommandLineRunner {
 		if (authorityRepository.count() > 0) {
 			return;
 		}
-		Authority adminRole = authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build());
-		Authority userRole = authorityRepository.save(Authority.builder().role("ROLE_USER").build());
-		Authority userPersonalAbteilungRole = authorityRepository.save(Authority.builder().role("ROLE_PERSONALABTEILUNG").build());
+		// person auths
+		Authority createPerson = authorityRepository.save(Authority.builder().permission("person.create").build());
+		Authority readPerson = authorityRepository.save(Authority.builder().permission("person.read").build());
+		Authority updatePerson = authorityRepository.save(Authority.builder().permission("person.update").build());
+		Authority deletePerson = authorityRepository.save(Authority.builder().permission("person.delete").build());
+
+		// user auths
+		Authority createUser = authorityRepository.save(Authority.builder().permission("user.create").build());
+		Authority readUser = authorityRepository.save(Authority.builder().permission("user.read").build());
+		Authority updateUser = authorityRepository.save(Authority.builder().permission("user.update").build());
+		Authority deleteUser = authorityRepository.save(Authority.builder().permission("user.delete").build());
+
+		// access auths
+		Authority createAccess = authorityRepository.save(Authority.builder().permission("access.create").build());
+		Authority readAccess = authorityRepository.save(Authority.builder().permission("access.read").build());
+		Authority updateAccess = authorityRepository.save(Authority.builder().permission("access.update").build());
+		Authority deleteAccess = authorityRepository.save(Authority.builder().permission("access.delete").build());
+		
+		// timeReport auths
+		Authority runTimeReport = authorityRepository.save(Authority.builder().permission("timeReport.run").build());
+
+		Role adminRole = roleRepository.save(Role.builder().name("ADMIN").build());
+		Role userRole = roleRepository.save(Role.builder().name("USER").build());
+		Role personDepartmentRole = roleRepository.save(Role.builder().name("PERSON_DEPARTMENT").build());
+
+        //@formatter:off
+		adminRole.setAuthorities(new HashSet<>(
+				Set.of(createPerson, updatePerson, readPerson, deletePerson, 
+						createUser, readUser, updateUser, deleteUser, 
+						createAccess, readAccess, updateAccess, deleteAccess,
+						runTimeReport)));
+
+        userRole.setAuthorities(new HashSet<>(Set.of(runTimeReport)));
+        personDepartmentRole.setAuthorities(new HashSet<>(Set.of(runTimeReport, readPerson)));
+        roleRepository.saveAll(Arrays.asList(adminRole, userRole, personDepartmentRole));
+        //@formatter:on
 
 		//@formatter:off
 		UserSpring user = UserSpring.builder()
 			.username("DmytroAverianov")
 			.password("1")
+			.role(adminRole)
 			.build();
-		Set<Authority> auth = new HashSet<Authority>();
-		auth.add(userRole);
-		auth.add(adminRole);
-		user.setAuthorities(auth);
 		userRepository.save(user);
 
         // user Admin for Tests
 		user = UserSpring.builder()
                 .username("spring")
                 .password(passwordEncoder.encode("guru"))
+                .role(adminRole)
                 .build();
-		auth.add(adminRole);
-		user.setAuthorities(auth);
 		userRepository.save(user);
 
         // user User for Tests
 		user = UserSpring.builder()
                 .username("user")
                 .password(passwordEncoder.encode("password"))
+                .role(userRole)
                 .build();
-		auth.add(userRole);
-		user.setAuthorities(auth);
 		userRepository.save(user);
 
         // user Personalabteilung for Tests
 		user = UserSpring.builder()
                 .username("personalabteilung")
                 .password(passwordEncoder.encode("Alfa Zentavra 00!"))
+                .role(personDepartmentRole)
                 .build();
-		auth.add(userPersonalAbteilungRole);
-		user.setAuthorities(auth);
 		userRepository.save(user);
 
  		//@formatter:on

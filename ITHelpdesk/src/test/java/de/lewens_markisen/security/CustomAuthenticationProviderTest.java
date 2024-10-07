@@ -1,4 +1,4 @@
-package de.lewens_markisen.services.security;
+package de.lewens_markisen.security;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
+
+import de.lewens_markisen.security.CustomAuthenticationProvider;
 
 @ActiveProfiles("test")
 @SpringBootTest()

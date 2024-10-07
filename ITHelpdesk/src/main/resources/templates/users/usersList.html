@@ -10,13 +10,15 @@
 <table id="users" class="table table-striped">
   <thead>
 	  <tr>
+	    <th>No</th>
 	    <th>Id</th>
 	    <th>Username</th>
 	  </tr>
   </thead>
   <a class="btn btn-primary" th:href="@{/users/rewriteNames}">Rewrite usernames in lowcase</a>   
   <tbody>
-	  <tr th:each="user : ${users}">
+	  <tr th:each="user,stat : ${users}">
+	    <td th:text="${stat.count}"></td>
 	    <td>
 	        <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.id}"/></a>
 	    </td>
