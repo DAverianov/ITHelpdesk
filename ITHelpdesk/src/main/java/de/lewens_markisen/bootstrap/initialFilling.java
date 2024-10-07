@@ -30,8 +30,9 @@ import de.lewens_markisen.person.Person;
 import de.lewens_markisen.repository.AccessRepository;
 import de.lewens_markisen.repository.PersonRepository;
 import de.lewens_markisen.repository.security.AuthorityRepository;
-import de.lewens_markisen.repository.security.RoleRepository;
 import de.lewens_markisen.repository.security.UserSpringRepository;
+import de.lewens_markisen.security.RoleService;
+import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.utils.FileOperations;
 
 @Slf4j
@@ -42,9 +43,10 @@ public class initialFilling implements CommandLineRunner {
 	private static final String FILE_PERSON = "initialFilling/person.csv";
 	private final PersonRepository personRepository;
 	private final AccessRepository accessRepository;
-	private final RoleRepository roleRepository;
+	private final RoleService roleService;
 	private final AuthorityRepository authorityRepository;
 	private final UserSpringRepository userRepository;
+	private final UserSpringService userSpringService;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
@@ -63,6 +65,7 @@ public class initialFilling implements CommandLineRunner {
 		Authority readPerson = authorityRepository.save(Authority.builder().permission("person.read").build());
 		Authority updatePerson = authorityRepository.save(Authority.builder().permission("person.update").build());
 		Authority deletePerson = authorityRepository.save(Authority.builder().permission("person.delete").build());
+		Authority loadPerson = authorityRepository.save(Authority.builder().permission("person.load").build());
 
 		// user auths
 		Authority createUser = authorityRepository.save(Authority.builder().permission("user.create").build());
@@ -78,30 +81,32 @@ public class initialFilling implements CommandLineRunner {
 		
 		// timeReport auths
 		Authority runTimeReport = authorityRepository.save(Authority.builder().permission("timeReport.run").build());
+		Authority runPersonTimeReport = authorityRepository.save(Authority.builder().permission("person.timeReport.run").build());
 
-		Role adminRole = roleRepository.save(Role.builder().name("ADMIN").build());
-		Role userRole = roleRepository.save(Role.builder().name("USER").build());
-		Role personDepartmentRole = roleRepository.save(Role.builder().name("PERSON_DEPARTMENT").build());
+		Role adminRole = roleService.saveIfNotExist(Role.builder().name("ADMIN").build());
+		Role userRole = roleService.saveIfNotExist(Role.builder().name("USER").build());
+		Role personDepartmentRole = roleService.saveIfNotExist(Role.builder().name("PERSON_DEPARTMENT").build());
 
         //@formatter:off
 		adminRole.setAuthorities(new HashSet<>(
-				Set.of(createPerson, updatePerson, readPerson, deletePerson, 
+				Set.of(createPerson, readPerson, updatePerson, deletePerson, loadPerson, 
 						createUser, readUser, updateUser, deleteUser, 
 						createAccess, readAccess, updateAccess, deleteAccess,
-						runTimeReport)));
+						runTimeReport, runPersonTimeReport)));
 
         userRole.setAuthorities(new HashSet<>(Set.of(runTimeReport)));
-        personDepartmentRole.setAuthorities(new HashSet<>(Set.of(runTimeReport, readPerson)));
-        roleRepository.saveAll(Arrays.asList(adminRole, userRole, personDepartmentRole));
+        
+        personDepartmentRole.setAuthorities(new HashSet<>(Set.of(readPerson, loadPerson, runTimeReport, runPersonTimeReport)));
+        roleService.saveAll(Arrays.asList(adminRole, userRole, personDepartmentRole));
         //@formatter:on
 
 		//@formatter:off
 		UserSpring user = UserSpring.builder()
-			.username("DmytroAverianov")
+			.username("dmytroaverianov")
 			.password("1")
 			.role(adminRole)
 			.build();
-		userRepository.save(user);
+		userSpringService.saveIfNotExist(user);
 
         // user Admin for Tests
 		user = UserSpring.builder()
@@ -109,7 +114,7 @@ public class initialFilling implements CommandLineRunner {
                 .password(passwordEncoder.encode("guru"))
                 .role(adminRole)
                 .build();
-		userRepository.save(user);
+		userSpringService.saveIfNotExist(user);
 
         // user User for Tests
 		user = UserSpring.builder()
@@ -117,7 +122,7 @@ public class initialFilling implements CommandLineRunner {
                 .password(passwordEncoder.encode("password"))
                 .role(userRole)
                 .build();
-		userRepository.save(user);
+		userSpringService.saveIfNotExist(user);
 
         // user Personalabteilung for Tests
 		user = UserSpring.builder()
@@ -125,7 +130,7 @@ public class initialFilling implements CommandLineRunner {
                 .password(passwordEncoder.encode("Alfa Zentavra 00!"))
                 .role(personDepartmentRole)
                 .build();
-		userRepository.save(user);
+		userSpringService.saveIfNotExist(user);
 
  		//@formatter:on
 		log.debug("Users Loaded: " + userRepository.count());

@@ -8,7 +8,7 @@ drop table if exists authority;
 create table user_spring (
       id SERIAL PRIMARY KEY,
       version int,
-      username varchar(120),
+      username varchar(120) UNIQUE,
       password varchar(200),
       account_non_expired boolean,
       account_non_locked boolean,
@@ -19,13 +19,13 @@ create table user_spring (
 create table role (
       id SERIAL PRIMARY KEY,
       version int,
-      name varchar(120)
+      name varchar(120) UNIQUE
 );
 
 create table authority (
       id SERIAL PRIMARY KEY,
       version int,
-      permission varchar(120)
+      permission varchar(120) UNIQUE
 );
 
 create table user_spring_role (

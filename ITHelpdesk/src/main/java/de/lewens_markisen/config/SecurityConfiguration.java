@@ -64,7 +64,8 @@ public class SecurityConfiguration implements AuthenticationProvider {
 					.requestMatchers("/webjars/**", "/login", "/resources/**", "/error").permitAll()
 					.anyRequest().authenticated()
 				)
-            .formLogin(withDefaults());
+            .formLogin(withDefaults())
+            .csrf(csrf -> csrf.disable());
 
 		//@formatter:on
 		return http.build();

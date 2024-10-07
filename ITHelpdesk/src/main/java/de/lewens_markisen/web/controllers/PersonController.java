@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,11 @@ import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.person.Persons;
+import de.lewens_markisen.security.perms.PersonDeletePermission;
+import de.lewens_markisen.security.perms.PersonLoadPermission;
+import de.lewens_markisen.security.perms.PersonReadPermission;
+import de.lewens_markisen.security.perms.PersonTimeReportPermission;
+import de.lewens_markisen.security.perms.PersonUpdatePermission;
 import de.lewens_markisen.services.connection.BCWebService;
 import de.lewens_markisen.timeReport.TimeReportService;
 import jakarta.transaction.Transactional;
@@ -40,7 +46,7 @@ public class PersonController {
 	private final BCWebService bcWebService;
 	private final TimeReportService timeReportService;
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
+	@PersonReadPermission
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		Persons persons = new Persons();
@@ -65,16 +71,14 @@ public class PersonController {
 		return personService.findAll(pageable);
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
-	@RequestMapping(value = "/edit/{id}")
+	@PersonUpdatePermission
+	@GetMapping(value = "/edit/{id}")
 	@Transactional
 	public ModelAndView showEditPersonForm(@PathVariable(name = "id") Long id) {
 		ModelAndView modelAndView = new ModelAndView("persons/personEdit");
 		Optional<Person> personOpt = personService.findById(id);
 		if (personOpt.isPresent()) {
 			modelAndView.addObject("person", personOpt.get());
-			System.out.println(" save BE "+modelAndView.getModel());
-			
 		} else {
 			modelAndView.addObject("message", "Person mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
@@ -82,47 +86,26 @@ public class PersonController {
 		return modelAndView;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@PersonUpdatePermission
+	@PostMapping(value = "/update")
 	@Transactional
 	public String updatePerson(@ModelAttribute("person") Person person,
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
-			System.out.println("  save "+person+" v "+person.getVersion());
 			personService.updatePerson(person);
 		}
 		return "redirect:/persons/list";
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
-	@RequestMapping(value = "/delete/{bcCode}", method = RequestMethod.GET)
-	public String deletePerson(@PathVariable(name = "id") Long id) {
-		Optional<Person> personOpt = personService.findById(id);
-		if (personOpt.isPresent()) {
-			personService.delete(personOpt.get());
-		} else {
-		}
-		return "redirect:/persons/list";
+	@PersonDeletePermission
+    @PostMapping("/delete")
+	public String deletePerson(@ModelAttribute("person") Person person) {
+        this.personService.delete(person);
+ 		return "redirect:/persons/list";
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
-	@RequestMapping(value = "/timereport/{bcCode}")
-	public ModelAndView showTimeReport(@PathVariable(name = "bcCode") String bcCode) {
-		ModelAndView modelAndView = new ModelAndView("persons/timereport");
-		System.out.println("showTimeReport! " + bcCode);
-		Optional<Person> personOpt = personService.findByBcCode(bcCode);
-		if (personOpt.isPresent()) {
-			modelAndView.addObject("person", personOpt.get().toString());
-			modelAndView.addObject("timeRecords", timeReportService.createReport(personOpt.get().getBcCode()).get());
-		} else {
-			modelAndView.addObject("message", "Person mit id wurde nicht gefunden!");
-			modelAndView.setViewName("error");
-		}
-		return modelAndView;
-	}
-
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PERSONALABTEILUNG')")
-	@RequestMapping(value = "/load", method = RequestMethod.GET)
+	@PersonLoadPermission
+	@GetMapping(value = "/load")
 	public String loadPerson() {
 		bcWebService.loadPersonFromBC();
 		return "redirect:/persons/list";

@@ -21,22 +21,6 @@ import lombok.AllArgsConstructor;
 public class SpringSecurityWebAuxTestConfig {
 	private final RoleRepository roleRepository;
 
-//	@Bean
-//	@Primary
-//	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//		//@formatter:off
-//		http
-//			.authorizeHttpRequests((authz) -> 
-//				authz
-//					.requestMatchers("/webjars/**", "/login", "/resources/**", "/error").permitAll()
-//					.anyRequest().authenticated()
-//				)
-//           .httpBasic(withDefaults());
-//			
-//		//@formatter:on
-//		return http.build();
-//	}
-
 	@Bean
 	@Primary
 	public UserDetailsService userDetailsService() {

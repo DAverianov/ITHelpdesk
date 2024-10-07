@@ -55,8 +55,7 @@ public class UserSpringServiceImpl implements UserSpringService {
 		return userSpringRepository.findAll(pageable);
 	}
 
-	public UserSpring updateUser(UserSpring user) {
-		System.out.println("  "+user.getAuthorities());
+	public UserSpring saveUser(UserSpring user) {
 		return userSpringRepository.save(user);
 	}
 
@@ -76,6 +75,17 @@ public class UserSpringServiceImpl implements UserSpringService {
 	@Override
 	public String convertNameToLowCase(String username) {
 		return StringUtilsLSS.replaceUmlauts(StringUtils.lowerCase(StringUtils.deleteWhitespace(username)));
+	}
+
+	@Override
+	public UserSpring saveIfNotExist(UserSpring user) {
+		Optional<UserSpring> userOpt = findByName(user.getUsername());
+		if (userOpt.isPresent()) {
+			return userOpt.get();
+		}
+		else {
+			return saveUser(user);
+		}
 	}
 
 }

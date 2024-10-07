@@ -25,6 +25,10 @@ import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.domain.security.UserSpringList;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.security.UserSpringServiceImpl;
+import de.lewens_markisen.security.perms.PersonReadPermission;
+import de.lewens_markisen.security.perms.UserDeletePermission;
+import de.lewens_markisen.security.perms.UserReadPermission;
+import de.lewens_markisen.security.perms.UserUpdatePermission;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +42,7 @@ public class UserController {
 
 	private final UserSpringService userSpringService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@UserReadPermission
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		UserSpringList users = new UserSpringList();
@@ -63,7 +67,7 @@ public class UserController {
 		return userSpringService.findAll(pageable);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@UserUpdatePermission
 	@GetMapping(value = "/edit/{id}")
 	@Transactional
 	public ModelAndView showEditUserForm(@PathVariable(name = "id") Integer id) {
@@ -78,18 +82,18 @@ public class UserController {
 		return modelAndView;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@UserUpdatePermission
 	@PostMapping(value = "/update")
 	@Transactional
 	public String updateUser(@ModelAttribute("user") UserSpring user,
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
-			userSpringService.updateUser(user);
+			userSpringService.saveUser(user);
 		}
 		return "redirect:/users/list";
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@UserDeletePermission
 	@GetMapping(value = "/delete/{id}")
 	public String deleteUser(@PathVariable(name = "id") Integer id) {
 		Optional<UserSpring> userSpringOpt = userSpringService.findById(id);
@@ -100,11 +104,11 @@ public class UserController {
 		return "redirect:/users/list";
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@UserUpdatePermission
 	@GetMapping(path = "/rewriteNames")
 	public String rewriteUsernames() {
 		userSpringService.rewriteUsernames();
-		return "users/list";
+		return "redirect:/users/list";
 	}
 
 }

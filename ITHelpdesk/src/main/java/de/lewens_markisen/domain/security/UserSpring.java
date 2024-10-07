@@ -32,8 +32,8 @@ public class UserSpring implements UserDetails, CredentialsContainer{
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-        joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+    @JoinTable(name = "user_spring_role",
+        joinColumns = {@JoinColumn(name = "USER_SPRING_ID", referencedColumnName = "ID")},
         inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
     private Set<Role> roles;
 

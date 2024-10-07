@@ -26,18 +26,18 @@ public class Person extends BaseEntity {
 
 	@Builder
 	public Person(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String name,
-			String bcCode) {
+			String nameForSearch, String bcCode) {
 		super(id, version, createdDate, lastModifiedDate);
 		this.name = name;
 		this.bcCode = bcCode;
-		this.nameForSearch = convertToNameForSearch(this.name); 
+		this.nameForSearch = convertToNameForSearch(this.name);
 	}
 
 	@NotNull
 	@Size(min = 2, max = 120)
 	@Column(name = "name", length = 120)
 	private String name;
-	
+
 	@NotNull
 	@Size(min = 2, max = 120)
 	@Column(name = "name_for_search", length = 120)
@@ -50,7 +50,7 @@ public class Person extends BaseEntity {
 	public static String convertToNameForSearch(String name) {
 		return StringUtilsLSS.replaceUmlauts(StringUtils.lowerCase(StringUtils.deleteWhitespace(name)));
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Person [bcCode=" + bcCode + ", name=" + name + "]";
