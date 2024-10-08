@@ -1,10 +1,10 @@
-package de.lewens_markisen.repository.security;
+package de.lewens_markisen.repository.local.security;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import de.lewens_markisen.domain.security.Role;
+import de.lewens_markisen.domain.localDb.security.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
 

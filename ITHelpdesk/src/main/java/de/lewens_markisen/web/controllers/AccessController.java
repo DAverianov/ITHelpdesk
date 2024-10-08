@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.access.Access;
 import de.lewens_markisen.access.AccessService;
 import de.lewens_markisen.access.Accesses;
+import de.lewens_markisen.domain.localDb.Access;
 import de.lewens_markisen.security.perms.AccessCreatePermission;
 import de.lewens_markisen.security.perms.AccessReadPermission;
 import de.lewens_markisen.security.perms.AccessUpdatePermission;
@@ -58,7 +58,7 @@ public class AccessController {
 	}
 
 	@AccessReadPermission
-	@RequestMapping(value = "/{id}")
+	@GetMapping(value = "/{id}")
 	public ModelAndView showEditAccessForm(@PathVariable(name = "id") Long id) {
 		ModelAndView modelAndView = new ModelAndView("access/accessEdit");
 		Optional<Access> accessOpt = accessService.findById(id);

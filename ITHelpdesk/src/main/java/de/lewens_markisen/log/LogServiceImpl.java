@@ -6,7 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.repository.LogRepository;
+import de.lewens_markisen.domain.localDb.Log;
+import de.lewens_markisen.repository.local.LogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

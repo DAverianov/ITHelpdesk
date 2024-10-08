@@ -1,11 +1,10 @@
-package de.lewens_markisen.person;
+package de.lewens_markisen.domain.localDb;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

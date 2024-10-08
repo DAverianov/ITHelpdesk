@@ -7,9 +7,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.person.Person;
-import de.lewens_markisen.repository.PersonRepository;
-import de.lewens_markisen.repository.TimeRegisterEventRepository;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.repository.local.PersonRepository;
+import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
 import de.lewens_markisen.services.connection.BCWebService;
 import de.lewens_markisen.timeReport.PeriodReport;
 import jakarta.transaction.Transactional;

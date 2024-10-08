@@ -1,11 +1,9 @@
-package de.lewens_markisen.log;
+package de.lewens_markisen.domain.localDb;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
-import de.lewens_markisen.domain.BaseEntity;
-import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.person.Person;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;

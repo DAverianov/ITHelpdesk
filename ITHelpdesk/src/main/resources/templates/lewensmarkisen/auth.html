@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'lewensmarkisen/auth')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Authenticate &ndash; Lewens-markisen</title>
+    <link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+</head>
+<body>
+<h1>Login</h1>
+<div data-th-if="${errors}">
+    <h2>Es gibt Fehlers</h2>
+    <ul>
+        <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
+    </ul>
+</div>
+<form method="post" data-th-action="@{/lewensmarkisen/auth}">
+    <label>
+        Login:<br>
+        <input type="text" name="userName" data-th-value="${payload?.userName}">
+    </label><br>
+    <label>
+        Password:<br>
+        <textarea name="password" data-th-text="${payload?.password}"></textarea>
+    </label><br>
+    <button type="submit">Login</button>
+</form>
+</body>
+</html>

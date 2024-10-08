@@ -12,10 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.security.Role;
-import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.repository.security.RoleRepository;
-import de.lewens_markisen.repository.security.UserSpringRepository;
+import de.lewens_markisen.domain.localDb.security.Role;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.repository.local.security.RoleRepository;
+import de.lewens_markisen.repository.local.security.UserSpringRepository;
 import de.lewens_markisen.utils.StringUtilsLSS;
 import lombok.AllArgsConstructor;
 

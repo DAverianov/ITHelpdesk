@@ -6,13 +6,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.log.Log;
+import de.lewens_markisen.domain.localDb.Log;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.log.LogService;
-import de.lewens_markisen.person.Person;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.UserSpringServiceImpl;
-import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
 import lombok.RequiredArgsConstructor;

@@ -32,9 +32,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import de.lewens_markisen.access.Access;
 import de.lewens_markisen.access.AccessService;
-import de.lewens_markisen.repository.AccessRepository;
+import de.lewens_markisen.domain.localDb.Access;
+import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.web.controllers.AccessController;
 
 @ExtendWith(MockitoExtension.class)

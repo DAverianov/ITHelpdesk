@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.domain.security.UserSpring;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

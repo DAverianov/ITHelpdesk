@@ -5,7 +5,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.repository.TimeRegisterEventRepository;
+import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")

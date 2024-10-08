@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain.security;
+package de.lewens_markisen.domain.localDb.security;
 
 import java.util.ArrayList;
 import java.util.List;

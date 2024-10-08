@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.access.Access;
-import de.lewens_markisen.repository.AccessRepository;
+import de.lewens_markisen.domain.localDb.Access;
+import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.services.EncryptionService;
 
 @SpringBootTest

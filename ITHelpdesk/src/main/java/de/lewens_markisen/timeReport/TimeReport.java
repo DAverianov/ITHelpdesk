@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.person.Person;
-import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

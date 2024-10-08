@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain;
+package de.lewens_markisen.domain.localDb;
 
 import java.sql.Timestamp;
 import java.util.Objects;

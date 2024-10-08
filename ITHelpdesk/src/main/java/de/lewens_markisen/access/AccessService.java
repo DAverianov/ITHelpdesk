@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import de.lewens_markisen.domain.localDb.Access;
+
 public interface AccessService {
 	public Access save(Access access);
 	public Optional<Access> findById(Long id);

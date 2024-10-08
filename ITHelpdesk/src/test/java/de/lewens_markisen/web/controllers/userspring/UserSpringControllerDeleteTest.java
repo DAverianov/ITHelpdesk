@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
-import de.lewens_markisen.domain.security.UserSpring;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.web.controllers.BaseIT;
 
 @SpringBootTest

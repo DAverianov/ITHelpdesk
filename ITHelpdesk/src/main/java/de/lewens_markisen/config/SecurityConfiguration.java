@@ -28,7 +28,7 @@ import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAu
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.domain.security.UserSpring;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.security.UserSpringServiceImpl;
 import jakarta.transaction.Transactional;
@@ -101,9 +101,6 @@ public class SecurityConfiguration implements AuthenticationProvider {
 		UserSpring user;
 		if (userOpt.isPresent()) {
 			user = userOpt.get();
-//			UserDetails principal = User.builder().username(user.getUsername()).password("")
-//					.authorities(convertToSpringAuthorities(user.getAuthorities())).build();
-
 		} else {
 			user = userService.createUser(userName, "");
 		}

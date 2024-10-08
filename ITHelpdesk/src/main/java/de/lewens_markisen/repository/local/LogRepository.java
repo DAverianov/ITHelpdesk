@@ -1,4 +1,4 @@
-package de.lewens_markisen.repository;
+package de.lewens_markisen.repository.local;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import de.lewens_markisen.log.Log;
+import de.lewens_markisen.domain.localDb.Log;
 
 public interface LogRepository extends JpaRepository<Log, Long>{
 

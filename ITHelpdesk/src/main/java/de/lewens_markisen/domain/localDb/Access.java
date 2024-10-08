@@ -1,10 +1,8 @@
-package de.lewens_markisen.access;
+package de.lewens_markisen.domain.localDb;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
-import de.lewens_markisen.domain.BaseEntity;
-import de.lewens_markisen.domain.PasswordConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

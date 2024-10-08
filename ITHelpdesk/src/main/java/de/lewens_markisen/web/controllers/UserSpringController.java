@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.domain.BaseEntity;
-import de.lewens_markisen.domain.security.UserSpring;
-import de.lewens_markisen.domain.security.UserSpringList;
+import de.lewens_markisen.domain.localDb.BaseEntity;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.localDb.security.UserSpringList;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.security.perms.UserDeletePermission;
 import de.lewens_markisen.security.perms.UserReadPermission;

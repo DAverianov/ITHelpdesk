@@ -13,7 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.ActiveProfiles;
 
 import de.lewens_markisen.config.SecurityConfiguration;
-import de.lewens_markisen.person.Person;
+import de.lewens_markisen.domain.localDb.Person;
 import de.lewens_markisen.person.PersonService;
 
 @ActiveProfiles("test")

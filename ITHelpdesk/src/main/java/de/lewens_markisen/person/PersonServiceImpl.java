@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.repository.PersonRepository;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.repository.local.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
