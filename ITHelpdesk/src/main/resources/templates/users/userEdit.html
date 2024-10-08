@@ -36,8 +36,8 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="auth : ${user.authorities}">
-					<td th:text="${auth.role}"></td>
+				<tr th:each="role : ${user.roles}">
+					<td th:text="${role.name}"></td>
 					<td></td>
 				</tr>
 			</tbody>

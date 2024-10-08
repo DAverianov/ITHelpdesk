@@ -1,14 +1,12 @@
 package de.lewens_markisen.timeReport;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.log.Log;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.Person;
@@ -44,14 +42,15 @@ public class TimeReportService {
 	public Optional<TimeReport> createReport(String bcCode) {
 		//@formatter:off
 		log.info("Create TimeReport for " + bcCode);
-		logService.save(Log.builder()
-				.user(userService.findByName(getUserName()).get())
-				.event("TimeReport")
-				.description("time report ")
-				.build());
-		//@formatter:on
+		Optional<UserSpring> userOpt = userService.getCurrentUser();
+		if (userOpt.isPresent()) {
+			logService.save(Log.builder()
+					.user(userOpt.get())
+					.event("TimeReport")
+					.description("time report ")
+					.build());
+		}
 
-		//@formatter:off
 		PeriodReport period = PeriodReport.builder()
 				.start(getStartDateReport())
 				.end(LocalDate.now())
@@ -101,9 +100,10 @@ public class TimeReportService {
 	}
 
 	public Optional<String> getUserBcCode() {
-		if (SecurityContextHolder.getContext().getAuthentication() != null) {
+		String userName = userService.getAuthenticationName();
+		if (!userName.equals("")) {
 			Optional<Person> personOpt = personService
-					.findByNameForSearch(Person.convertToNameForSearch(getUserName()));
+					.findByNameForSearch(Person.convertToNameForSearch(userName));
 			if (personOpt.isPresent()) {
 				return Optional.of(personOpt.get().getBcCode());
 			} else {
@@ -111,15 +111,6 @@ public class TimeReportService {
 			}
 		} else {
 			return Optional.empty();
-		}
-	}
-
-	private String getUserName() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth == null) {
-			return "";
-		} else {
-			return auth.getName();
 		}
 	}
 

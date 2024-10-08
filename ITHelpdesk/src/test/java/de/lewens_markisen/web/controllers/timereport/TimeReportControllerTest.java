@@ -1,4 +1,4 @@
-package de.lewens_markisen.web.controllers;
+package de.lewens_markisen.web.controllers.timereport;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
+
+import de.lewens_markisen.web.controllers.BaseIT;
 
 @SpringBootTest
 class TimeReportControllerTest extends BaseIT{

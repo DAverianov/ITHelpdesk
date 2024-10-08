@@ -8,6 +8,8 @@ import de.lewens_markisen.domain.security.UserSpring;
 
 public interface UserSpringService {
 	public Optional<UserSpring> getUserByName(String username);
+	public String getAuthenticationName();
+	public Optional<UserSpring> getCurrentUser();
 
 	public Optional<UserSpring> findByName(String userName);
 	public Optional<UserSpring> findById(Integer id);

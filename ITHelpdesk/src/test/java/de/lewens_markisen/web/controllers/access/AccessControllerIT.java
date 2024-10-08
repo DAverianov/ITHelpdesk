@@ -1,8 +1,11 @@
-package de.lewens_markisen.web.controllers;
+package de.lewens_markisen.web.controllers.access;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithUserDetails;
+
+import de.lewens_markisen.web.controllers.BaseIT;
+import de.lewens_markisen.web.controllers.SpringSecurityWebAuxTestConfig;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

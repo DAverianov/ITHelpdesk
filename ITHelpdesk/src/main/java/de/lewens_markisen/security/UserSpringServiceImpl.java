@@ -2,10 +2,13 @@ package de.lewens_markisen.security;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +59,14 @@ public class UserSpringServiceImpl implements UserSpringService {
 	}
 
 	public UserSpring saveUser(UserSpring user) {
-		return userSpringRepository.save(user);
+		List<UserSpring> userWithThatName = userSpringRepository.findByUsername(user.getUsername());
+		Long qua = userWithThatName.stream().filter(u -> !u.getId().equals(user.getId())).collect(Collectors.counting());
+		if (qua==0) {
+			return userSpringRepository.save(user);
+		}
+		else {
+			throw new BadRequestException( List.of("User with Name "+user.getUsername()+" is allready exist!"));
+		}
 	}
 
 	@Override
@@ -85,6 +95,27 @@ public class UserSpringServiceImpl implements UserSpringService {
 		}
 		else {
 			return saveUser(user);
+		}
+	}
+
+	@Override
+	public Optional<UserSpring> getCurrentUser() {
+		String authName = getAuthenticationName();
+		if (authName.equals("")) {
+			return Optional.empty();
+		}
+		else {
+			return findByName(authName);
+		}
+	}
+
+	@Override
+	public String getAuthenticationName() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			return "";
+		} else {
+			return auth.getName();
 		}
 	}
 

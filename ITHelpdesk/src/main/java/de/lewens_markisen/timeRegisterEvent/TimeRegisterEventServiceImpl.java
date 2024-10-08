@@ -46,13 +46,13 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 	public Optional<List<TimeRegisterEvent>> readEventsProPerson(Person person, PeriodReport period) {
 		// delete all records
 		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPerson(person);
-		events.stream().forEach(e -> timeRegisterEventRepository.delete(e));
+		timeRegisterEventRepository.deleteAll(events);
 		// read from BC
 		Optional<List<TimeRegisterEvent>> eventsBC = bcWebService.readTimeRegisterEventsFromBC(person, period);
 		List<TimeRegisterEvent> eventsBCsaved = new ArrayList<TimeRegisterEvent>();
 		// save
 		if (eventsBC.isPresent()) {
-			eventsBC.get().stream().forEach(e -> eventsBCsaved.add(timeRegisterEventRepository.save(e)));
+			timeRegisterEventRepository.saveAll(eventsBC.get());
 			return Optional.of(eventsBCsaved);
 		}
 		else {

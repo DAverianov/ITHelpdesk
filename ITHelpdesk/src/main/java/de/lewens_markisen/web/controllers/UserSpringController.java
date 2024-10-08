@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,18 +22,18 @@ import de.lewens_markisen.domain.BaseEntity;
 import de.lewens_markisen.domain.security.UserSpring;
 import de.lewens_markisen.domain.security.UserSpringList;
 import de.lewens_markisen.security.UserSpringService;
-import de.lewens_markisen.security.UserSpringServiceImpl;
-import de.lewens_markisen.security.perms.PersonReadPermission;
 import de.lewens_markisen.security.perms.UserDeletePermission;
 import de.lewens_markisen.security.perms.UserReadPermission;
 import de.lewens_markisen.security.perms.UserUpdatePermission;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/users")
-public class UserController {
+public class UserSpringController {
 
 	public static Comparator<BaseEntity> COMPARATOR_BY_ID = Comparator.comparing(BaseEntity::getId);
 	public static Comparator<UserSpring> COMPARATOR_BY_NAME = Comparator.comparing(UserSpring::getUsername);
@@ -88,7 +86,12 @@ public class UserController {
 	public String updateUser(@ModelAttribute("user") UserSpring user,
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
-			userSpringService.saveUser(user);
+			try {
+				userSpringService.saveUser(user);
+			}
+			catch (Exception e) {
+				log.debug("could not save User: " + user.getUsername()+". Not unique!");
+			}
 		}
 		return "redirect:/users/list";
 	}

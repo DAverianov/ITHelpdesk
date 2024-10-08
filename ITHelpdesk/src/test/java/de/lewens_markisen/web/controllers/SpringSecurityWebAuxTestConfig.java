@@ -28,7 +28,6 @@ public class SpringSecurityWebAuxTestConfig {
 		Role adminRole = roleRepository.findByName("ADMIN").get();
 		Role userRole = roleRepository.findByName("USER").get();
 		Role personDepartmentRole = roleRepository.findByName("PERSON_DEPARTMENT").get();
-		System.out.println("  userDetailsService");
 
 		//@formatter:off
 		UserSpring userAdmin = UserSpring.builder()

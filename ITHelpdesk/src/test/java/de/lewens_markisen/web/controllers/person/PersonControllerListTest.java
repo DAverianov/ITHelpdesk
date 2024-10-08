@@ -15,25 +15,25 @@ class PersonControllerListTest extends BaseIT {
 	public static final String API_LIST = "/persons/list";
 
 	@Test
-	void listAccessesNotAuth() throws Exception {
+	void listPersonNotAuth() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().is3xxRedirection());
 	}
 
 	@WithUserDetails("spring")
 	@Test
-	void listAccessesUserAuthAdmin() throws Exception {
+	void listPersonUserAuthAdmin() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().isOk()).andExpect(view().name("persons/personsList"));
 	}
 	
 	@WithUserDetails("userPersonDepartment")
 	@Test
-	void listAccessesUserAuthUserPersonDepartment() throws Exception {
+	void listPersonUserAuthUserPersonDepartment() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().isOk()).andExpect(view().name("persons/personsList"));
 	}
 
 	@WithUserDetails("user")
 	@Test
-	void listAccessesUserAuthUser() throws Exception {
+	void listPersonUserAuthUser() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().isForbidden());
 	}
 
