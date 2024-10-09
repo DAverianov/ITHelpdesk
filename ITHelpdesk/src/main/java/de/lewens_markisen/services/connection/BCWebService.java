@@ -209,8 +209,7 @@ public class BCWebService {
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" 
 				+ connectionBC.getWsPersonenkarte()
-//				+ connectionBC.getFilter(createFilterKonzernAustritt())
-				+ "?$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
+				+ "?$filter=Konzernaustritt_SOC%20eq%200001-01-01%20&%20$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
 			if (anserOpt.isPresent()) {
 				result = readPersonFromJson(anserOpt.get());

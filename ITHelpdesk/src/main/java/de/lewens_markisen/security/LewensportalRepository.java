@@ -38,8 +38,9 @@ public class LewensportalRepository {
 				//@formatter:on
 			}
 		} catch (Exception e) {
-			System.out.println(" error in jdbc query! "+e.getMessage());
-			throw e;
+			return Optional.empty();
+//			System.out.println(" error in jdbc query! "+e.getMessage());
+//			throw e;
 		}
 	}
 }
