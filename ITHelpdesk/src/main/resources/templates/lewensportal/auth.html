@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org"
-	th:replace="~{fragments/layout :: layout (~{::body},'lewensmarkisen/auth')}">
+	th:replace="~{fragments/layout :: layout (~{::body},'lewensportal/auth')}">
 <head>
     <meta charset="UTF-8">
     <title>Authenticate &ndash; Lewens-markisen</title>
@@ -17,7 +17,7 @@
         <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
     </ul>
 </div>
-<form method="post" data-th-action="@{/lewensmarkisen/auth}">
+<form method="post" data-th-action="@{/lewensportal/auth}">
     <label>
         Login:<br>
         <input type="text" name="userName" data-th-value="${payload?.userName}">
