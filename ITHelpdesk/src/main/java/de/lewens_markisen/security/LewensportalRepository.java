@@ -21,9 +21,9 @@ public class LewensportalRepository {
 
 		try {
 			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
-					"select user.username, user_password.algorithm, user_password.salt, user_password.password from user \r\n"
-							+ "left outer join user_password\r\n" + "     on (user_password.user_id = user.id)    \r\n"
-							+ "where user.status = 1 and user.username = '" + name+"'");
+					"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password FROM user \r\n"
+							+ "LEFT OUTER JOIN user_password\r\n" + " ON (user_password.user_id = user.id)    \r\n"
+							+ "WHERE user.status = 1 and user.username = '" + name + "'");
 
 			if (dbRow.size() == 0) {
 				return Optional.empty();
@@ -39,8 +39,29 @@ public class LewensportalRepository {
 			}
 		} catch (Exception e) {
 			return Optional.empty();
-//			System.out.println(" error in jdbc query! "+e.getMessage());
-//			throw e;
+		}
+	}
+
+	public Optional<String> getBcCodeByUsername(String username) {
+
+		try {
+			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
+					"SELECT user.username, profile.bccode FROM user \r\n"
+							+ "       LEFT OUTER JOIN profile ON (profile.user_id = user.id)\r\n"
+							+ "WHERE user.username = '" + username + "'");
+			if (dbRow.size() == 0) {
+				return Optional.empty();
+			} else {
+				String bcCode = Integer.toString((Integer) dbRow.get("bccode"));
+				if (bcCode == null || bcCode.isBlank()) {
+					return Optional.empty();
+				}
+				else {
+					return Optional.of(bcCode);
+				}
+			}
+		} catch (Exception e) {
+			return Optional.empty();
 		}
 	}
 }

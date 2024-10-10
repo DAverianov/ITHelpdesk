@@ -31,7 +31,7 @@ public class TimeReportController {
 		if (reportOpt.isPresent()) {
 			modelAndView.addObject("timeReport", reportOpt.get());
 		} else {
-			modelAndView.addObject("message", "Datem für user "+userSpringService.getAuthenticationName()+" wurde nicht bekommen!");
+			modelAndView.addObject("message", "Daten für user "+userSpringService.getAuthenticationName()+" wurde nicht bekommen!");
 			modelAndView.setViewName("error");
 		}
 		return modelAndView;
@@ -45,7 +45,7 @@ public class TimeReportController {
 		if (reportOpt.isPresent()) {
 			modelAndView.addObject("timeReport", reportOpt.get());
 		} else {
-			modelAndView.addObject("message", "Person für user "+userSpringService.getAuthenticationName()+" wurde nicht gefunden!");
+			modelAndView.addObject("message", "User "+userSpringService.getAuthenticationName()+": There is no BC Code for the user!");
 			modelAndView.setViewName("error");
 		}
 		return modelAndView;

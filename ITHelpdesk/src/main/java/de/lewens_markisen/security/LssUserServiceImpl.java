@@ -39,4 +39,12 @@ public class LssUserServiceImpl implements LssUserService {
 		}
 		return sb.toString();
 	}
+
+	@Override
+	public Optional<String> getBcCodeByUsername(String username) {
+		if (username == null || username.isBlank()) {
+			return Optional.empty();
+		}
+		return lewensportalRepository.getBcCodeByUsername(username);
+	}
 }

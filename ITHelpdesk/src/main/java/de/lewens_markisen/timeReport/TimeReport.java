@@ -1,10 +1,8 @@
 package de.lewens_markisen.timeReport;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.localDb.Person;
 import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,23 +23,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Component
 public class TimeReport {
 
 	private Person person;
+	private PeriodReport period;
+	private String header;
 	private List<TimeRegisterEvent> timeRecords;
 	private List<TimeReportRecord> recordsWithGroups;
 	private String comment;
-	private PeriodReport period;
-
-	@Builder
-	public TimeReport(Person person, List<TimeRegisterEvent> timeRecords, String comment, PeriodReport period) {
-		super();
-		this.person = person;
-		this.timeRecords = timeRecords;
-		this.comment = comment;
-		this.period = period;
-	}
 
 	public void createReportRecords() {
 		this.recordsWithGroups = new ArrayList<TimeReportRecord>();
@@ -99,10 +92,6 @@ public class TimeReport {
 		String group = getGroupName.apply(groupRecord);
 		this.recordsWithGroups.stream().filter(w -> getGroupName.apply(w).equals(group) && w.getGroup() == 0)
 				.forEach(w -> groupRecord.addSumm(w));
-	}
-
-	public String header() {
-		return "" + getPerson().getName() + " " + getPeriod().getPeriod();
 	}
 
 	public String headerService() {

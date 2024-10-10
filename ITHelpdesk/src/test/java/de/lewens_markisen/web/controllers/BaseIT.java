@@ -14,31 +14,28 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 
 @Import(SpringSecurityWebAuxTestConfig.class)
 public abstract class BaseIT {
-    @Autowired
-    WebApplicationContext wac;
+	@Autowired
+	WebApplicationContext wac;
 
-    protected MockMvc mockMvc;
+	protected MockMvc mockMvc;
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .apply(springSecurity())
-                .build();
-    }
+	@BeforeEach
+	public void setup() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+	}
 
-    public static Stream<Arguments> getStreamAdminUser() {
-        return Stream.of(Arguments.of("spring" , "guru"));
-    }
+	public static Stream<Arguments> getStreamAdminUser() {
+		return Stream.of(Arguments.of("spring", "guru"));
+	}
 
-    public static Stream<Arguments> getStreamAllUsers() {
-        return Stream.of(Arguments.of("spring" , "guru"),
-                Arguments.of("user", "pass"),
-                Arguments.of("userPersonalAbteilung", "pass"));
-    }
+	public static Stream<Arguments> getStreamAllUsers() {
+		return Stream.of(Arguments.of("spring", "guru"), 
+				Arguments.of("user", "pass"),
+				Arguments.of("userPersonalAbteilung", "pass"));
+	}
 
-    public static Stream<Arguments> getStreamNotAdmin() {
-        return Stream.of(Arguments.of("user", "pass"),
-                Arguments.of("userPersonalAbteilung", "pass"));
-    }
+	public static Stream<Arguments> getStreamNotAdmin() {
+		return Stream.of(Arguments.of("user", "pass"), 
+				Arguments.of("userPersonalAbteilung", "pass"));
+	}
 }

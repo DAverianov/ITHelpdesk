@@ -7,4 +7,5 @@ public interface LssUserService{
 	public Optional<LssUser> findUserByName(String username);
 	public String getLssHashPassword(String password, String salt) throws NoSuchAlgorithmException;
 	public String hash(String codec, String password) throws NoSuchAlgorithmException;
+	public Optional<String> getBcCodeByUsername(String username);
 }

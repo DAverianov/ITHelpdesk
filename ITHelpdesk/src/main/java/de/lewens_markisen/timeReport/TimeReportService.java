@@ -12,6 +12,7 @@ import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
 import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
+import de.lewens_markisen.security.LssUserService;
 import de.lewens_markisen.security.UserSpringServiceImpl;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
@@ -27,6 +28,7 @@ public class TimeReportService {
 	private final PersonService personService;
 	private final LogService logService;
 	private final UserSpringServiceImpl userService;
+	private final LssUserService lssUserService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		PeriodReport period = PeriodReport.thisMonat();
@@ -64,6 +66,7 @@ public class TimeReportService {
 			TimeReport timeReport = TimeReport.builder()
 					.person(personOpt.get())
 					.period(period)
+					.header(createHeader(personOpt.get(), period))
 					.timeRecords(timeRegisterEventService.findAllByPerson(personOpt.get(), period).get())
 					.build();
 			timeReport.createReportRecords();
@@ -80,18 +83,25 @@ public class TimeReportService {
 
 	}
 	
+	private String createHeader(Person person, PeriodReport period) {
+		//@formatter:off
+		return "Benutzer: "+userService.getAuthenticationName()
+			+" (" + person.getName() + " "+person.getBcCode()+") " 
+			+ period.getPeriod();
+		//@formatter:on
+	}
+
 	private LocalDate getStartDateReport() {
 		LocalDate now = LocalDate.now();
-		if (now.getDayOfMonth()>10) {
+		if (now.getDayOfMonth() > 10) {
 			return now.withDayOfMonth(1);
-		}
-		else {
+		} else {
 			return now.minusMonths(1).withDayOfMonth(1);
 		}
 	}
 
 	public Optional<TimeReport> createReportCurrentUser() {
-		Optional<String> bcCodeOpt = getUserBcCode();
+		Optional<String> bcCodeOpt = getUserBcCode(userService.getAuthenticationName());
 		if (bcCodeOpt.isPresent()) {
 			return createReport(bcCodeOpt.get());
 		} else {
@@ -99,17 +109,11 @@ public class TimeReportService {
 		}
 	}
 
-	public Optional<String> getUserBcCode() {
-		String userName = userService.getAuthenticationName();
-		if (!userName.equals("")) {
-			Optional<Person> personOpt = personService
-					.findByNameForSearch(Person.convertToNameForSearch(userName));
-			if (personOpt.isPresent()) {
-				return Optional.of(personOpt.get().getBcCode());
-			} else {
-				return Optional.empty();
-			}
+	public Optional<String> getUserBcCode(String username) {
+		if (!username.equals("")) {
+			return lssUserService.getBcCodeByUsername(username);
 		} else {
+			log.info("Create TimeReport for " + username+". There is no BC Code for the user");
 			return Optional.empty();
 		}
 	}

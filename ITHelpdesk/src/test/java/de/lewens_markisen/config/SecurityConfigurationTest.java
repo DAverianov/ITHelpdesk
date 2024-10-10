@@ -1,25 +1,30 @@
 package de.lewens_markisen.config;
 
-import org.junit.jupiter.api.Disabled;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @ActiveProfiles("test")
 @SpringBootTest()
-@Disabled
+//@Disabled
 @WebAppConfiguration
 class SecurityConfigurationTest {
-	@Autowired
-	SecurityConfiguration provider;
+
+	private final String USER = "test";
+	private final String PASSWORD = "Fomalgaut1";
+
 
 	@Test
-	void authenticate() {
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "*#01");
-		auth = (UsernamePasswordAuthenticationToken) provider.authenticate(auth);
-	}
+	@WithMockUser(username = "test", password = "Fomalgaut1")
+    public void authenticate_Test() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUsername = auth.getName();
 
+        assertThat(loggedUsername).isEqualTo("test");
+	}
 }
