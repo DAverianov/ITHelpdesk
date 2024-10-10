@@ -65,7 +65,7 @@ public class PersonController {
 	}
 
 	private Page<Person> findPaginated(int page) {
-		int pageSize = 12;
+		int pageSize = 50;
 		Sort sort = Sort.by("name").ascending();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
 		return personService.findAll(pageable);

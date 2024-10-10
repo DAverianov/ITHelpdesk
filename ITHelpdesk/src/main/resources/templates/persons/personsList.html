@@ -24,9 +24,12 @@
 	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
 	    </td>
 	    <td th:text="${person.bcCode}"></td>
-	    <td><a th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
-	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
-	       	<a th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
+	    <td><a sec:authorize="hasAnyAuthority('person.delete')" 
+	    		th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
+	        <a sec:authorize="hasAnyAuthority('person.update')"
+	        	th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
+	       	<a sec:authorize="hasAnyAuthority('person.timeReport.run')"
+	       		th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
 	    </td>
 	  </tr>
   </tbody>

@@ -1,7 +1,9 @@
-package de.lewens_markisen.web.controllers.person;
+package de.lewens_markisen.web.controllers.log;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +12,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import de.lewens_markisen.web.controllers.BaseIT;
 
 @SpringBootTest
-class PersonControllerListTest extends BaseIT {
+class LogControllerTest extends BaseIT {
 
-	public static final String API_LIST = "/persons/list";
-	public static final String VIEW = "persons/personsList";
+	public static final String API_LIST = "/logs/list";
+	public static final String VIEW = "logs/logsList";
 
 	@Test
 	void listPersonNotAuth() throws Exception {
@@ -29,7 +31,7 @@ class PersonControllerListTest extends BaseIT {
 	@WithUserDetails("userPersonDepartment")
 	@Test
 	void listPersonUserAuthUserPersonDepartment() throws Exception {
-		mockMvc.perform(get(API_LIST)).andExpect(status().isOk()).andExpect(view().name(VIEW));
+		mockMvc.perform(get(API_LIST)).andExpect(status().isForbidden());
 	}
 
 	@WithUserDetails("user")

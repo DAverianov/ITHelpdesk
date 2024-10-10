@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
@@ -31,6 +32,7 @@ import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.repository.local.PersonRepository;
 import de.lewens_markisen.repository.local.security.AuthorityRepository;
 import de.lewens_markisen.repository.local.security.UserSpringRepository;
+import de.lewens_markisen.security.AuthorityService;
 import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.utils.FileOperations;
@@ -41,10 +43,11 @@ import de.lewens_markisen.utils.FileOperations;
 public class initialFilling implements CommandLineRunner {
 
 	private static final String FILE_PERSON = "initialFilling/person.csv";
+	private final String ROLE_ADMIN = "ADMIN";
 	private final PersonRepository personRepository;
 	private final AccessRepository accessRepository;
 	private final RoleService roleService;
-	private final AuthorityRepository authorityRepository;
+	private final AuthorityService authorityService;
 	private final UserSpringRepository userRepository;
 	private final UserSpringService userSpringService;
 	private final PasswordEncoder passwordEncoder;
@@ -54,36 +57,66 @@ public class initialFilling implements CommandLineRunner {
 		loadSecurityData();
 		loadAccesses();
 		loadPersonData();
+		assignAuthorityToAdmin();
+	}
+
+	private void assignAuthorityToAdmin() {
+		List<String> authNames = new ArrayList<String>();
+		authNames.add("log.read");
+		
+		List<Role> rols = new ArrayList<Role>();
+		rols.add(roleService.findByName(ROLE_ADMIN).get());
+		
+		assignListAuthoritiesToRole(authNames, rols);
+	}
+
+	private void assignListAuthoritiesToRole(List<String> authNames, List<Role> rols) {
+		List<Authority> auths = new ArrayList<Authority>(); 
+		for (String authName: authNames) {
+			Optional<Authority> readLogOpt = authorityService.findByPermission(authName);
+			if (readLogOpt.isEmpty()) {
+				auths.add( authorityService.save(Authority.builder().permission("log.read").build()) );
+			}
+		}
+		if (auths.size()==0) {
+			return;
+		}
+		for (Role role: rols) {
+			for (Authority auth: auths) {
+				role.getAuthorities().add(auth);
+			}
+		}
+		roleService.saveAll(rols);
 	}
 
 	private void loadSecurityData() {
-		if (authorityRepository.count() > 0) {
+		if (authorityService.count() > 0) {
 			return;
 		}
 		// person auths
-		Authority createPerson = authorityRepository.save(Authority.builder().permission("person.create").build());
-		Authority readPerson = authorityRepository.save(Authority.builder().permission("person.read").build());
-		Authority updatePerson = authorityRepository.save(Authority.builder().permission("person.update").build());
-		Authority deletePerson = authorityRepository.save(Authority.builder().permission("person.delete").build());
-		Authority loadPerson = authorityRepository.save(Authority.builder().permission("person.load").build());
+		Authority createPerson = authorityService.save(Authority.builder().permission("person.create").build());
+		Authority readPerson = authorityService.save(Authority.builder().permission("person.read").build());
+		Authority updatePerson = authorityService.save(Authority.builder().permission("person.update").build());
+		Authority deletePerson = authorityService.save(Authority.builder().permission("person.delete").build());
+		Authority loadPerson = authorityService.save(Authority.builder().permission("person.load").build());
 
 		// user auths
-		Authority createUser = authorityRepository.save(Authority.builder().permission("user.create").build());
-		Authority readUser = authorityRepository.save(Authority.builder().permission("user.read").build());
-		Authority updateUser = authorityRepository.save(Authority.builder().permission("user.update").build());
-		Authority deleteUser = authorityRepository.save(Authority.builder().permission("user.delete").build());
+		Authority createUser = authorityService.save(Authority.builder().permission("user.create").build());
+		Authority readUser = authorityService.save(Authority.builder().permission("user.read").build());
+		Authority updateUser = authorityService.save(Authority.builder().permission("user.update").build());
+		Authority deleteUser = authorityService.save(Authority.builder().permission("user.delete").build());
 
 		// access auths
-		Authority createAccess = authorityRepository.save(Authority.builder().permission("access.create").build());
-		Authority readAccess = authorityRepository.save(Authority.builder().permission("access.read").build());
-		Authority updateAccess = authorityRepository.save(Authority.builder().permission("access.update").build());
-		Authority deleteAccess = authorityRepository.save(Authority.builder().permission("access.delete").build());
+		Authority createAccess = authorityService.save(Authority.builder().permission("access.create").build());
+		Authority readAccess = authorityService.save(Authority.builder().permission("access.read").build());
+		Authority updateAccess = authorityService.save(Authority.builder().permission("access.update").build());
+		Authority deleteAccess = authorityService.save(Authority.builder().permission("access.delete").build());
 		
 		// timeReport auths
-		Authority runTimeReport = authorityRepository.save(Authority.builder().permission("timeReport.run").build());
-		Authority runPersonTimeReport = authorityRepository.save(Authority.builder().permission("person.timeReport.run").build());
+		Authority runTimeReport = authorityService.save(Authority.builder().permission("timeReport.run").build());
+		Authority runPersonTimeReport = authorityService.save(Authority.builder().permission("person.timeReport.run").build());
 
-		Role adminRole = roleService.saveIfNotExist(Role.builder().name("ADMIN").build());
+		Role adminRole = roleService.saveIfNotExist(Role.builder().name(ROLE_ADMIN).build());
 		Role userRole = roleService.saveIfNotExist(Role.builder().name("USER").build());
 		Role personDepartmentRole = roleService.saveIfNotExist(Role.builder().name("PERSON_DEPARTMENT").build());
 

@@ -4,9 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import de.lewens_markisen.domain.localDb.Log;
+import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.repository.local.LogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,11 @@ public class LogServiceImpl implements LogService{
 		grenze = grenze.minusDays((long) savingDays);
 		List<Log> altRecords = logRepository.findAllByForCreationDate(grenze);
 		altRecords.stream().forEach(l -> logRepository.delete(l));
+	}
+
+	@Override
+	public Page<Log> findAll(Pageable pageable) {
+		return logRepository.findAll(pageable);
 	}
 
 }

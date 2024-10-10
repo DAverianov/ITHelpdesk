@@ -59,7 +59,7 @@ public class UserSpringController {
 	}
 
 	private Page<UserSpring> findPaginated(int page) {
-		int pageSize = 16;
+		int pageSize = 50;
 		Sort sort = Sort.by("username").ascending();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
 		return userSpringService.findAll(pageable);
