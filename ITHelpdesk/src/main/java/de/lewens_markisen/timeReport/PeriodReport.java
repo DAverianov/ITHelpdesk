@@ -3,6 +3,7 @@ package de.lewens_markisen.timeReport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import de.lewens_markisen.utils.DateUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,5 +39,9 @@ public class PeriodReport {
 	public String getPeriod() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		return "("+getStart().format(formatter)+" - "+getEnd().format(formatter)+")";
+	}
+	public static PeriodReport thisMonat() {
+		return PeriodReport.builder()
+				.start(DateUtils.startMonat(LocalDate.now())).end(LocalDate.now()).build();
 	}
 }

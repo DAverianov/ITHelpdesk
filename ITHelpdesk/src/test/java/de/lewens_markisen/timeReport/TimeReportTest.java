@@ -12,8 +12,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.person.Person;
-import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.utils.DateUtils;
 
 @ActiveProfiles("test")
 class TimeReportTest {
@@ -35,7 +36,7 @@ class TimeReportTest {
 				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.with(TemporalAdjusters.previous(DayOfWeek.MONDAY))));
 		timeReport.createGroup(2
 				, (tr) -> tr.getYearMonat()
-				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> ld.withDayOfMonth(1))); 
+				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
 		//@formatter:on
 		
 		assertThat(timeReport.getRecordsWithGroups()).isNotEmpty();

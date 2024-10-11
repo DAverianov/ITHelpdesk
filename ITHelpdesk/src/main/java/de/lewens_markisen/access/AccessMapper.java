@@ -3,6 +3,7 @@ package de.lewens_markisen.access;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 
+import de.lewens_markisen.domain.localDb.Access;
 import de.lewens_markisen.web.mappers.DateMapper;
 
 @Mapper(uses = DateMapper.class)

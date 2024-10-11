@@ -1,0 +1,10 @@
+DROP DATABASE IF EXISTS ithelpdesk;
+DROP user if exists 'ithelpdeskadmin'@'%';
+DROP user if exists 'ithelpdeskuser'@'%';
+CREATE DATABASE IF NOT EXISTS ithelpdesk;
+CREATE user if NOT EXISTS 'ithelpdeskadmin'@'%' indentified with mysql_native_password by 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, EXECUTE, CREATE VIEW, SHOW VIEW;
+CREATE RUNTIME, ALTER RUNTIME, EVENT, TRIGER ON 'ithelpdesk'.* TO 'ithelpdeskadmin'@'%';
+CREATE user if NOT EXISTS 'ithelpdeskuser'@'%' indentified with mysql_native_password by 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE, SHOW VIEW ON 'ithelpdesk'.* TO 'ithelpdeskuser'@'%';
+FLASH PRIVILEGES;

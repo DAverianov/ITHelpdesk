@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import de.lewens_markisen.domain.localDb.Person;
+
 public interface PersonService {
 
     Optional<Person> findOrCreate(String bcCode, String name);
@@ -15,4 +17,5 @@ public interface PersonService {
 	
 	Person save(Person p);
     Person updatePerson(Person person);
+	void delete(Person person);
 }

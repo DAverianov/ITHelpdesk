@@ -4,7 +4,9 @@
 
 <body>
 
-<p align="left" th:text="${timeReport.headerService}"><small>created by>"</small></p>
+<p align="left" th:text="${timeReport.headerService}" ><small>created by>"</small></p>
+<p align="left"><small> Im Bericht können Sie nur die Ankunfts- und Abreisezeit überprüfen. Die Pausenzeit wird im Testmodus für eine 40-Stunden-Woche angegeben</small></p>
+        
 <h2 th:text="${timeReport.header}">Time Report>"</h2>
 
 <table id="timeReport" class="table table-striped border-2">
@@ -21,16 +23,16 @@
         <th style="width: 100px;">Insgesamt</th>
     </tr>
     </thead>
-    <tr th:each="week : ${timeReport.recordsWithGroups}" class="collapsible" th:style="${week.group}>0? 'font-weight: bold;'">
-        <td style="width:400px;" th:text="${week.name}"/>
-        <td align="right" th:text="${week.moDecimal}"/>
-        <td align="right" th:text="${week.tuDecimal}"/>
-        <td align="right" th:text="${week.weDecimal}"/>
-        <td align="right" th:text="${week.thDecimal}"/>
-        <td align="right" th:text="${week.frDecimal}"/>
-        <td align="right" th:text="${week.saDecimal}"/>
-        <td align="right" th:text="${week.soDecimal}"/>
-        <td align="right" th:text="${week.sumDecimal}"/>
+    <tr th:each="record : ${timeReport.recordsWithGroups}" class="collapsible" th:style="${record.group}>0? 'font-weight: bold;'">
+        <td style="width:400px;" th:text="${record.name}"/>
+        <td align="right" th:text="${record.moDecimal}"/>
+        <td align="right" th:text="${record.tuDecimal}"/>
+        <td align="right" th:text="${record.weDecimal}"/>
+        <td align="right" th:text="${record.thDecimal}"/>
+        <td align="right" th:text="${record.frDecimal}"/>
+        <td align="right" th:text="${record.saDecimal}"/>
+        <td align="right" th:text="${record.soDecimal}"/>
+        <td align="right" th:text="${record.sumDecimal}"/>
     </tr>
     </tbody>
 </table>

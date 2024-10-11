@@ -1,31 +1,30 @@
 package de.lewens_markisen.config;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.context.WebApplicationContext;
-
-import de.lewens_markisen.services.security.CustomAuthenticationProvider;
 
 @ActiveProfiles("test")
 @SpringBootTest()
+//@Disabled
 @WebAppConfiguration
 class SecurityConfigurationTest {
-	@Autowired
-	SecurityConfiguration provider;
+
+	private final String USER = "test";
+	private final String PASSWORD = "Fomalgaut1";
+
 
 	@Test
-	void authenticate() {
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken("it-team", "*#01");
-		auth = (UsernamePasswordAuthenticationToken) provider.authenticate(auth);
-	}
+	@WithMockUser(username = "test", password = "Fomalgaut1")
+    public void authenticate_Test() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String loggedUsername = auth.getName();
 
+        assertThat(loggedUsername).isEqualTo("test");
+	}
 }

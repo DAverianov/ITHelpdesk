@@ -14,13 +14,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import de.lewens_markisen.bootstrap.PersonCodeName;
-import de.lewens_markisen.person.Person;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJson;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
-import de.lewens_markisen.timeRegisterEvent.TimeRegisterEvent;
+import de.lewens_markisen.timeReport.PeriodReport;
+import de.lewens_markisen.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,11 +36,11 @@ public class BCWebService {
 		this.personService = personService;
 	}
 
-	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person) {
+	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person, PeriodReport period) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
-					+ connectionBC.getFilter(createFilterPersonsTime(person.getBcCode()));
+					+ connectionBC.getFilter(createFilterPersonsTime(person.getBcCode(), period));
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
 			if (anserOpt.isPresent()) {
 				result = readTimeRegisterEventsFromJson(anserOpt.get());
@@ -49,13 +51,13 @@ public class BCWebService {
 		return result;
 	}
 
-	private List<RestApiQueryFilter> createFilterPersonsTime(String bcCode) {
+	private List<RestApiQueryFilter> createFilterPersonsTime(String bcCode, PeriodReport period) {
 		List<RestApiQueryFilter> filter = new ArrayList<RestApiQueryFilter>();
 		//@formatter:off
 		filter.add(RestApiQueryFilter.builder()
 				.attribute("Von_Datum")
 				.comparisonType("ge")
-				.value(getStartDateReport())
+				.value(period.getStart().toString())
 				.stringAttribute(false)
 				.build());
 		filter.add(RestApiQueryFilter.builder()
@@ -67,16 +69,16 @@ public class BCWebService {
 		//@formatter:on
 		return filter;
 	}
-	
-	private String getStartDateReport() {
-		LocalDate now = LocalDate.now();
-		if (now.getDayOfMonth()>10) {
-			return now.withDayOfMonth(1).toString();
-		}
-		else {
-			return now.minusMonths(1).withDayOfMonth(1).toString();
-		}
-	}
+//	
+//	private String getStartDateReport() {
+//		LocalDate now = LocalDate.now();
+//		if (now.getDayOfMonth()>10) {
+//			return now.withDayOfMonth(1).toString();
+//		}
+//		else {
+//			return now.minusMonths(1).withDayOfMonth(1).toString();
+//		}
+//	}
 
 	private Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromJson(String anser) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
@@ -114,8 +116,12 @@ public class BCWebService {
 		}
 		List<TimeRegisterEvent> events = new ArrayList<TimeRegisterEvent>();
 		// @formatter:0ff
-		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder().person(personOpt.get())
-				.eventDate(tR.getEventDate()).startTime(tR.getStartDate()).endTime(tR.getEndDate()).build()));
+		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder()
+				.person(personOpt.get())
+				.eventDate(tR.getEventDate())
+				.startTime(tR.getStartDate())
+				.endTime(tR.getEndDate())
+				.build()));
 		//@formatter:on
 		return Optional.of(compoundDublRecords(events));
 	}
@@ -123,25 +129,40 @@ public class BCWebService {
 	public List<TimeRegisterEvent> compoundDublRecords(List<TimeRegisterEvent> events) {
 		List<TimeRegisterEvent> eventsCompound = new ArrayList<TimeRegisterEvent>();
 		//@formatter:off
-		events.stream().filter(ev -> ev.getEndTime() == "").forEach(ev -> {
+		// 1. Manual with Start and End Time
+		events.stream()
+			.filter(ev -> ev.getStartTime()!="" && ev.getEndTime()!="")
+			.forEach(ev -> {
+				eventsCompound.add(TimeRegisterEvent.builder()
+					.person(ev.getPerson())
+					.eventDate(ev.getEventDate())
+					.startTime(ev.getStartTime())
+					.endTime(ev.getEndTime())
+					.build());
+		});
+		// 2. Auto separately Start and End time
+		events.stream()
+		.filter(ev -> ev.getStartTime()!="" && ev.getEndTime()=="")
+		.forEach(ev -> {
 			eventsCompound.add(TimeRegisterEvent.builder()
-				.person(ev.getPerson())
-				.eventDate(ev.getEventDate())
-				.startTime(ev.getStartTime())
-				.endTime(findEndTime(events, ev))
-				.build());
+					.person(ev.getPerson())
+					.eventDate(ev.getEventDate())
+					.startTime(ev.getStartTime())
+					.endTime(findEndTime(events, ev, ev.getStartTime()))
+					.build());
 		});
 		//@formatter:on
 		return eventsCompound;
 	}
 
-	private String findEndTime(List<TimeRegisterEvent> events, TimeRegisterEvent currentEvent) {
+	private String findEndTime(List<TimeRegisterEvent> events, TimeRegisterEvent currentEvent, String startTime) {
 		String result = "";
 		for (TimeRegisterEvent ev : events) {
 			//@formatter:off
 			if (ev.getPerson().equals(currentEvent.getPerson()) 
 					&& ev.getEventDate().equals(currentEvent.getEventDate())
-					&& ev.getStartTime().equals("")) {
+					&& ev.getStartTime().equals("")
+					&& TimeUtils.convertTimeToInt(ev.getEndTime()) > TimeUtils.convertTimeToInt(currentEvent.getStartTime()) ) {
 				result = ev.getEndTime();
 				break;
 			}
@@ -149,21 +170,21 @@ public class BCWebService {
 		}
 		return result;
 	}
-
-	public List<String> createTimeReport(Person person) {
-		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
-		if (eventsOpt.isPresent()) {
-			return formattTimeEventsToString(eventsOpt.get());
-		} else {
-			return List.of("Es gibt keine Daten für Person " + person.toString() + "!");
-		}
-	}
-
-	private List<String> formattTimeEventsToString(List<TimeRegisterEvent> events) {
-		List<String> res = new ArrayList<String>();
-		events.stream().forEach(ev -> res.add(ev.toString()));
-		return res;
-	}
+//
+//	public List<String> createTimeReport(Person person) {
+//		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
+//		if (eventsOpt.isPresent()) {
+//			return formattTimeEventsToString(eventsOpt.get());
+//		} else {
+//			return List.of("Es gibt keine Daten für Person " + person.toString() + "!");
+//		}
+//	}
+//
+//	private List<String> formattTimeEventsToString(List<TimeRegisterEvent> events) {
+//		List<String> res = new ArrayList<String>();
+//		events.stream().forEach(ev -> res.add(ev.toString()));
+//		return res;
+//	}
 
 	public void loadPersonFromBC() {
 		Optional<List<Person>> personsBCOpt = readPersonsFromBC();
@@ -188,8 +209,7 @@ public class BCWebService {
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" 
 				+ connectionBC.getWsPersonenkarte()
-//				+ connectionBC.getFilter(createFilterKonzernAustritt())
-				+ "?$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
+				+ "?$filter=Konzernaustritt_SOC%20eq%200001-01-01%20&%20$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
 			if (anserOpt.isPresent()) {
 				result = readPersonFromJson(anserOpt.get());

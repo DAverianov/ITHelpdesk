@@ -5,18 +5,18 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.access.Access;
-import de.lewens_markisen.repository.AccessRepository;
+import de.lewens_markisen.domain.localDb.Access;
+import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.services.EncryptionService;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AccessRepositoryTest {
 	private final String PASSWORD = "ABC123";
 	@Autowired
@@ -26,6 +26,7 @@ class AccessRepositoryTest {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	@Rollback
 	@Test
 	public void testSaveAndStoreCreditCard() {
 		//@formatter:off
@@ -54,5 +55,7 @@ class AccessRepositoryTest {
 		Access fetchedAcc = accessRepository.findById(savedAccess.getId()).get();
 
 		assertThat(savedAccess.getPassword()).isEqualTo(fetchedAcc.getPassword());
+		
+		accessRepository.delete(fetchedAcc);
 	}
 }

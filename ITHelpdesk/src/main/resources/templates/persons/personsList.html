@@ -10,6 +10,7 @@
 <table id="persons" class="table table-striped">
   <thead>
 	  <tr>
+	    <th>No</th>
 	    <th>Name</th>
 	    <th>bcCode</th>
 	    <th scope="col">Action</th>
@@ -17,15 +18,18 @@
   </thead>
   <a class="btn btn-primary" th:href="@{/persons/load}">Load from BC</a>   
   <tbody>
-	  <tr th:each="person : ${persons}">
+	  <tr th:each="person,stat : ${persons}">
+	    <td th:text="${stat.count}"></td>
 	    <td>
 	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
 	    </td>
 	    <td th:text="${person.bcCode}"></td>
-	    <td><a th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
-	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
-	       	<a th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
-	    	<a th:href="@{/zeiterfassungsystem(Person=${person.bcCode})}" class="btn btn-info">Timereport API</a>&nbsp;
+	    <td><a sec:authorize="hasAnyAuthority('person.delete')" 
+	    		th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
+	        <a sec:authorize="hasAnyAuthority('person.update')"
+	        	th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
+	       	<a sec:authorize="hasAnyAuthority('person.timeReport.run')"
+	       		th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
 	    </td>
 	  </tr>
   </tbody>

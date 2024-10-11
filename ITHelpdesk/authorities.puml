@@ -1,0 +1,20 @@
+@startuml
+actor User
+participant Spring
+
+note over Spring: user open ..TimeReport
+
+User -> Spring: VornameName \nPassword
+Spring -> AD: VornameName \nPassword
+alt User ist guiltig
+	AD --> Spring: Ok
+	Spring -> DB: Save user (VornameName)
+else
+	AD --> Spring: nicht angemeldet
+	Spring --> User: Bad creditantials...
+end
+
+
+
+
+@enduml

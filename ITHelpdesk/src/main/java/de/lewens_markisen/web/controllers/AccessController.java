@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.access.Access;
 import de.lewens_markisen.access.AccessService;
 import de.lewens_markisen.access.Accesses;
+import de.lewens_markisen.domain.localDb.Access;
+import de.lewens_markisen.security.perms.AccessCreatePermission;
+import de.lewens_markisen.security.perms.AccessReadPermission;
+import de.lewens_markisen.security.perms.AccessUpdatePermission;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class AccessController {
 
 	private final AccessService accessService;
 
+	@AccessReadPermission
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		Accesses accesses = new Accesses();
@@ -53,7 +57,8 @@ public class AccessController {
 		return accessService.findAll(pageable);
 	}
 
-	@RequestMapping(value = "/{id}")
+	@AccessReadPermission
+	@GetMapping(value = "/{id}")
 	public ModelAndView showEditAccessForm(@PathVariable(name = "id") Long id) {
 		ModelAndView modelAndView = new ModelAndView("access/accessEdit");
 		Optional<Access> accessOpt = accessService.findById(id);
@@ -66,12 +71,14 @@ public class AccessController {
 		return modelAndView;
 	}
 
+	@AccessCreatePermission
 	@GetMapping("/new")
 	public String initCreationForm(Model model) {
 		model.addAttribute("access", Access.builder().build());
 		return "access/createAccess";
 	}
 
+	@AccessCreatePermission
 	@PostMapping("/new")
 	public String processCreationForm(Access access) {
 		//@formatter:off
@@ -88,6 +95,7 @@ public class AccessController {
 		return "redirect:/accesses/list";
 	}
 
+	@AccessUpdatePermission
 	@PostMapping(value = "/update")
     public String update(@ModelAttribute("access") Access access, @RequestParam(value="action", required=true) String action) {
 		System.out.println("ich bin bei Update");

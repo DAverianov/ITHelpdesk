@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.repository.PersonRepository;
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.repository.local.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,15 +59,19 @@ public class PersonServiceImpl implements PersonService {
 		return personRepository.findByNameForSearch(name);
 	}
 
-    @Transactional()
-    public Person updatePerson(Person person) {
-        personRepository.findById(person.getId());
-        return personRepository.save(person);
-    }
+	@Override
+	public Person updatePerson(Person person) {
+		return personRepository.save(person);
+	}
 
 	@Override
 	public Person save(Person p) {
 		return personRepository.save(p);
+	}
+
+	@Override
+	public void delete(Person person) {
+		personRepository.delete(person);
 	}
 
 }
