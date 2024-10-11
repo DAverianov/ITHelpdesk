@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>de.lewens-markisen</groupId>
 	<artifactId>ITHelpdesk</artifactId>
-	<version>0.0.12</version>
+	<version>0.0.13</version>
 	<name>ITHelpdesk</name>
 	<description>IT Helpdesk</description>
 	<url />
@@ -48,6 +48,10 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-ldap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-data</artifactId>
 		</dependency>
 
 		<!-- Whirlpool hash code for lewensportal password decode -->

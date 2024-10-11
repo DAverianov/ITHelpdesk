@@ -15,7 +15,7 @@ import jakarta.persistence.*;
 @Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Builder
 @Entity
 @Table(name = "user_spring")
@@ -47,7 +47,7 @@ public class UserSpring implements UserDetails, CredentialsContainer{
                 })
                 .collect(Collectors.toSet());
     }
-
+ 
     @Builder.Default
     @Column(name = "account_non_expired")
     private Boolean accountNonExpired = true;
