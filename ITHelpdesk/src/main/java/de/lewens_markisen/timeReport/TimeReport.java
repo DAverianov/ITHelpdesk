@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.localDb.Person;
@@ -29,6 +31,7 @@ import lombok.Setter;
 public class TimeReport {
 
 	private Person person;
+	@DateTimeFormat(iso = ISO.DATE)
 	private PeriodReport period;
 	private String header;
 	private List<TimeRegisterEvent> timeRecords;

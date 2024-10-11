@@ -43,7 +43,40 @@ public class TimeReportService {
 
 	public Optional<TimeReport> createReport(String bcCode) {
 		//@formatter:off
-		log.info("Create TimeReport for " + bcCode);
+		PeriodReport period = periodCurrentWithLastMonats();
+		Optional<Person> personOpt = personService.findByBcCode(bcCode);
+		if (personOpt.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return createReport(personOpt.get(), period);
+		}
+		//@formatter:on
+
+	}
+	public Optional<TimeReport> createReport(Person person, PeriodReport period) {
+		//@formatter:off
+		logRecord(person);
+		timeRegisterEventService.readEventsProPerson(person, period);
+		
+		TimeReport timeReport = TimeReport.builder()
+				.person(person)
+				.period(period)
+				.header(createHeader(person, period))
+				.timeRecords(timeRegisterEventService.findAllByPerson(person, period).get())
+				.build();
+		timeReport.createReportRecords();
+		timeReport.createGroup(1
+				, (tr) -> tr.getYearWeek()
+				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startWeekInMonat(ld))); 
+		timeReport.createGroup(2
+				, (tr) -> tr.getYearMonat()
+				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
+		return Optional.of(timeReport);
+		//@formatter:on
+	}
+	
+	private void logRecord(Person person) {
+		log.info("Create TimeReport for " + person.getName());
 		Optional<UserSpring> userOpt = userService.getCurrentUser();
 		if (userOpt.isPresent()) {
 			logService.save(Log.builder()
@@ -52,42 +85,22 @@ public class TimeReportService {
 					.description("time report ")
 					.build());
 		}
-
-		PeriodReport period = PeriodReport.builder()
-				.start(getStartDateReport())
-				.end(LocalDate.now())
-				.build();
-		Optional<Person> personOpt = personService.findByBcCode(bcCode);
-		if (personOpt.isEmpty()) {
-			return Optional.empty();
-		} else {
-			timeRegisterEventService.readEventsProPerson(personOpt.get(), period);
-			
-			TimeReport timeReport = TimeReport.builder()
-					.person(personOpt.get())
-					.period(period)
-					.header(createHeader(personOpt.get(), period))
-					.timeRecords(timeRegisterEventService.findAllByPerson(personOpt.get(), period).get())
-					.build();
-			timeReport.createReportRecords();
-			timeReport.createGroup(1
-					, (tr) -> tr.getYearWeek()
-					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startWeekInMonat(ld))); 
-//							ld.with(DayOfWeek.MONDAY)));
-			timeReport.createGroup(2
-					, (tr) -> tr.getYearMonat()
-					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
-			return Optional.of(timeReport);
-		}
-		//@formatter:on
-
 	}
-	
+
+	private PeriodReport periodCurrentWithLastMonats() {
+		//@formatter:off
+		return PeriodReport.builder()
+				.start(getStartDateReport())
+				.end(LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()))
+				.build();
+		//@formatter:on
+	}
+
 	private String createHeader(Person person, PeriodReport period) {
 		//@formatter:off
 		return "Benutzer: "+userService.getAuthenticationName()
 			+" (" + person.getName() + " "+person.getBcCode()+") " 
-			+ period.getPeriod();
+			+ period.toString();
 		//@formatter:on
 	}
 

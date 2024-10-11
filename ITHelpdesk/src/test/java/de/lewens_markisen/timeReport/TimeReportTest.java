@@ -23,7 +23,7 @@ class TimeReportTest {
 	@Test
 	void createWeek_whenCreate_thenSorted() {
 		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
-		PeriodReport period = PeriodReport.PeriodReportMonth();
+		PeriodReport period = PeriodReport.periodReportMonth();
 		TimeReport timeReport = TimeReport.builder()
 				.person(person)
 				.period(period)

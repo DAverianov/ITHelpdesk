@@ -55,16 +55,22 @@ public class BCWebService {
 		List<RestApiQueryFilter> filter = new ArrayList<RestApiQueryFilter>();
 		//@formatter:off
 		filter.add(RestApiQueryFilter.builder()
+				.attribute("Person")
+				.comparisonType("eq")
+				.value(bcCode)
+				.stringAttribute(true)
+				.build());
+		filter.add(RestApiQueryFilter.builder()
 				.attribute("Von_Datum")
 				.comparisonType("ge")
 				.value(period.getStart().toString())
 				.stringAttribute(false)
 				.build());
 		filter.add(RestApiQueryFilter.builder()
-				.attribute("Person")
-				.comparisonType("eq")
-				.value(bcCode)
-				.stringAttribute(true)
+				.attribute("Von_Datum")
+				.comparisonType("le")
+				.value(period.getEnd().toString())
+				.stringAttribute(false)
 				.build());
 		//@formatter:on
 		return filter;
