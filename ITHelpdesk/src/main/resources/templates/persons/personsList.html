@@ -7,6 +7,15 @@
 
 <h2>Persons</h2>
 
+<form method="post" action="#" th:action="@{/persons/list}"	th:object="${persons}">
+	<input type="hidden" name="findField" th:field="${findField}"/>
+	<div>
+		<label> Name contents: <input type="text" name="findField" data-th-value="${findField}"></label>
+		<button type="submit" name="action" value="clearFilter" class="btn btn-secondary">X</button>
+		<button type="submit" name="action" value="update" class="btn btn-secondary">find</button>
+	</div>
+</form>
+
 <table id="persons" class="table table-striped">
   <thead>
 	  <tr>
@@ -16,7 +25,6 @@
 	    <th scope="col">Action</th>
 	  </tr>
   </thead>
-  <a class="btn btn-primary" th:href="@{/persons/load}">Load from BC</a>   
   <tbody>
 	  <tr th:each="person,stat : ${persons}">
 	    <td th:text="${stat.count}"></td>
@@ -64,5 +72,8 @@
       <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-fast-forward"></span>
     </span>
 </div>
+
+<a class="btn btn-primary" th:href="@{/persons/load}">Load from BC</a>   
+
 </body>
 </html>

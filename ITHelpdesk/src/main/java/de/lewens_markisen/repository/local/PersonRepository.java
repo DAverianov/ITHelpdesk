@@ -22,4 +22,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 	@Transactional(readOnly = true)
 	public Optional<Person> findByNameForSearch(String name);
 
+	public Page<Person> findAllByNameIsLikeIgnoreCase(Pageable pageable, String findField);
+
 }

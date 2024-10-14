@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,21 +15,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import de.lewens_markisen.domain.localDb.BaseEntity;
 import de.lewens_markisen.domain.localDb.Person;
 import de.lewens_markisen.person.PersonService;
-import de.lewens_markisen.person.Persons;
 import de.lewens_markisen.security.perms.PersonDeletePermission;
 import de.lewens_markisen.security.perms.PersonLoadPermission;
 import de.lewens_markisen.security.perms.PersonReadPermission;
-import de.lewens_markisen.security.perms.PersonTimeReportPermission;
 import de.lewens_markisen.security.perms.PersonUpdatePermission;
 import de.lewens_markisen.services.connection.BCWebService;
-import de.lewens_markisen.timeReport.TimeReportService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -44,31 +39,46 @@ public class PersonController {
 
 	private final PersonService personService;
 	private final BCWebService bcWebService;
-	private final TimeReportService timeReportService;
 
 	@PersonReadPermission
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
-		Persons persons = new Persons();
-		Page<Person> paginated = findPaginated(page);
-		persons.getPersonList().addAll(paginated.toList());
-		return addPaginationModel(page, paginated, model);
+		Page<Person> paginated = findPaginated(page, "");
+		return addPaginationModel(page, paginated, model, "");
 	}
 
-	private String addPaginationModel(int page, Page<Person> paginated, Model model) {
+	@PersonReadPermission
+	@PostMapping(path = "/list")
+	public String listPost(@ModelAttribute(name = "findField") String findField,
+			@RequestParam(defaultValue = "1") int page, 
+			@RequestParam(value = "action", required = true) String action,
+			Model model) {
+		if (action.equals("clearFilter")) {
+			findField = "";
+		}
+		Page<Person> paginated = findPaginated(page, findField);
+		return addPaginationModel(page, paginated, model, findField);
+	}
+
+	private String addPaginationModel(int page, Page<Person> paginated, Model model, String findField) {
 		List<Person> persons = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("persons", persons);
+		model.addAttribute("findField", findField);
 		return "persons/personsList";
 	}
 
-	private Page<Person> findPaginated(int page) {
+	private Page<Person> findPaginated(int page, String findField) {
 		int pageSize = 50;
 		Sort sort = Sort.by("name").ascending();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
-		return personService.findAll(pageable);
+		if (findField == null || findField.isBlank()) {
+			return personService.findAll(pageable);
+		} else {
+	        return personService.findAllByNameIsLikeIgnoreCase(pageable, "%" + findField + "%");
+		}
 	}
 
 	@PersonUpdatePermission
@@ -98,10 +108,10 @@ public class PersonController {
 	}
 
 	@PersonDeletePermission
-    @PostMapping("/delete")
+	@PostMapping("/delete")
 	public String deletePerson(@ModelAttribute("person") Person person) {
-        this.personService.delete(person);
- 		return "redirect:/persons/list";
+		this.personService.delete(person);
+		return "redirect:/persons/list";
 	}
 
 	@PersonLoadPermission

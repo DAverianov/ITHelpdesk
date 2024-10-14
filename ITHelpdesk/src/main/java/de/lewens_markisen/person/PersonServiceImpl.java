@@ -5,8 +5,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import de.lewens_markisen.domain.localDb.Person;
 import de.lewens_markisen.repository.local.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +50,11 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public Page<Person> findAll(Pageable pageable) {
 		return personRepository.findAll(pageable);
+	}
+
+	@Override
+	public Page<Person> findAllByNameIsLikeIgnoreCase(Pageable pageable, String findField) {
+		return personRepository.findAllByNameIsLikeIgnoreCase(pageable, findField);
 	}
 
 	@Override

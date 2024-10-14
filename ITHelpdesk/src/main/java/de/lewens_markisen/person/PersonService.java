@@ -13,6 +13,7 @@ public interface PersonService {
     Optional<Person> findByBcCode(String bcCode);
 	Optional<Person> findById(Long id);
 	Page<Person> findAll(Pageable pageable);
+	Page<Person> findAllByNameIsLikeIgnoreCase(Pageable pageable, String findField);
 	Optional<Person> findByNameForSearch(String name);
 	
 	Person save(Person p);
