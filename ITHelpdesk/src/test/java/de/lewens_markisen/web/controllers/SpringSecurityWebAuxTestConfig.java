@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import de.lewens_markisen.domain.localDb.Person;
 import de.lewens_markisen.domain.localDb.security.Role;
 import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.repository.local.security.RoleRepository;
@@ -28,21 +29,26 @@ public class SpringSecurityWebAuxTestConfig {
 		Role adminRole = roleRepository.findByName("ADMIN").get();
 		Role userRole = roleRepository.findByName("USER").get();
 		Role personDepartmentRole = roleRepository.findByName("PERSON_DEPARTMENT").get();
+		
+		Person person = Person.builder().id(1l).name("Test").build();
 
 		//@formatter:off
 		UserSpring userAdmin = UserSpring.builder()
 				.username("spring")
 				.password("guru")
+				.person(person)
 				.role(adminRole).build();
 
 		UserSpring userUser = UserSpring.builder()
 				.username("user")
 				.password("pass")
+				.person(person)
 				.role(userRole).build();
 
 		UserSpring userPersonalAbteilung = UserSpring.builder()
 				.username("userPersonDepartment")
 				.password("pass")
+				.person(person)
 				.role(personDepartmentRole).build();
 				
 		//@formatter:on

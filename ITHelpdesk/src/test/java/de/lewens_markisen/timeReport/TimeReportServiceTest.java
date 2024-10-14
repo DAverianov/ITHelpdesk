@@ -29,14 +29,12 @@ class TimeReportServiceTest{
 
 	@Test
 	void createReport_whenCreate_then() {
-		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<TimeReport> timeReport = timeReportService.createReport(BC_CODE);
 		assertThat(timeReport).isNotEmpty();
 	}
 
 	@Test
 	void getWeeks_whenQuery_thenCompound() {
-		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<TimeReport> timeReport = timeReportService.createReport(BC_CODE);
 		assertThat(timeReport).isNotEmpty();
 	}

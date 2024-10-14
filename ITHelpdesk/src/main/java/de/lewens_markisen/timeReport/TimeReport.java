@@ -66,18 +66,6 @@ public class TimeReport {
 					break;
 				}
 			}
-			
-//			this.recordsWithGroups.stream()
-//				.filter(r -> getGroupName.apply(r).equals(groupName) && r.getGroup() == 0)
-//				.findFirst().stream()
-//					.forEach(firstR -> 
-//						this.recordsWithGroups.add(
-//							TimeReportRecord.builder()
-//								.name(groupName)
-//								.eventDate(periodStart.apply(firstR))
-//								.group(groupNummer)
-//								.build())
-//						);
 		}
 		//@formatter:on
 	}

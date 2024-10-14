@@ -13,7 +13,7 @@ import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.LssUserService;
-import de.lewens_markisen.security.UserSpringServiceImpl;
+import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class TimeReportService {
 	private final TimeRegisterEventService timeRegisterEventService;
 	private final PersonService personService;
 	private final LogService logService;
-	private final UserSpringServiceImpl userService;
+	private final UserSpringService userService;
 	private final LssUserService lssUserService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {

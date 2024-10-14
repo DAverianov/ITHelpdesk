@@ -75,16 +75,6 @@ public class BCWebService {
 		//@formatter:on
 		return filter;
 	}
-//	
-//	private String getStartDateReport() {
-//		LocalDate now = LocalDate.now();
-//		if (now.getDayOfMonth()>10) {
-//			return now.withDayOfMonth(1).toString();
-//		}
-//		else {
-//			return now.minusMonths(1).withDayOfMonth(1).toString();
-//		}
-//	}
 
 	private Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromJson(String anser) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
@@ -176,21 +166,6 @@ public class BCWebService {
 		}
 		return result;
 	}
-//
-//	public List<String> createTimeReport(Person person) {
-//		Optional<List<TimeRegisterEvent>> eventsOpt = readTimeRegisterEventsFromBC(person);
-//		if (eventsOpt.isPresent()) {
-//			return formattTimeEventsToString(eventsOpt.get());
-//		} else {
-//			return List.of("Es gibt keine Daten für Person " + person.toString() + "!");
-//		}
-//	}
-//
-//	private List<String> formattTimeEventsToString(List<TimeRegisterEvent> events) {
-//		List<String> res = new ArrayList<String>();
-//		events.stream().forEach(ev -> res.add(ev.toString()));
-//		return res;
-//	}
 
 	public void loadPersonFromBC() {
 		Optional<List<Person>> personsBCOpt = readPersonsFromBC();

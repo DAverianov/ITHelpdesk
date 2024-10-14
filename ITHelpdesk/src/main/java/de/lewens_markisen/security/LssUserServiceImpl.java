@@ -2,9 +2,12 @@ package de.lewens_markisen.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+
+import de.lewens_markisen.utils.StringUtilsLSS;
 
 @Component
 public class LssUserServiceImpl implements LssUserService {
@@ -46,5 +49,11 @@ public class LssUserServiceImpl implements LssUserService {
 			return Optional.empty();
 		}
 		return lewensportalRepository.getBcCodeByUsername(username);
+	}
+
+	@Override
+	public Optional<Map<String, Object>> getProfileAttributsByLssUser(String username) {
+		// firstname, lastname, bcCode
+		return lewensportalRepository.getProfileAttributsByUserId(StringUtilsLSS.convertNameToLowCase(username));
 	}
 }

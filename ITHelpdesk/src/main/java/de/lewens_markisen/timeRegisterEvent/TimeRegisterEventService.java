@@ -8,8 +8,6 @@ import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
 import de.lewens_markisen.timeReport.PeriodReport;
 
 public interface TimeRegisterEventService {
-
-	Optional<List<TimeRegisterEvent>> findAll(Long personId);
 	Optional<List<TimeRegisterEvent>> readEventsProPerson(Person person, PeriodReport period);
 	Optional<List<TimeRegisterEvent>> findAllByPerson(Person person, PeriodReport period);
 }

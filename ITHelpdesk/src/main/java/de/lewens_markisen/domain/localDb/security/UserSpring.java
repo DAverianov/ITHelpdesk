@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import de.lewens_markisen.domain.localDb.Person;
 import jakarta.persistence.*;
 
 @Setter
@@ -29,6 +30,11 @@ public class UserSpring implements UserDetails, CredentialsContainer{
 
     private String username;
     private String password;
+    private String firstname;
+    private String lastname;
+    private String bcCode;
+    @OneToOne(fetch = FetchType.EAGER)
+    private Person person;
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -66,6 +72,16 @@ public class UserSpring implements UserDetails, CredentialsContainer{
 	@Override
 	public void eraseCredentials() {
         this.password = null;
+	}
+	
+	public String getFullname() {
+		return getFirstname()+" "+getLastname()+" /"+getUsername()+"/";
+	}
+
+	@Override
+	public String toString() {
+		return "UserSpring [id=" + id + ", username=" + username + ", password=" + password + ", firstname=" + firstname
+				+ ", lastname=" + lastname + ", bcCode=" + bcCode + ", person=" + person + "]";
 	}
 
 }

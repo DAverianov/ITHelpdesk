@@ -87,7 +87,16 @@ public class UserSpringController {
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
 			try {
-				userSpringService.saveUser(user);
+				Optional<UserSpring> userFetchedOpt = userSpringService.findByUsername(user.getUsername());
+				if(userFetchedOpt.isEmpty()) {
+					userSpringService.saveUser(user);
+				}
+				else if (userFetchedOpt.get().getId().equals(user.getId())) {
+					userSpringService.saveUser(user);
+				}
+				else {
+					log.debug("could not save User: " + user.getUsername()+". Not unique!");
+				}
 			}
 			catch (Exception e) {
 				log.debug("could not save User: " + user.getUsername()+". Not unique!");

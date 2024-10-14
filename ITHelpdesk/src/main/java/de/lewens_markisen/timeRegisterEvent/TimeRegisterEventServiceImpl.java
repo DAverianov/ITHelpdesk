@@ -1,6 +1,5 @@
 package de.lewens_markisen.timeRegisterEvent;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import de.lewens_markisen.domain.localDb.Person;
 import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
-import de.lewens_markisen.repository.local.PersonRepository;
 import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
 import de.lewens_markisen.services.connection.BCWebService;
 import de.lewens_markisen.timeReport.PeriodReport;
@@ -19,27 +17,11 @@ import jakarta.transaction.Transactional;
 public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 
 	private final TimeRegisterEventRepository timeRegisterEventRepository;
-	private final PersonRepository personRepository;
 	private final BCWebService bcWebService;
 
-	public TimeRegisterEventServiceImpl(TimeRegisterEventRepository timeRegisterEventRepository,
-			PersonRepository personRepository, BCWebService bcWebService) {
+	public TimeRegisterEventServiceImpl(TimeRegisterEventRepository timeRegisterEventRepository, BCWebService bcWebService) {
 		this.timeRegisterEventRepository = timeRegisterEventRepository;
-		this.personRepository = personRepository;
 		this.bcWebService = bcWebService;
-	}
-
-	@Override
-	@Transactional
-	public Optional<List<TimeRegisterEvent>> findAll(Long personId) {
-		Optional<List<TimeRegisterEvent>> result = Optional.empty();
-		Optional<Person> person = personRepository.findById(personId);
-		PeriodReport period = PeriodReport.builder().start(LocalDate.of(1,1,1)).end(LocalDate.now()).build();
-		if (person.isPresent()) {
-			readEventsProPerson(person.get(), period);
-			result = Optional.of(timeRegisterEventRepository.findAllByPerson(person.get()));
-		}
-		return result;
 	}
 
 	@Override

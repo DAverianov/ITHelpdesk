@@ -1,23 +1,53 @@
 package de.lewens_markisen.web.controllers.timereport;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
+import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
 import de.lewens_markisen.web.controllers.BaseIT;
 
 @SpringBootTest
 class TimeReportControllerTest extends BaseIT{
 
-	public static final String API_TIMEREPORT = "/timeReport";
-	public static final String ME = "/me";
-	public static final String BC_CODE = "/1071";
+	private static final String API_TIMEREPORT = "/timeReport";
+	private static final String ME = "/me";
+	private static final String BC_CODE = "/1071";
+	
+	@Mock
+	private TimeRegisterEventRepository timeRegisterEventRepository;
 
+	@BeforeEach
+	public void setupTimeRegisterEventRepository() {
+		Person person = Person.builder().name("Test").build();
+		String startTime = "04.10.2024";
+        List<TimeRegisterEvent> timeRecords = new ArrayList<TimeRegisterEvent>();
+        //@formatter:off
+        timeRecords.add(
+        		TimeRegisterEvent.builder()
+        		.person(person)
+        		.startTime(startTime)
+        		.endTime(startTime)
+        		.build());
+        //@formatter:on
+        
+		when(timeRegisterEventRepository.findAllByPerson(person)).thenReturn(timeRecords);
+	}
+	
 	@Test
 	void timeReport_NotAuth() throws Exception {
 		mockMvc.perform(get(API_TIMEREPORT+ME)).andExpect(status().is3xxRedirection());

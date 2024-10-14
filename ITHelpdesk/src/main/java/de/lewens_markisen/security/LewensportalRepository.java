@@ -47,8 +47,8 @@ public class LewensportalRepository {
 		try {
 			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
 					"SELECT user.username, profile.bccode FROM user \r\n"
-							+ "       LEFT OUTER JOIN profile ON (profile.user_id = user.id)\r\n"
-							+ "WHERE user.username = '" + username + "'");
+					+ "       LEFT OUTER JOIN profile ON (profile.user_id = user.id)\r\n"
+					+ "WHERE user.username = '" + username + "'");
 			if (dbRow.size() == 0) {
 				return Optional.empty();
 			} else {
@@ -59,6 +59,23 @@ public class LewensportalRepository {
 				else {
 					return Optional.of(bcCode);
 				}
+			}
+		} catch (Exception e) {
+			return Optional.empty();
+		}
+	}
+
+	public Optional<Map<String, Object>> getProfileAttributsByUserId(String username) {
+
+		try {
+			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
+					"SELECT * FROM profile \r\n"
+					+ "INNER JOIN user On profile.user_id = user.id \r\n"
+					+ "Where  user.username = '" + username + "'");
+			if (dbRow.size() == 0) {
+				return Optional.empty();
+			} else {
+				return Optional.ofNullable(dbRow);
 			}
 		} catch (Exception e) {
 			return Optional.empty();

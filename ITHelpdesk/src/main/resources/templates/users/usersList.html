@@ -11,8 +11,12 @@
   <thead>
 	  <tr>
 	    <th>No</th>
-	    <th>Id</th>
+	    <th>login</th>
 	    <th>Username</th>
+	    <th>Firstname</th>
+	    <th>Lastname</th>
+	    <th>BC Code</th>
+	    <th>Person</th>
 	  </tr>
   </thead>
   <a class="btn btn-primary" th:href="@{/users/rewriteNames}">Rewrite usernames in lowcase</a>   
@@ -20,11 +24,13 @@
 	  <tr th:each="user,stat : ${users}">
 	    <td th:text="${stat.count}"></td>
 	    <td>
-	        <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.id}"/></a>
-	    </td>
-	    <td>
 	        <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"/></a>
 	    </td>
+	    <td th:text="${user.fullname}"></td>
+	    <td th:text="${user.firstname}"></td>
+	    <td th:text="${user.lastname}"></td>
+	    <td th:text="${user.bcCode}"></td>
+	    <td th:text="${user.person}"></td>
 	  </tr>
   </tbody>
 </table>
