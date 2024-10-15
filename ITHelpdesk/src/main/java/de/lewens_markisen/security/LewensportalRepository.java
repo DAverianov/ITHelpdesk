@@ -20,11 +20,14 @@ public class LewensportalRepository {
 	public Optional<LssUser> findUserByName(String name) {
 
 		try {
+			//@formatter:off
 			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
-					"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password FROM user \r\n"
-							+ "LEFT OUTER JOIN user_password\r\n" + " ON (user_password.user_id = user.id)    \r\n"
-							+ "WHERE user.status = 1 and user.username = '" + name + "'");
-
+			"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password " + 
+			"FROM user " +
+			"LEFT OUTER JOIN user_password" + " ON (user_password.user_id = user.id) " +
+			"WHERE user.status = 1 and user.username = '" + name +"'" +
+			"ORDER BY user_password.created_at desc");
+			//@formatter:on
 			if (dbRow.size() == 0) {
 				return Optional.empty();
 			} else {
@@ -45,18 +48,20 @@ public class LewensportalRepository {
 	public Optional<String> getBcCodeByUsername(String username) {
 
 		try {
+			//@formatter:off
 			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
-					"SELECT user.username, profile.bccode FROM user \r\n"
-					+ "       LEFT OUTER JOIN profile ON (profile.user_id = user.id)\r\n"
-					+ "WHERE user.username = '" + username + "'");
+			"SELECT user.username, profile.bccode " +
+			"FROM user " +
+			"LEFT OUTER JOIN profile ON (profile.user_id = user.id)" + 
+			"WHERE user.username = '" + username + "'");
+			//@formatter:on
 			if (dbRow.size() == 0) {
 				return Optional.empty();
 			} else {
 				String bcCode = Integer.toString((Integer) dbRow.get("bccode"));
 				if (bcCode == null || bcCode.isBlank()) {
 					return Optional.empty();
-				}
-				else {
+				} else {
 					return Optional.of(bcCode);
 				}
 			}
@@ -68,10 +73,13 @@ public class LewensportalRepository {
 	public Optional<Map<String, Object>> getProfileAttributsByUserId(String username) {
 
 		try {
+			//@formatter:off
 			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
-					"SELECT * FROM profile \r\n"
-					+ "INNER JOIN user On profile.user_id = user.id \r\n"
-					+ "Where  user.username = '" + username + "'");
+			"SELECT * FROM profile " + 
+			"INNER JOIN user ON profile.user_id = user.id " + 
+			"WHERE user.username = '" + username + "'");
+			//@formatter:on
+
 			if (dbRow.size() == 0) {
 				return Optional.empty();
 			} else {

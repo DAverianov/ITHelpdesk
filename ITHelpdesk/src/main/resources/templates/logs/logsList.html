@@ -14,14 +14,16 @@
 	    <th>Date</th>
 	    <th>User</th>
 	    <th>Event</th>
+	    <th>Description</th>
 	  </tr>
   </thead>
   <tbody>
 	  <tr th:each="log,stat : ${logs}">
 	    <td th:text="${stat.count}"></td>
 	    <td th:text="${log.lastModifiedDate}"/>
-	    <td th:text="${log.user.username}"/>
+	    <td th:text="${log.user.fullname}"/>
 	    <td th:text="${log.event}"/>
+	    <td th:text="${log.description}"/>
 	  </tr>
   </tbody>
 </table>

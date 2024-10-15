@@ -55,7 +55,7 @@ public class TimeReportService {
 	}
 	public Optional<TimeReport> createReport(Person person, PeriodReport period) {
 		//@formatter:off
-		logRecord(person);
+		logRecord(person, period);
 		timeRegisterEventService.readEventsProPerson(person, period);
 		
 		TimeReport timeReport = TimeReport.builder()
@@ -75,14 +75,14 @@ public class TimeReportService {
 		//@formatter:on
 	}
 	
-	private void logRecord(Person person) {
+	private void logRecord(Person person, PeriodReport period) {
 		log.info("Create TimeReport for " + person.getName());
 		Optional<UserSpring> userOpt = userService.getCurrentUser();
 		if (userOpt.isPresent()) {
 			logService.save(Log.builder()
 					.user(userOpt.get())
 					.event("TimeReport")
-					.description("time report ")
+					.description("time report for "+person.getName()+" "+period.toString())
 					.build());
 		}
 	}

@@ -22,9 +22,24 @@
 				<td><input type="text" th:field="*{id}" class="form-control" placeholder="id" readonly></td>
 			</tr>
 			<tr>
-				<td><label class="col-auto col-form-label control-label">name <span class=sub>*</span>
-				</label></td>
+				<td><label class="col-auto col-form-label control-label">name <span class=sub>*</span></label></td>
 				<td><input type="text" th:field="*{username}" class="form-control" placeholder="Username" required></td>
+			</tr>
+			<tr>
+				<td><label class="col-auto col-form-label control-label">Firstname <span class=sub>*</span></label></td>
+				<td><input type="text" th:field="*{firstname}" class="form-control" placeholder="Firstname" disabled></td>
+			</tr>
+			<tr>
+				<td><label class="col-auto col-form-label control-label">Lastname <span class=sub>*</span></label></td>
+				<td><input type="text" th:field="*{lastname}" class="form-control" placeholder="Lastname" disabled></td>
+			</tr>
+			<tr>
+				<td><label class="col-auto col-form-label control-label">BC Code <span class=sub>*</span></label></td>
+				<td><input type="text" th:field="*{bcCode}" class="form-control" placeholder="BC Code" disabled></td>
+			</tr>
+			<tr>
+				<td><label class="col-auto col-form-label control-label">Person <span class=sub>*</span></label></td>
+				<td><input type="text" th:field="*{person.name}" class="form-control" placeholder="person" disabled></td>
 			</tr>
 		</table>
 
