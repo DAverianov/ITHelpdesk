@@ -1,6 +1,7 @@
 package de.lewens_markisen.config;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -52,40 +53,37 @@ public class LewensportalAuthenticationProvider implements AuthenticationProvide
 	private UsernamePasswordAuthenticationToken authenticateAgainstThirdPartyAndGetAuthentication(String username,
 			String password) throws UsernameNotFoundException {
 
-		Optional<LssUser> lssUserOpt;
+		Optional<List<LssUser>> lssUsersOpt;
+		
+		UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
+				"User " + username + " not found in lewensportal DB!");
 		try {
-			lssUserOpt = lssUserService.findUserByName(username);
+			lssUsersOpt = lssUserService.findUserByName(username);
 		} catch (Exception e) {
-			UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-					"User " + username + " not found in lewensportal DB!");
 			throw badCredentials(userNameNotFoundException);
 		}
-		if (lssUserOpt.isEmpty()) {
-			UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-					"User " + username + " not found in lewensportal DB!");
+		if (lssUsersOpt.isEmpty()) {
 			throw badCredentials(userNameNotFoundException);
 		}
+		
+		userNameNotFoundException = new UsernameNotFoundException(
+				"User " + username + " not correct password!");
 		try {
-			if (lssUserService.getLssHashPassword(password, lssUserOpt.get().getSalt())
-					.equals(lssUserOpt.get().getPassword())) {
-				//@formatter:off
-				UserSpring principal = UserSpring.builder()
-						.username(username)
-						.password(password).build();
-				//@formatter:on
-				return authoriseInLocalDB(new UsernamePasswordAuthenticationToken(principal, password));
-			} else {
-				UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-						"User " + username + " not correct password!");
-				throw badCredentials(userNameNotFoundException);
-
+			for (LssUser lssUser : lssUsersOpt.get()) {
+				if (lssUserService.getLssHashPassword(password, lssUser.getSalt()).equals(lssUser.getPassword())) {
+					//@formatter:off
+					UserSpring principal = UserSpring.builder()
+							.username(username)
+							.password(password).build();
+					//@formatter:on
+					return authoriseInLocalDB(new UsernamePasswordAuthenticationToken(principal, password));
+				}
 			}
 		} catch (NoSuchAlgorithmException e) {
-			UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-					"NoSuchAlgorithmException", e);
+			userNameNotFoundException = new UsernameNotFoundException("NoSuchAlgorithmException", e);
 			throw badCredentials(userNameNotFoundException);
 		}
-
+		throw badCredentials(userNameNotFoundException);
 	}
 
 	@Transactional

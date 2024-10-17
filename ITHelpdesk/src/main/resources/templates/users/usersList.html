@@ -22,7 +22,7 @@
   <a class="btn btn-primary" th:href="@{/users/rewriteNames}">Rewrite usernames in lowcase</a>   
   <tbody>
 	  <tr th:each="user,stat : ${users}">
-	    <td th:text="${stat.count}"></td>
+	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
 	    <td>
 	        <a th:href="@{/users/edit/{id}(id=${user.id})}" th:text="${user.username}"/></a>
 	    </td>

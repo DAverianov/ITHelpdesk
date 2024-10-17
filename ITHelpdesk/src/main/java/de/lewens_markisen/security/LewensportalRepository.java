@@ -1,5 +1,7 @@
 package de.lewens_markisen.security;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,33 +19,62 @@ public class LewensportalRepository {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public Optional<LssUser> findUserByName(String name) {
+	public Optional<List<LssUser>> findUserByName(String name) {
 
 		try {
 			//@formatter:off
-			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
+			List<Map<String, Object>> dbRow = jdbcTemplate.queryForList(
 			"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password " + 
 			"FROM user " +
 			"LEFT OUTER JOIN user_password" + " ON (user_password.user_id = user.id) " +
 			"WHERE user.status = 1 and user.username = '" + name +"'" +
 			"ORDER BY user_password.created_at desc");
-			//@formatter:on
 			if (dbRow.size() == 0) {
 				return Optional.empty();
 			} else {
-				//@formatter:off
-				return Optional.of(LssUser.builder()
+				List<LssUser> lssUsers = new ArrayList<LssUser>(); 
+				dbRow.stream().forEach(r -> lssUsers.add(
+					LssUser.builder()
 						.username(name)
-						.algorithm((String) dbRow.get("algorithm"))
-						.salt((String) dbRow.get("salt"))
-						.password((String) dbRow.get("password"))
-						.build());
+						.algorithm((String) r.get("algorithm"))
+						.salt((String) r.get("salt"))
+						.password((String) r.get("password"))
+						.build())
+					);
+				return Optional.of(lssUsers);
 				//@formatter:on
 			}
 		} catch (Exception e) {
 			return Optional.empty();
 		}
 	}
+//	public Optional<List<LssUser>> findUserByName(String name) {
+//		
+//		try {
+//			//@formatter:off
+//			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
+//					"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password " + 
+//							"FROM user " +
+//							"LEFT OUTER JOIN user_password" + " ON (user_password.user_id = user.id) " +
+//							"WHERE user.status = 1 and user.username = '" + name +"'" +
+//					"ORDER BY user_password.created_at desc");
+//			//@formatter:on
+//			if (dbRow.size() == 0) {
+//				return Optional.empty();
+//			} else {
+//				//@formatter:off
+//				return Optional.of(LssUser.builder()
+//						.username(name)
+//						.algorithm((String) dbRow.get("algorithm"))
+//						.salt((String) dbRow.get("salt"))
+//						.password((String) dbRow.get("password"))
+//						.build());
+//				//@formatter:on
+//			}
+//		} catch (Exception e) {
+//			return Optional.empty();
+//		}
+//	}
 
 	public Optional<String> getBcCodeByUsername(String username) {
 

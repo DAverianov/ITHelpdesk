@@ -27,7 +27,7 @@
   </thead>
   <tbody>
 	  <tr th:each="person,stat : ${persons}">
-	    <td th:text="${stat.count}"></td>
+	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
 	    <td>
 	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
 	    </td>

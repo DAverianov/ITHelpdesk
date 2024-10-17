@@ -9,4 +9,5 @@ public interface RoleService {
 	public Role saveIfNotExist(Role role);
 	public Optional<Role> findByName(String roleName);
 	public void saveAll(List<Role> roles);
+	public List<Role> findAll();
 }

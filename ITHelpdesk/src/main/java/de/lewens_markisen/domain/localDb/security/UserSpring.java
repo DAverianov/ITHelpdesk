@@ -2,6 +2,7 @@ package de.lewens_markisen.domain.localDb.security;
 
 import lombok.*;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class UserSpring implements UserDetails, CredentialsContainer{
     private Person person;
 
     @Singular
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_spring_role",
         joinColumns = {@JoinColumn(name = "USER_SPRING_ID", referencedColumnName = "ID")},
         inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
@@ -82,6 +83,29 @@ public class UserSpring implements UserDetails, CredentialsContainer{
 	public String toString() {
 		return "UserSpring [id=" + id + ", username=" + username + ", password=" + password + ", firstname=" + firstname
 				+ ", lastname=" + lastname + ", bcCode=" + bcCode + ", person=" + person + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(accountNonExpired, accountNonLocked, bcCode, credentialsNonExpired, enabled, firstname,
+				lastname, password, person, username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserSpring other = (UserSpring) obj;
+		return Objects.equals(accountNonExpired, other.accountNonExpired)
+				&& Objects.equals(accountNonLocked, other.accountNonLocked) && Objects.equals(bcCode, other.bcCode)
+				&& Objects.equals(credentialsNonExpired, other.credentialsNonExpired)
+				&& Objects.equals(enabled, other.enabled) && Objects.equals(firstname, other.firstname)
+				&& Objects.equals(lastname, other.lastname) && Objects.equals(password, other.password)
+				&& Objects.equals(person, other.person) && Objects.equals(username, other.username);
 	}
 
 }

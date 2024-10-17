@@ -2,6 +2,7 @@ package de.lewens_markisen.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class LssUserServiceImpl implements LssUserService {
 	}
 
 	@Override
-	public Optional<LssUser> findUserByName(String username) {
+	public Optional<List<LssUser>> findUserByName(String username) {
 		if (username == null || username.isBlank()) {
 			return Optional.empty();
 		}

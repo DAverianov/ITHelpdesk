@@ -5,17 +5,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
 import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.web.controllers.BaseIT;
+import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
 
 @SpringBootTest
 class UserSpringControllerEditTest extends BaseIT {
 
+	@Autowired
+	private RoleService roleService;
+	
 	public static final String API_EDIT = "/users/edit/1";
 	public static final String API_UPDATE = "/users/update";
 
@@ -37,8 +43,17 @@ class UserSpringControllerEditTest extends BaseIT {
 			.accept(MediaType.APPLICATION_JSON)
 	        .characterEncoding("UTF-8")
 	        .contentType(MediaType.APPLICATION_JSON)
-	        .flashAttr("user", user))
+	        .flashAttr("user", user)
+			.flashAttr("userRolesChecked", createUserRoles(user)))
 	        .andExpect(status().is3xxRedirection());
+	}
+
+	private UserRolesChecked createUserRoles(UserSpring user) {
+		UserRolesChecked userRoles = new UserRolesChecked();
+		userRoles.setUser(user);
+		userRoles.setAllRoles(roleService.findAll());
+		userRoles.fullRoles();
+		return userRoles;
 	}
 	
 	@WithUserDetails("userPersonDepartment")

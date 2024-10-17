@@ -21,10 +21,12 @@ import org.springframework.web.servlet.ModelAndView;
 import de.lewens_markisen.domain.localDb.BaseEntity;
 import de.lewens_markisen.domain.localDb.security.UserSpring;
 import de.lewens_markisen.domain.localDb.security.UserSpringList;
+import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.security.perms.UserDeletePermission;
 import de.lewens_markisen.security.perms.UserReadPermission;
 import de.lewens_markisen.security.perms.UserUpdatePermission;
+import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,7 @@ public class UserSpringController {
 	public static Comparator<UserSpring> COMPARATOR_BY_NAME = Comparator.comparing(UserSpring::getUsername);
 
 	private final UserSpringService userSpringService;
+	private final RoleService roleService;
 
 	@UserReadPermission
 	@GetMapping(path = "/list")
@@ -73,6 +76,7 @@ public class UserSpringController {
 		Optional<UserSpring> userOpt = userSpringService.findById(id);
 		if (userOpt.isPresent()) {
 			modelAndView.addObject("user", userOpt.get());
+			modelAndView.addObject("userRolesChecked", createUserRoles(userOpt.get()));
 		} else {
 			modelAndView.addObject("message", "User mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
@@ -80,11 +84,21 @@ public class UserSpringController {
 		return modelAndView;
 	}
 
+	private UserRolesChecked createUserRoles(UserSpring user) {
+		UserRolesChecked userRoles = new UserRolesChecked();
+		userRoles.setUser(user);
+		userRoles.setAllRoles(roleService.findAll());
+		userRoles.fullRoles();
+		return userRoles;
+	}
+
 	@UserUpdatePermission
 	@PostMapping(value = "/update")
 	@Transactional
 	public String updateUser(@ModelAttribute("user") UserSpring user,
+			@ModelAttribute("userRolesChecked") UserRolesChecked userRolesChecked,
 			@RequestParam(value = "action", required = true) String action) {
+		userRolesChecked.getRolesChecked().stream().forEach(rch -> System.out.println(" "+rch));
 		if (action.equals("update")) {
 			try {
 				Optional<UserSpring> userFetchedOpt = userSpringService.findByUsername(user.getUsername());
