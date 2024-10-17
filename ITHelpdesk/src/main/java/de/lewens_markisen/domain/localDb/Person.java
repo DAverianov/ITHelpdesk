@@ -1,10 +1,13 @@
 package de.lewens_markisen.domain.localDb;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.lewens_markisen.domain.localDb.security.AuthoritieNames;
 import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +24,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "person")
-public class Person extends BaseEntity {
+public class Person extends BaseEntity implements AuthoritieNames{
 
 	@Builder
 	public Person(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String name,
@@ -73,5 +76,15 @@ public class Person extends BaseEntity {
 			return false;
 		Person other = (Person) obj;
 		return Objects.equals(bcCode, other.bcCode) && Objects.equals(name, other.name);
+	}
+
+	@Override
+	public List<String> getAuthoritieNames() {
+		List<String> authNames = new ArrayList<String>();
+		authNames.add("person.create");
+		authNames.add("person.read");
+		authNames.add("person.update");
+		authNames.add("person.delete");
+		return authNames;
 	}
 }

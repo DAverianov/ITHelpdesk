@@ -1,6 +1,5 @@
 package de.lewens_markisen.web.controllers.timereport;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,14 +58,14 @@ class TimeReportControllerTest extends BaseIT{
 	@Test
 	void timeReport_AuthAdmin() throws Exception {
 		mockMvc.perform(get(API_TIMEREPORT+ME)).andExpect(status().isOk());
-		mockMvc.perform(get(API_TIMEREPORT+BC_CODE)).andExpect(status().isOk()).andExpect(view().name("timeReport/timeReport"));
+		mockMvc.perform(get(API_TIMEREPORT+BC_CODE)).andExpect(status().isOk()).andExpect(view().name("timeReport/timeReportPeriod"));
 	}
 	
 	@WithUserDetails("userPersonDepartment")
 	@Test
 	void timeReport_AuthUserPersonDepartment() throws Exception {
 		mockMvc.perform(get(API_TIMEREPORT+ME)).andExpect(status().isOk());
-		mockMvc.perform(get(API_TIMEREPORT+BC_CODE)).andExpect(status().isOk()).andExpect(view().name("timeReport/timeReport"));
+		mockMvc.perform(get(API_TIMEREPORT+BC_CODE)).andExpect(status().isOk()).andExpect(view().name("timeReport/timeReportPeriod"));
 	}
 
 	@WithUserDetails("user")

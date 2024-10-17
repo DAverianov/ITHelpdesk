@@ -32,7 +32,7 @@ public class TimeReportController {
 	@PersonTimeReportPermission
 	@GetMapping("/{bcCode}")
 	public ModelAndView timeReportForPerson(@PathVariable(name = "bcCode") Integer bcCode) {
-		ModelAndView modelAndView = new ModelAndView("timeReport/timeReport");
+		ModelAndView modelAndView = new ModelAndView("timeReport/timeReportPeriod");
 		Optional<TimeReport> reportOpt = timeReportService.createReport(Integer.toString(bcCode));
 		if (reportOpt.isPresent()) {
 			modelAndView.addObject("timeReport", reportOpt.get());
@@ -66,7 +66,7 @@ public class TimeReportController {
 			period = PeriodReport.periodReportMonth(period.getEnd().plusDays(1));
 		}
 		else {
-			ModelAndView modelAndView = new ModelAndView("timeReport/timeReportPeriod");
+			ModelAndView modelAndView = new ModelAndView("timeReport/timeReport");
 			modelAndView.addObject("message", "Action wasnt found!");
 			modelAndView.setViewName("error");
 			return modelAndView;

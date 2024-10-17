@@ -1,8 +1,11 @@
 package de.lewens_markisen.domain.localDb;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import de.lewens_markisen.domain.localDb.security.AuthoritieNames;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -20,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "accesses")
-public class Access extends BaseEntity {
+public class Access extends BaseEntity implements AuthoritieNames{
 
 	@Builder
 	//@formatter:off
@@ -96,6 +99,16 @@ public class Access extends BaseEntity {
 	@Override
 	public String toString() {
 		return "Access [name=" + name + ", domain=" + domain + ", user=" + user + ", password=*******" + "]";
+	}
+
+	@Override
+	public List<String> getAuthoritieNames() {
+		List<String> authNames = new ArrayList<String>();
+		authNames.add("access.create");
+		authNames.add("access.read");
+		authNames.add("access.update");
+		authNames.add("access.delete");
+		return authNames;
 	}
 
 }

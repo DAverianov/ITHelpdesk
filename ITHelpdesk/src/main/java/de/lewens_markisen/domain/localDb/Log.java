@@ -1,8 +1,10 @@
 package de.lewens_markisen.domain.localDb;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import de.lewens_markisen.domain.localDb.security.AuthoritieNames;
 import de.lewens_markisen.domain.localDb.security.UserSpring;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +25,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "log")
-public class Log extends BaseEntity{
+public class Log extends BaseEntity implements AuthoritieNames{
 
 	@NotNull
 	@Size(min = 2, max = 50)
@@ -56,6 +58,13 @@ public class Log extends BaseEntity{
 			return false;
 		Log other = (Log) obj;
 		return Objects.equals(event, other.event) && Objects.equals(user, other.user);
+	}
+
+	@Override
+	public List<String> getAuthoritieNames() {
+		List<String> authNames = new ArrayList<String>();
+		authNames.add("log.read");
+		return authNames;
 	}
 
 }

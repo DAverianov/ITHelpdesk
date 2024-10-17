@@ -2,6 +2,8 @@ package de.lewens_markisen.domain.localDb.security;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +23,7 @@ import jakarta.persistence.*;
 @Builder
 @Entity
 @Table(name = "user_spring")
-public class UserSpring implements UserDetails, CredentialsContainer{
+public class UserSpring implements UserDetails, CredentialsContainer, AuthoritieNames{
 
 	private static final long serialVersionUID = 1L;
 
@@ -106,6 +108,16 @@ public class UserSpring implements UserDetails, CredentialsContainer{
 				&& Objects.equals(enabled, other.enabled) && Objects.equals(firstname, other.firstname)
 				&& Objects.equals(lastname, other.lastname) && Objects.equals(password, other.password)
 				&& Objects.equals(person, other.person) && Objects.equals(username, other.username);
+	}
+
+	@Override
+	public List<String> getAuthoritieNames() {
+		List<String> authNames = new ArrayList<String>();
+		authNames.add("user.create");
+		authNames.add("user.read");
+		authNames.add("user.update");
+		authNames.add("user.delete");
+		return authNames;
 	}
 
 }
