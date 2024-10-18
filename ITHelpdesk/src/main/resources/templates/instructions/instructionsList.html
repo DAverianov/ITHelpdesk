@@ -6,7 +6,7 @@
 <body>
 
 <h2>Anweisungen</h2>
-
+<a sec:authorize="hasAnyAuthority('instruction.create')" data-th-href="@{/instructions/create}" class="btn btn-secondary">+ Neu</a>
 <table id="instructions" class="table table-striped">
   <thead>
 	  <tr>
@@ -18,7 +18,7 @@
 	  <tr th:each="inst,stat : ${instructions}">
 	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
 	    <td>
-	        <a th:href="@{/instructions/edit/{id}(id=${inst.id})}" th:text="${inst.name}"/></a>
+	        <a th:text="${inst.name}"/></a>
 	    </td>
 	  </tr>
   </tbody>

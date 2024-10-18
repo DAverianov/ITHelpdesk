@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import de.lewens_markisen.domain.localDb.instruction.Instruction;
 
 public interface InstructionService {
-
 	Page<Instruction> findAll(Pageable pageable);
-
+	Instruction save(Instruction instruction);
 }

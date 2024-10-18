@@ -18,4 +18,9 @@ public class InstructionServiceImpl implements InstructionService{
 		return instructionRepository.findAll(pageable);
 	}
 
+	@Override
+	public Instruction save(Instruction instruction) {
+		return instructionRepository.save(instruction);
+	}
+
 }

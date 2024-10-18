@@ -2,7 +2,7 @@ drop table if exists instruction;
 drop table if exists instruction_line;
 
 create table instruction (
-      id BIGINT PRIMARY KEY,
+      id BIGSERIAL PRIMARY KEY,
       version BIGINT,
       name varchar(120) UNIQUE,
       author varchar(60),
@@ -11,7 +11,7 @@ create table instruction (
       last_modified_date timestamp
 );
 create table instruction_line (
-      id BIGINT PRIMARY KEY,
+      id BIGSERIAL PRIMARY KEY,
       version BIGINT,
       instruction_id BIGINT,
       string_nummer int,
