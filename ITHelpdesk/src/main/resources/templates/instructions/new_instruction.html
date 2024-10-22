@@ -15,42 +15,18 @@
 		</ul>
 	</div>
 	<form method="post" data-th-action="@{/instructions/create}">
-		<label> Name:<br> <input type="text" name="name"
-			data-th-value="${payload?.name}">
-		</label><br> <label> Description:<br> <textarea
-				name="description" data-th-text="${payload?.description}"></textarea>
-		</label><br>
-		<table>
-        <thead th:replace="fragments/tables :: fields(~{ :: .myFields})">
-            <tr class="myFields">
-               <th>No</th>
-               <th>Description</th>
-            </tr>
-        </thead>
-        <div th:replace="fragments/tables :: tableBody(tableData=${payload.lines})">
-        </div>
-    	</table>
 		
-		<!-- <table class="table table-striped">
-			<thead>
-				<tr>
-					<th>No</th>
-					<th>Description</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="line : ${payload.lines}" th:insert="instructions/instructionLine :: instructionLine(${line})" th:remove="tag"> </tr>
-				
-				<!-- <tr th:each="line,stat : ${payload.lines}"></td>
-
-					<td th:text="${stat.count}"></td>
-					<td><input type="checkbox" th:checked="${line}"	th:value="${stat}" class="form-input">
-						<label th:text="${line.stringNummer}"></label></td>
-					<td><input type="checkbox" th:checked="${line}"	th:value="${line.description}" class="form-input">
-						<label th:text="${line.description}"></label></td>
-				</tr> -->
-			</tbody>
-		</table> -->
+		<label> Name:<input type="text" name="name" th:value="${payload.name}"></label>
+		<br> 
+		<label> Description:<textarea name="description" th:text="${payload.description}"></textarea></label>
+		<br>
+		<table th:replace="fragments/tables :: table(theadFields=~{ :: .myFields}, tableData=${payload.lines}, columnNames=${payload.linesColumnNames})">
+	        <tr class="myFields">
+	           <th>No</th>
+	           <th>Description</th>
+	        </tr>
+        
+    	</table>
 
 		<button type="submit">Erstellen</button>
 	</form>

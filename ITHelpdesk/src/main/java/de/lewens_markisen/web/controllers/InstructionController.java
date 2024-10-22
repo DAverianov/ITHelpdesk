@@ -2,6 +2,7 @@ package de.lewens_markisen.web.controllers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,8 +71,9 @@ public class InstructionController {
 	public String getNewInstructionPage(Model model) {
 		//@formatter:off
 		model.addAttribute("payload", NewInstructionPayload.builder()
-				.line(InstructionLinePayload.builder().stringNummer(1).build())
+				.line(InstructionLinePayload.builder().id(1).stringNummer(1).build())
 				.build());
+//		model.addAttribute("payload_lines", Set.of(InstructionLinePayload.builder().id(1).stringNummer(1).build()));
 		//@formatter:on
 		return "instructions/new_instruction";
 	}
@@ -86,8 +88,10 @@ public class InstructionController {
 			return "instructions/new_instruction";
 		} else {
 			Instruction instr = Instruction.builder().name(payload.getName()).description(payload.getDescription()).build();
-			for (InstructionLinePayload l: payload.getLines()) {
-				instr.addLine(l);
+			if (payload.getLines()!=null) {
+				for (InstructionLinePayload l: payload.getLines()) {
+					instr.addLine(l);
+				}
 			}
 			this.instructionService.save(instr);
 			return "redirect:/instructions/list";
