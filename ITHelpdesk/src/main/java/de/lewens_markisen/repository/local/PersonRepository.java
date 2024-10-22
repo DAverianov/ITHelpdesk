@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.local_db.Person;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
 

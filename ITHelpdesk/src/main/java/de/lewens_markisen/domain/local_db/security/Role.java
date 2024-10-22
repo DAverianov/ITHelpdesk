@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain.localDb.security;
+package de.lewens_markisen.domain.local_db.security;
 
 import lombok.*;
 

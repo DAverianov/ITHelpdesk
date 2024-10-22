@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain.localDb.instruction;
+package de.lewens_markisen.domain.local_db.instruction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import java.util.Set;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import de.lewens_markisen.domain.localDb.BaseEntity;
-import de.lewens_markisen.domain.localDb.security.AuthoritieNames;
+import de.lewens_markisen.domain.local_db.BaseEntity;
+import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
 import de.lewens_markisen.web.controllers.playlocad.InstructionLinePayload;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

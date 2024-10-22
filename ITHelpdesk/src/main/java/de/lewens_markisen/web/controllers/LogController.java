@@ -10,7 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import de.lewens_markisen.domain.localDb.Log;
+
+import de.lewens_markisen.domain.local_db.Log;
 import de.lewens_markisen.log.LogList;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.security.perms.LogReadPermission;

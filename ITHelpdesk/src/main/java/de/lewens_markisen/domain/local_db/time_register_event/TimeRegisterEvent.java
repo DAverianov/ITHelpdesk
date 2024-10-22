@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain.localDb;
+package de.lewens_markisen.domain.local_db.time_register_event;
 
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+
+import de.lewens_markisen.domain.local_db.BaseEntity;
+import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.utils.TimeUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,6 +34,7 @@ public class TimeRegisterEvent extends BaseEntity {
 		this.person = person;
 		this.eventDate = eventDate;
 		this.startTime = startTime;
+		this.month = month;
 		this.endTime = endTime;
 	}
 
@@ -39,6 +43,9 @@ public class TimeRegisterEvent extends BaseEntity {
 
 	@Column(name = "event_date")
 	private LocalDate eventDate;
+	
+	@Column(name = "month", columnDefinition = "DATE")
+	private LocalDate month;
 
 	@Column(name = "start_time")
 	private String startTime;

@@ -1,6 +1,6 @@
 package de.lewens_markisen.web.controllers.playlocad;
 
-import de.lewens_markisen.domain.localDb.security.Role;
+import de.lewens_markisen.domain.local_db.security.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

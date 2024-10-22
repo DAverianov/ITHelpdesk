@@ -16,7 +16,7 @@ import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.security.LssUser;
 import de.lewens_markisen.security.LssUserService;
 import de.lewens_markisen.security.UserSpringService;

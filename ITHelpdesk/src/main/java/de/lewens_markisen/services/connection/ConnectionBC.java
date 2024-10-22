@@ -35,7 +35,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import de.lewens_markisen.access.AccessService;
-import de.lewens_markisen.domain.localDb.Access;
+import de.lewens_markisen.domain.local_db.Access;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

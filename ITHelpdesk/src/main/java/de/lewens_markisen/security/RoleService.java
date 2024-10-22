@@ -3,7 +3,7 @@ package de.lewens_markisen.security;
 import java.util.List;
 import java.util.Optional;
 
-import de.lewens_markisen.domain.localDb.security.Role;
+import de.lewens_markisen.domain.local_db.security.Role;
 
 public interface RoleService {
 	public Role saveIfNotExist(Role role);

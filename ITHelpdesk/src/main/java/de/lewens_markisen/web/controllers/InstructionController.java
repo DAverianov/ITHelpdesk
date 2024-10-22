@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.domain.localDb.instruction.Instruction;
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.instruction.Instruction;
 import de.lewens_markisen.instruction.InstructionList;
 import de.lewens_markisen.instruction.InstructionService;
 import de.lewens_markisen.security.perms.InstructionCreatePermission;
@@ -28,7 +27,6 @@ import de.lewens_markisen.security.perms.InstructionReadPermission;
 import de.lewens_markisen.security.perms.UserUpdatePermission;
 import de.lewens_markisen.web.controllers.playlocad.InstructionLinePayload;
 import de.lewens_markisen.web.controllers.playlocad.NewInstructionPayload;
-import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

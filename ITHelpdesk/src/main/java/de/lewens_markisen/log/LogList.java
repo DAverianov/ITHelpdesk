@@ -3,7 +3,7 @@ package de.lewens_markisen.log;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.lewens_markisen.domain.localDb.Log;
+import de.lewens_markisen.domain.local_db.Log;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 

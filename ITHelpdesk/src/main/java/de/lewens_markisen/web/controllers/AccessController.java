@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import de.lewens_markisen.access.AccessService;
 import de.lewens_markisen.access.Accesses;
-import de.lewens_markisen.domain.localDb.Access;
+import de.lewens_markisen.domain.local_db.Access;
 import de.lewens_markisen.security.perms.AccessCreatePermission;
 import de.lewens_markisen.security.perms.AccessReadPermission;
 import de.lewens_markisen.security.perms.AccessUpdatePermission;

@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.domain.localDb.BaseEntity;
-import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.local_db.BaseEntity;
+import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.perms.PersonDeletePermission;
 import de.lewens_markisen.security.perms.PersonLoadPermission;

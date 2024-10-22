@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain.localDb;
+package de.lewens_markisen.domain.local_db;
 
 import de.lewens_markisen.config.SpringContextHelper;
 import de.lewens_markisen.services.EncryptionService;

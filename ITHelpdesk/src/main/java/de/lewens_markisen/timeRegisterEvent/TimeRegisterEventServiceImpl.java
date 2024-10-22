@@ -1,51 +1,95 @@
 package de.lewens_markisen.timeRegisterEvent;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.EventPersonMonth;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
 import de.lewens_markisen.services.connection.BCWebService;
 import de.lewens_markisen.timeReport.PeriodReport;
+import de.lewens_markisen.utils.DateUtils;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Service
 public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 
 	private final TimeRegisterEventRepository timeRegisterEventRepository;
+	private final EventPersonMonthLoadedService timeRegisterEventMonthLoadedService;
 	private final BCWebService bcWebService;
-
-	public TimeRegisterEventServiceImpl(TimeRegisterEventRepository timeRegisterEventRepository, BCWebService bcWebService) {
-		this.timeRegisterEventRepository = timeRegisterEventRepository;
-		this.bcWebService = bcWebService;
-	}
 
 	@Override
 	@Transactional
-	public Optional<List<TimeRegisterEvent>> readEventsProPerson(Person person, PeriodReport period) {
-		// delete all records
-		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPerson(person);
-		timeRegisterEventRepository.deleteAll(events);
+	public void readEventsProPerson(Person person, PeriodReport period) {
+		if (allRecordsSavedInLocalDB(person, period)) {
+			return;
+		} else {
+			LocalDate month = period.getStart();
+			while (month.isBefore(period.getEnd())) {
+				deleteRecordsInMonth(person, month);
+				month = month.plusMonths(1);
+			}
+			readFromBCAndSave(person, period);
+			registerSavedPeriodInLocalDB(person, period);
+		}
+	}
+
+	private void readFromBCAndSave(Person person, PeriodReport period) {
 		// read from BC
 		Optional<List<TimeRegisterEvent>> eventsBC = bcWebService.readTimeRegisterEventsFromBC(person, period);
-		List<TimeRegisterEvent> eventsBCsaved = new ArrayList<TimeRegisterEvent>();
 		// save
 		if (eventsBC.isPresent()) {
+			eventsBC.get().stream().forEach(e -> e.setMonth(DateUtils.startMonat(e.getEventDate())));
 			timeRegisterEventRepository.saveAll(eventsBC.get());
-			return Optional.of(eventsBCsaved);
 		}
-		else {
-			return Optional.empty();
+	}
+
+	private void deleteRecordsInMonth(Person person, LocalDate month) {
+		List<TimeRegisterEvent> events = timeRegisterEventRepository.findAllByPersonAndMonth(person, month);
+		timeRegisterEventRepository.deleteAll(events);
+	}
+
+	private boolean allRecordsSavedInLocalDB(Person person, PeriodReport period) {
+		LocalDate d = period.getStart();
+		while (d.isBefore(period.getEnd())) {
+			if (!allRecordsSavedInLocalDB(person, period.getStart())) {
+				return false;
+			}
+			d = d.plusMonths(1);
+		}
+		return true;
+	}
+
+	private boolean allRecordsSavedInLocalDB(Person person, LocalDate start) {
+		return timeRegisterEventMonthLoadedService
+				.findByPersonAndEventAndMonth(person, EventPersonMonth.TIMEREGISTEREVENT, DateUtils.startMonat(start))
+				.isPresent();
+	}
+
+	private void registerSavedPeriodInLocalDB(Person person, PeriodReport period) {
+		LocalDate d = DateUtils.startMonat(period.getStart());
+		LocalDate thisMonth = DateUtils.startMonat(LocalDate.now());
+		while (d.isBefore(period.getEnd()) && d.isBefore(thisMonth)) {
+			timeRegisterEventMonthLoadedService.save(person, EventPersonMonth.TIMEREGISTEREVENT,
+					DateUtils.startMonat(d));
+			d = d.plusMonths(1);
 		}
 	}
 
 	@Override
 	public Optional<List<TimeRegisterEvent>> findAllByPerson(Person person, PeriodReport period) {
 		return Optional.of(timeRegisterEventRepository.findAllByPerson(person));
+	}
+
+	@Override
+	public List<TimeRegisterEvent> findAllByPersonAndMonth(Person person, LocalDate month) {
+		return timeRegisterEventRepository.findAllByPersonAndMonth(person, month);
 	}
 
 }

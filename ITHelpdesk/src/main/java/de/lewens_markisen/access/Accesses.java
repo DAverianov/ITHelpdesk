@@ -3,8 +3,8 @@ package de.lewens_markisen.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.lewens_markisen.domain.localDb.Access;
-import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.local_db.Access;
+import de.lewens_markisen.domain.local_db.Person;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 

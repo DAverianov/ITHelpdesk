@@ -3,8 +3,8 @@ package de.lewens_markisen.web.controllers.playlocad;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.lewens_markisen.domain.localDb.security.Role;
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.security.Role;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
 import lombok.Getter;
 import lombok.Setter;
 

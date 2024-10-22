@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.domain.localDb.instruction.Instruction;
+import de.lewens_markisen.domain.local_db.instruction.Instruction;
 
 public interface InstructionRepository extends JpaRepository<Instruction, Long> {
 

@@ -6,7 +6,7 @@ import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Objects;
 
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

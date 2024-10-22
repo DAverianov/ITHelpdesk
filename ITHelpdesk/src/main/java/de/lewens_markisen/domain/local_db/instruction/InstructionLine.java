@@ -1,6 +1,6 @@
-package de.lewens_markisen.domain.localDb.instruction;
+package de.lewens_markisen.domain.local_db.instruction;
 
-import de.lewens_markisen.domain.localDb.BaseEntity;
+import de.lewens_markisen.domain.local_db.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

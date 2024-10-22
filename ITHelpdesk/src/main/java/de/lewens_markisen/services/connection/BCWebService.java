@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import de.lewens_markisen.bootstrap.PersonCodeName;
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJson;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
@@ -39,6 +39,7 @@ public class BCWebService {
 	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person, PeriodReport period) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		try {
+			log.debug("BC read from "+connectionBC.getWsZeitpunktposten());
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
 					+ connectionBC.getFilter(createFilterPersonsTime(person.getBcCode(), period));
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);

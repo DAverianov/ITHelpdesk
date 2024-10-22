@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
 
 public interface UserSpringService {
 	public Optional<UserSpring> getUserByName(String username);

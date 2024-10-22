@@ -14,8 +14,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

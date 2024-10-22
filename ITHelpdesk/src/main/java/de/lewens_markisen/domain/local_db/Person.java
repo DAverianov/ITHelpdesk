@@ -1,4 +1,4 @@
-package de.lewens_markisen.domain.localDb;
+package de.lewens_markisen.domain.local_db;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.lewens_markisen.domain.localDb.security.AuthoritieNames;
+import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
 import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

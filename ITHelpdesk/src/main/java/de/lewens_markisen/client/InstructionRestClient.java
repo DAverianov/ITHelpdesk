@@ -4,7 +4,7 @@ package de.lewens_markisen.client;
 import java.util.List;
 import java.util.Optional;
 
-import de.lewens_markisen.domain.localDb.instruction.Instruction;
+import de.lewens_markisen.domain.local_db.instruction.Instruction;
 
 public interface InstructionRestClient {
 

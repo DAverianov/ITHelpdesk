@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.localDb.instruction.Instruction;
+import de.lewens_markisen.domain.local_db.instruction.Instruction;
 import de.lewens_markisen.repository.local.InstructionRepository;
 import lombok.RequiredArgsConstructor;
 

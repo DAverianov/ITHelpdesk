@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.localDb.Log;
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.Log;
+import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.LssUserService;
@@ -62,7 +62,7 @@ public class TimeReportService {
 				.person(person)
 				.period(period)
 				.header(createHeader(person, period))
-				.timeRecords(timeRegisterEventService.findAllByPerson(person, period).get())
+				.timeRecords(timeRegisterEventService.findAllByPersonAndMonth(person, period.getStart()))
 				.build();
 		timeReport.createReportRecords();
 		timeReport.createGroup(1

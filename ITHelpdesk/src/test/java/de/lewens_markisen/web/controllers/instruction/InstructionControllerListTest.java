@@ -13,7 +13,7 @@ import de.lewens_markisen.web.controllers.BaseIT;
 @SpringBootTest
 class InstructionControllerListTest extends BaseIT  {
 
-	public static final String API_LIST = "/intsructions/list";
+	public static final String API_LIST = "/instructions/list";
 	public static final String VIEW = "instructions/instructionsList";
 
 	@Test
@@ -23,19 +23,19 @@ class InstructionControllerListTest extends BaseIT  {
 
 	@WithUserDetails("spring")
 	@Test
-	void listPersonUserAuthAdmin() throws Exception {
+	void listInstructionUserAuthAdmin() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().isOk()).andExpect(view().name(VIEW));
 	}
 	
 	@WithUserDetails("userPersonDepartment")
 	@Test
-	void listPersonUserAuthUserPersonDepartment() throws Exception {
+	void listInstructionUserAuthUserPersonDepartment() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().isForbidden());
 	}
 
 	@WithUserDetails("user")
 	@Test
-	void listPersonUserAuthUser() throws Exception {
+	void listInstructionUserAuthUser() throws Exception {
 		mockMvc.perform(get(API_LIST)).andExpect(status().isForbidden());
 	}
 

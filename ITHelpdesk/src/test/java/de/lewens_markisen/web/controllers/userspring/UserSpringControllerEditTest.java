@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.web.controllers.BaseIT;
 import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
