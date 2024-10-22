@@ -6,27 +6,26 @@
 <title>Neu Anweisung &ndash;</title>
 </head>
 <body>
-	<a data-th-href="@{/instructions/list}">&larr; Zur Liste</a>
+	<a th:href="@{/instructions/list}">&larr; Zur Liste</a>
 	<h1>Neu Anweisung</h1>
-	<div data-th-if="${errors}">
+	<div th:if="${errors}">
 		<h2>Es wurde Fehler gemacht</h2>
 		<ul>
-			<li data-th-each="error: ${errors}" data-th-text="${error}"></li>
+			<li th:each="error: ${errors}" th:text="${error}"></li>
 		</ul>
 	</div>
-	<form method="post" data-th-action="@{/instructions/create}">
+	<form method="post" th:action="@{/instructions/create}">
 		
 		<label> Name:<input type="text" name="name" th:value="${payload.name}"></label>
 		<br> 
 		<label> Description:<textarea name="description" th:text="${payload.description}"></textarea></label>
 		<br>
-		<table th:replace="fragments/tables :: table(theadFields=~{ :: .myFields}, tableData=${payload.lines}, columnNames=${payload.linesColumnNames})">
+		<form th:replace="fragments/tables :: table(theadFields=~{ :: .myFields}, tableData=${payload_lines}, columnNames=${payload.linesColumnNames})">
 	        <tr class="myFields">
 	           <th>No</th>
 	           <th>Description</th>
 	        </tr>
-        
-    	</table>
+		</form>
 
 		<button type="submit">Erstellen</button>
 	</form>

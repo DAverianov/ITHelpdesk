@@ -70,26 +70,33 @@ public class InstructionController {
 	@GetMapping("/create")
 	public String getNewInstructionPage(Model model) {
 		//@formatter:off
-		model.addAttribute("payload", NewInstructionPayload.builder()
-				.line(InstructionLinePayload.builder().id(1).stringNummer(1).build())
-				.build());
-//		model.addAttribute("payload_lines", Set.of(InstructionLinePayload.builder().id(1).stringNummer(1).build()));
+		model.addAttribute("payload", NewInstructionPayload.builder().build());
+		model.addAttribute("payload_lines", Set.of(InstructionLinePayload.builder().id(1).stringNummer(1).build()));
 		//@formatter:on
 		return "instructions/new_instruction";
 	}
 
+	//@formatter:off
 	@InstructionCreatePermission
 	@PostMapping("/create")
-	public String createProduct(@Valid NewInstructionPayload payload, BindingResult bindingResult, Model model) {
+	public String createInstruction(
+			@Valid NewInstructionPayload payload, 
+			@Valid Set<InstructionLinePayload> payload_lines, 
+			BindingResult bindingResult, 
+			Model model) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("payload", payload);
+			model.addAttribute("payload_lines", payload_lines);
 			model.addAttribute("errors",
 					bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList());
 			return "instructions/new_instruction";
 		} else {
-			Instruction instr = Instruction.builder().name(payload.getName()).description(payload.getDescription()).build();
-			if (payload.getLines()!=null) {
-				for (InstructionLinePayload l: payload.getLines()) {
+			Instruction instr = Instruction.builder()
+					.name(payload.getName())
+					.description(payload.getDescription())
+					.build();
+			if (payload_lines!=null) {
+				for (InstructionLinePayload l: payload_lines) {
 					instr.addLine(l);
 				}
 			}
@@ -97,6 +104,21 @@ public class InstructionController {
 			return "redirect:/instructions/list";
 		}
 	}
+	//@formatter:on
+	//@formatter:off
+	@InstructionCreatePermission
+	@PostMapping("/newline")
+	public String newLine(
+			@Valid NewInstructionPayload payload, 
+			@Valid Set<InstructionLinePayload> payload_lines, 
+			BindingResult bindingResult, 
+			Model model) {
+
+		model.addAttribute("payload", payload);
+			model.addAttribute("payload_lines", payload_lines.add(InstructionLinePayload.builder().id(1).stringNummer(1).build()));
+			return "instructions/new_instruction";
+	}
+	//@formatter:on
 
 	@UserUpdatePermission
 	@GetMapping(value = "/edit/{id}")
@@ -116,7 +138,7 @@ public class InstructionController {
 	@UserUpdatePermission
 	@PostMapping(value = "/update")
 	@Transactional
-	public String updateUser(@ModelAttribute("instruction") Instruction instruction,
+	public String updateInstruction(@ModelAttribute("instruction") Instruction instruction,
 			@RequestParam(value = "action", required = true) String action) {
 		if (action.equals("update")) {
 			try {

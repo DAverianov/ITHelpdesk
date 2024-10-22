@@ -1,7 +1,12 @@
 <html>
 <body>
-  <form>
-  	<table th:fragment="table(theadFields, tableData, columnNames)" class="table table-primary">
+  <form th:fragment="table(theadFields, tableData, columnNames)"
+   		method="post" th:action="@{/instructions/newline}" 
+  		class="table table-primary">
+  	<div class="navbar-link">
+		<button type="submit">neu</button>
+  	</div>
+  	<table class="table table-primary">
     <thead>
         <tr th:replace="${theadFields}">
         </tr>
