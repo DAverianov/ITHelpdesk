@@ -1,5 +1,7 @@
 package de.lewens_markisen.instruction;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,11 @@ public class InstructionServiceImpl implements InstructionService{
 	@Override
 	public Instruction save(Instruction instruction) {
 		return instructionRepository.save(instruction);
+	}
+
+	@Override
+	public Optional<Instruction> findById(Long id) {
+		return instructionRepository.findById(id);
 	}
 
 }

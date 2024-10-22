@@ -1,0 +1,40 @@
+<html>
+<body>
+  <form>
+    <th:block th:fragment="pagination(itemName)">
+    
+	<div th:if="${totalPages > 1}">
+	  <span>Pages:</span>
+	  <span>[</span>
+	  <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+	      <a th:if="${currentPage != i}" th:href="@{'/'+${itemName}+'/list?page=__${i}__'}">[[${i}]]</a>
+	      <span th:unless="${currentPage != i}">[[${i}]]</span>
+	    </span>
+	  <span>]&nbsp;</span>
+	  <span>
+	      <a th:if="${currentPage > 1}" th:href="@{'/'+${itemName}+'/list?page=1'}" title="First"
+	         class="fa fa-fast-backward"></a>
+	      <span th:unless="${currentPage > 1}" title="First" class="fa fa-fast-backward"></span>
+	    </span>
+	  <span>
+	      <a th:if="${currentPage > 1}" th:href="@{'/'+${itemName}+'/list?page=__${currentPage - 1}__'}" title="Previous"
+	         class="fa fa-step-backward"></a>
+	      <span th:unless="${currentPage > 1}" title="Previous" class="fa fa-step-backward"></span>
+	    </span>
+	  <span>
+	      <a th:if="${currentPage < totalPages}" th:href="@{'/'+${itemName}+'/list?page=__${currentPage + 1}__'}" title="Next"
+	         class="fa fa-step-forward"></a>
+	      <span th:unless="${currentPage < totalPages}" title="Next" class="fa fa-step-forward"></span>
+	    </span>
+	  <span>
+	      <a th:if="${currentPage < totalPages}" th:href="@{'/'+${itemName}+'/list?page=__${totalPages}__'}" title="Last"
+	         class="fa fa-fast-forward"></a>
+	      <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-fast-forward"></span>
+	    </span>
+	</div>	  
+	    
+	</th:block>
+  </form>
+</body>
+</html>
+

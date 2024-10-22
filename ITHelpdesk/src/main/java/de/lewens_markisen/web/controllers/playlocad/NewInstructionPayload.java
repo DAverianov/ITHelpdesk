@@ -2,12 +2,12 @@ package de.lewens_markisen.web.controllers.playlocad;
 
 import java.util.Set;
 
-import de.lewens_markisen.domain.localDb.instruction.InstructionLine;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Singular;
 
 @Getter
 @Setter
@@ -21,5 +21,6 @@ public class NewInstructionPayload {
     @Size(max = 3000, message = "{instruction.create.errors.details_size_is_invalid}")
     private String description;
     
-    private Set<InstructionLine> lines;
+    @Singular
+    private Set<InstructionLinePayload> lines;
 }

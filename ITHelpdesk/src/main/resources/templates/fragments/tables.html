@@ -1,0 +1,16 @@
+<html>
+<body>
+  <form>
+    <thead th:fragment="fields(theadFields)">
+        <tr th:replace="${theadFields}">
+        </tr>
+    </thead>
+    <tbody th:fragment="tableBody(tableData)">
+        <tr th:each="row, stat: ${tableData}">
+ 			<td><input type="text" th:field="${stat.count}" class="form-control" placeholder="stringNummer" /></td>
+			<td><input type="text" th:field="${row.description}" class="form-control" placeholder="description" /></td>
+        </tr>
+    </tbody>
+  </form>
+</body>
+</html>

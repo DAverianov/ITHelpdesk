@@ -19,25 +19,15 @@
 		<input type="hidden" th:field="${userRolesChecked}" />
 
 		<table>
-			<tr>
-				<td><label class="col-auto col-form-label control-label">name <span class=sub>*</span></label></td>
-				<td><input type="text" th:field="*{username}" class="form-control" placeholder="Username" required></td>
-			</tr>
-			<tr>
-				<td><label class="col-auto col-form-label control-label">Firstname <span class=sub></span></label></td>
-				<td><input type="text" th:field="*{firstname}" class="form-control" placeholder="Firstname" disabled></td>
-			</tr>
-			<tr>
-				<td><label class="col-auto col-form-label control-label">Lastname <span class=sub></span></label></td>
-				<td><input type="text" th:field="*{lastname}" class="form-control" placeholder="Lastname" disabled></td>
-			</tr>
-			<tr>
-				<td><label class="col-auto col-form-label control-label">BC Code <span class=sub></span></label></td>
-				<td><input type="text" th:field="*{bcCode}" class="form-control" placeholder="BC Code" disabled></td>
-			</tr>
-			<tr>
-				<td><label class="col-auto col-form-label control-label">Person <span class=sub></span></label></td>
-				<td><input type="text" th:field="*{person.name}" class="form-control" placeholder="person" disabled></td>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Username', 'username', 'text')}" required /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Firstname', 'firstname', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Lastname', 'lastname', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('BC Code', 'bcCode', 'text')}" disabled /></td></tr>
+			<tr><td><label class="col-auto col-form-label control-label">Person <span class=sub></span></label></td>
+			<td>
+					<!-- <input th:replace="~{fragments/inputField :: input ('Person', '*{person.name}', 'text')}" disabled /> -->
+					<input type="text" th:field="*{person.name}" class="form-control" placeholder="person" disabled>
+			</td>
 			</tr>
 		</table>
 

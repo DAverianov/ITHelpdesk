@@ -9,6 +9,7 @@ import org.hibernate.annotations.FetchMode;
 
 import de.lewens_markisen.domain.localDb.BaseEntity;
 import de.lewens_markisen.domain.localDb.security.AuthoritieNames;
+import de.lewens_markisen.web.controllers.playlocad.InstructionLinePayload;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +50,16 @@ public class Instruction extends BaseEntity implements AuthoritieNames{
 	@OneToMany(mappedBy = "instruction", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
 	private Set<InstructionLine> instructionLines;
+
+	public void addLine(InstructionLinePayload l) {
+		//@formatter:off
+		this.instructionLines.add(InstructionLine.builder()
+				.instruction(this)
+				.stringNummer(l.getStringNummer())
+				.description(l.getDescription())
+				.build());
+		//@formatter:on
+	}
 
 	@Override
     public List<String> getAuthoritieNames() {

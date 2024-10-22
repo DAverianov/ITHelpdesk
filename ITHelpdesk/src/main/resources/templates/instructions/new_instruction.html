@@ -9,7 +9,7 @@
 	<a data-th-href="@{/instructions/list}">&larr; Zur Liste</a>
 	<h1>Neu Anweisung</h1>
 	<div data-th-if="${errors}">
-		<h2>Es wurden Fehler gemacht</h2>
+		<h2>Es wurde Fehler gemacht</h2>
 		<ul>
 			<li data-th-each="error: ${errors}" data-th-text="${error}"></li>
 		</ul>
@@ -20,27 +20,37 @@
 		</label><br> <label> Description:<br> <textarea
 				name="description" data-th-text="${payload?.description}"></textarea>
 		</label><br>
-		<table class="table table-striped">
+		<table>
+        <thead th:replace="fragments/tables :: fields(~{ :: .myFields})">
+            <tr class="myFields">
+               <th>No</th>
+               <th>Description</th>
+            </tr>
+        </thead>
+        <div th:replace="fragments/tables :: tableBody(tableData=${payload.lines})">
+        </div>
+    	</table>
+		
+		<!-- <table class="table table-striped">
 			<thead>
 				<tr>
 					<th>No</th>
-					<th>Anweisung</th>
 					<th>Description</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="line,stat : ${payload.lines}"></td>
+				<tr th:each="line : ${payload.lines}" th:insert="instructions/instructionLine :: instructionLine(${line})" th:remove="tag"> </tr>
+				
+				<!-- <tr th:each="line,stat : ${payload.lines}"></td>
 
 					<td th:text="${stat.count}"></td>
 					<td><input type="checkbox" th:checked="${line}"	th:value="${stat}" class="form-input">
 						<label th:text="${line.stringNummer}"></label></td>
-					<td><input type="checkbox" th:checked="${line}"	th:value="${line.instruction}" class="form-input">
-						<label th:text="${line.instruction}"></label></td>
 					<td><input type="checkbox" th:checked="${line}"	th:value="${line.description}" class="form-input">
 						<label th:text="${line.description}"></label></td>
-				</tr>
+				</tr> -->
 			</tbody>
-		</table>
+		</table> -->
 
 		<button type="submit">Erstellen</button>
 	</form>

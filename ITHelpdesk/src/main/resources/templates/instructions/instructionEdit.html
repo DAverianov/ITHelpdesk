@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'instructions')}">
+<head>
+<meta charset="UTF-8">
+<title>Person</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+</head>
+<body>
+	<h1>Edit Instruction</h1>
+
+	<form action="#" th:action="@{/instructions/update}" th:object="${instruction}" method="post">
+	
+		<input type="hidden" th:field="*{id}" />
+
+		<table>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" required /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" /></td></tr>
+			</tr>
+		</table>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="line,stat : ${instruction.instructionLines}"></td>
+	    			<td th:text="${stat.count}"></td>
+	    			<td th:text="${line.description}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			<button type="submit" name="action" value="update" class="btn btn-primary">Update</button>
+			&nbsp;&nbsp;
+			<button type="submit" name="action" value="cancel" class="btn btn-info">Cancel</button>
+		</p>
+	</form>
+</body>
+</html>

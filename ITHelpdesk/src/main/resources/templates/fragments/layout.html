@@ -59,15 +59,18 @@
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>TimeReport</span>
 					</li>
-					<li sec:authorize="hasAnyAuthority('access.read')" th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
+					<li sec:authorize="hasAnyAuthority('access.read')" 
+						th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>Accesses</span>
 					</li>
-					<li sec:authorize="hasAnyAuthority('user.read')" th:replace="~{::menuItem ('/users/list','users','users','th-list','Users')}">
+					<li sec:authorize="hasAnyAuthority('user.read')" 
+						th:replace="~{::menuItem ('/users/list','users','users','th-list','Users')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Users</span>
 					</li>
-					<li sec:authorize="hasAnyAuthority('log.read')" th:replace="~{::menuItem ('/logs/list','logs','logs','th-list','Logs')}">
+					<li sec:authorize="hasAnyAuthority('log.read')" 
+						th:replace="~{::menuItem ('/logs/list','logs','logs','th-list','Logs')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Logs</span>
 					</li>

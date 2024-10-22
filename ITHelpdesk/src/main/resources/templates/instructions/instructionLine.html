@@ -1,0 +1,5 @@
+<tr th:fragment="instructionLine(line)"> 
+	<!--  <td th:text="${stat.count}"></td> -->
+	<td><input type="text" th:checked="${line}"	th:value="${line.description}" class="form-input">
+		<label th:text="${line.description}"></label></td>
+</tr>
