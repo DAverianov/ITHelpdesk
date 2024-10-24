@@ -120,5 +120,12 @@ public class PersonController {
 		bcWebService.loadPersonFromBC();
 		return "redirect:/persons/list";
 	}
+	
+	@PersonLoadPermission
+	@GetMapping(value = "/loadBCZeitnachweis")
+	public String loadBCZeitnachweis() {
+		bcWebService.loadBCZeitnachweis();
+		return "redirect:/persons/list";
+	}
 
 }

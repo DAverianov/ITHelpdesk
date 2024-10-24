@@ -1,10 +1,13 @@
 package de.lewens_markisen.services.connection;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,29 +15,37 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.gson.Gson;
 
+import de.lewens_markisen.bc_reports.BcReportParser;
+import de.lewens_markisen.bc_reports.BcReportZeitnachweisPerson;
 import de.lewens_markisen.bootstrap.PersonCodeName;
 import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJson;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
+import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeReport.PeriodReport;
+import de.lewens_markisen.utils.FileOperations;
 import de.lewens_markisen.utils.TimeUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class BCWebService {
 	private final ConnectionBC connectionBC;
 	private final PersonService personService;
-
-	public BCWebService(ConnectionBC connectionBC, PersonService personService) {
-		this.connectionBC = connectionBC;
-		this.personService = personService;
-	}
+	private final BcReportParser bcReportParser;
+	private final PersonInBcReportService personInBcReportService;
+	
+	@Value("${import.reports.zeitnachweismitarbeiter}")
+	private String fileZeitnachweisMitarbeiter;
 
 	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person, PeriodReport period) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
@@ -255,6 +266,40 @@ public class BCWebService {
 					.build()));
 		//@formatter:on
 		return Optional.of(persons);
+	}
+
+	public void loadBCZeitnachweis() {
+		
+		List<BcReportZeitnachweisPerson> personsXml = bcReportParser.parse(getFilePathWithReport());
+		for (BcReportZeitnachweisPerson personXml: personsXml) {
+			
+			String bcCode = personXml.getAttribute().get("AZ_Person__Code");
+			Optional<Person> personOpt = personService.findByBcCode(bcCode);
+			if (personOpt.isEmpty()) {
+				log.debug("Person with BC Code "+bcCode+" wasnt found!");
+				continue;
+			}
+			LocalDate month = readDateFromString(personXml.getAttribute().get("gtxtPeriodenText"));
+			
+			PersonInBcReport personInBcReport = new PersonInBcReport();
+			personInBcReport.setPerson(personOpt.get());
+			personInBcReport.setMonth(month);
+			personInBcReport.setAttribute(personXml.getAttribute());
+			
+			personInBcReportService.save(personInBcReport);
+		}
+		
+	}
+
+	private String getFilePathWithReport() {
+		FileOperations fileOp = new FileOperations();
+		File file = fileOp.getFileFromResources(fileZeitnachweisMitarbeiter);
+		return file.getAbsolutePath();
+	}
+
+	private LocalDate readDateFromString(String reportMonth) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+		return LocalDate.parse(reportMonth.substring(0, 8), formatter);
 	}
 
 }
