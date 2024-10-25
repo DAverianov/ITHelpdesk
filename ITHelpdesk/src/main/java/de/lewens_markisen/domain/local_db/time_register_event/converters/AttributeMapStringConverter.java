@@ -18,21 +18,27 @@ public class AttributeMapStringConverter implements AttributeConverter<Map<Strin
 
 	@Override
 	public String convertToDatabaseColumn(Map<String, String> attr) {
+		if (attr == null) {
+			return null;
+		}
 		try {
 			return objectMapper.writeValueAsString(attr);
 		} catch (JsonProcessingException jpe) {
-			log.warn("Cannot convert Address into JSON");
+			log.warn("Cannot convert Map<String, String> into JSON");
 			return null;
 		}
 	}
 
 	@Override
 	public Map<String, String> convertToEntityAttribute(String value) {
+		if (value == null) {
+			return null;
+		}
 		try {
 		    TypeReference<HashMap<String,String>> typeRef = new TypeReference<HashMap<String,String>>() {};
 			return objectMapper.readValue(value, typeRef);
 		} catch (JsonProcessingException e) {
-			log.warn("Cannot convert JSON into Address");
+			log.warn("Cannot convert JSON into Map<String, String>");
 			return null;
 		}
 	}

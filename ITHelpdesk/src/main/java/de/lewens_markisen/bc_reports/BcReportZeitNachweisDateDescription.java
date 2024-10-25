@@ -1,15 +1,21 @@
 package de.lewens_markisen.bc_reports;
 
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString
-public class BcReportZeitNachweisDateDescription {
+public class BcReportZeitNachweisDateDescription implements Serializable  {
 	private String arbZCaption;
 	private String date_Period_Start;
 	private String gcodTAZ;

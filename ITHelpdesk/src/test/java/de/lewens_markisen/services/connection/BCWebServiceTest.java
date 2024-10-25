@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.timeReport.PeriodReport;
 
@@ -64,6 +65,16 @@ class BCWebServiceTest {
 		Optional<List<Person>> personsOpt = bcWebService.readPersonsFromBC();
 		assertThat(personsOpt).isNotEmpty();
 		assertThat(personsOpt.get()).isNotEmpty().hasAtLeastOneElementOfType(Person.class);
+	}
+	
+	@Test
+	void loadBCZeitnachweis_whenLoad_thenReceive() {
+		List<PersonInBcReport> personsInBcRep = bcWebService.loadBCZeitnachweis();
+		
+		assertThat(personsInBcRep).isNotEmpty();
+		PersonInBcReport personInBcRep = personsInBcRep.get(0);
+		assertThat(personInBcRep.getAttribute().get("AZ_Person__Code")).isNotNull();
+		assertThat(personInBcRep.getAttribute().get("AZ_Person__Name")).isNotNull();
 	}
 
 }

@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import de.lewens_markisen.domain.local_db.Log;
 import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
+import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.LssUserService;
 import de.lewens_markisen.security.UserSpringService;
+import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class TimeReportService {
 	private final LogService logService;
 	private final UserSpringService userService;
 	private final LssUserService lssUserService;
+	private final PersonInBcReportService personInBcReportService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		PeriodReport period = PeriodReport.thisMonat();
@@ -58,11 +61,14 @@ public class TimeReportService {
 		logRecord(person, period);
 		timeRegisterEventService.readEventsProPerson(person, period);
 		
+		Optional<PersonInBcReport> personInBcRepOpt = personInBcReportService.findByPersonAndMonth(person, period.getStart());
+		
 		TimeReport timeReport = TimeReport.builder()
 				.person(person)
 				.period(period)
 				.header(createHeader(person, period))
 				.timeRecords(timeRegisterEventService.findAllByPersonAndMonth(person, period.getStart()))
+				.urlaubSaldo(getFromPersonInBcSaldo(personInBcRepOpt, "Urlaubssaldo in Tagen"))
 				.build();
 		timeReport.createReportRecords();
 		timeReport.createGroup(1
@@ -75,6 +81,17 @@ public class TimeReportService {
 		//@formatter:on
 	}
 	
+	private String getFromPersonInBcSaldo(Optional<PersonInBcReport> personInBcRepOpt, String fieldName) {
+		if (personInBcRepOpt.isEmpty()) {
+			return "";
+		}
+		return personInBcRepOpt.get().getSaldo().getSaldoList()
+				.stream()
+				.filter(s -> fieldName.equals(s.getKSaldo_Bezeichnung()))
+				.findFirst()
+				.map(u -> u.getGtisBASaldoEndeAktPer()).orElse("0");
+	}
+
 	private void logRecord(Person person, PeriodReport period) {
 		log.info("Create TimeReport for " + person.getName());
 		Optional<UserSpring> userOpt = userService.getCurrentUser();

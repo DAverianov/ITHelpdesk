@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.gson.Gson;
 
 import de.lewens_markisen.bc_reports.BcReportParser;
+import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescriptionList;
+import de.lewens_markisen.bc_reports.BcReportZeitNachweisKSaldoList;
 import de.lewens_markisen.bc_reports.BcReportZeitnachweisPerson;
 import de.lewens_markisen.bootstrap.PersonCodeName;
 import de.lewens_markisen.domain.local_db.Person;
@@ -268,7 +270,9 @@ public class BCWebService {
 		return Optional.of(persons);
 	}
 
-	public void loadBCZeitnachweis() {
+	public List<PersonInBcReport> loadBCZeitnachweis() {
+		
+		List<PersonInBcReport> personsInBcRep = new ArrayList<PersonInBcReport>();
 		
 		List<BcReportZeitnachweisPerson> personsXml = bcReportParser.parse(getFilePathWithReport());
 		for (BcReportZeitnachweisPerson personXml: personsXml) {
@@ -281,13 +285,22 @@ public class BCWebService {
 			}
 			LocalDate month = readDateFromString(personXml.getAttribute().get("gtxtPeriodenText"));
 			
+			//@formatter:off
 			PersonInBcReport personInBcReport = new PersonInBcReport();
 			personInBcReport.setPerson(personOpt.get());
 			personInBcReport.setMonth(month);
 			personInBcReport.setAttribute(personXml.getAttribute());
+			personInBcReport.setDateTable(BcReportZeitNachweisDateDescriptionList.builder()
+					.dateTable(personXml.getDateDescription())
+					.build());
+			personInBcReport.setSaldo(BcReportZeitNachweisKSaldoList.builder()
+					.saldoList(personXml.getSaldo())
+					.build());
+			//@formatter:on
 			
-			personInBcReportService.save(personInBcReport);
+			personsInBcRep.add(personInBcReportService.save(personInBcReport));
 		}
+		return personsInBcRep;
 		
 	}
 

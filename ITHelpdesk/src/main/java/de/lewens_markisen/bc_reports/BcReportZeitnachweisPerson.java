@@ -1,6 +1,6 @@
 package de.lewens_markisen.bc_reports;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import lombok.Getter;
@@ -12,6 +12,6 @@ import lombok.ToString;
 @ToString
 public class BcReportZeitnachweisPerson {
 	Map<String, String> attribute;
-	List<BcReportZeitNachweisKSaldo> saldo;
-	List<BcReportZeitNachweisDateDescription> dateDescription;
+	ArrayList<BcReportZeitNachweisKSaldo> saldo;
+	ArrayList<BcReportZeitNachweisDateDescription> dateDescription;
 }

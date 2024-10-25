@@ -1,14 +1,19 @@
 package de.lewens_markisen.domain.local_db.time_register_event;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescription;
+import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescriptionList;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisKSaldo;
+import de.lewens_markisen.bc_reports.BcReportZeitNachweisKSaldoList;
 import de.lewens_markisen.domain.local_db.BaseEntity;
 import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.converters.AttributeMapStringConverter;
+import de.lewens_markisen.domain.local_db.time_register_event.converters.BcReportZeitNachweisDateDescriptionListConverter;
+import de.lewens_markisen.domain.local_db.time_register_event.converters.BcReportZeitNachweisKSaldoListConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -35,12 +40,12 @@ public class PersonInBcReport extends BaseEntity {
 	@Column(name = "attribute")
 	private Map<String, String> attribute;
 
-	@Convert(converter = BcReportZeitNachweisDateDescriptionConverter.class)
+	@Convert(converter = BcReportZeitNachweisDateDescriptionListConverter.class)
 	@Column(name = "date_table")
-	private List<BcReportZeitNachweisDateDescription> dateTable;
+	private BcReportZeitNachweisDateDescriptionList dateTable;
 
-	@Convert(converter = BcReportZeitNachweisKSaldoConverter.class)
+	@Convert(converter = BcReportZeitNachweisKSaldoListConverter.class)
 	@Column(name = "saldo")
-	private List<BcReportZeitNachweisKSaldo> saldo;
+	private BcReportZeitNachweisKSaldoList saldo;
 
 }

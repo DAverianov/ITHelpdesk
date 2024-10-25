@@ -54,8 +54,8 @@ public class BcReportParser {
 		for (Node nodePerson : nodeListPersons) {
 			List<Node> dataItemNodes = getDataItems(nodePerson, "Integer");
 			Map<String, String> columns = getMapFromColumns(dataItemNodes);
-			List<BcReportZeitNachweisKSaldo> saldo = getKSaldo(dataItemNodes);
-			List<BcReportZeitNachweisDateDescription> dateDescription = getDateDescription(dataItemNodes);
+			ArrayList<BcReportZeitNachweisKSaldo> saldo = getKSaldo(dataItemNodes);
+			ArrayList<BcReportZeitNachweisDateDescription> dateDescription = getDateDescription(dataItemNodes);
 			
 			BcReportZeitnachweisPerson personDaten = new BcReportZeitnachweisPerson();
 			personDaten.setAttribute(columns);
@@ -66,8 +66,8 @@ public class BcReportParser {
 		return persons;
 	}
 
-	private List<BcReportZeitNachweisDateDescription> getDateDescription(List<Node> dataItemNodes) {
-		List<BcReportZeitNachweisDateDescription> dateDescr = new ArrayList<BcReportZeitNachweisDateDescription>();
+	private ArrayList<BcReportZeitNachweisDateDescription> getDateDescription(List<Node> dataItemNodes) {
+		ArrayList<BcReportZeitNachweisDateDescription> dateDescr = new ArrayList<BcReportZeitNachweisDateDescription>();
 		for (Node nodeDataItem : dataItemNodes) {
 			List<Node> dSaldoNodes = getDataItems(nodeDataItem, "Date");
 
@@ -88,8 +88,8 @@ public class BcReportParser {
 		return dateDescr;
 	}
 
-	private List<BcReportZeitNachweisKSaldo> getKSaldo(List<Node> dataItemNodes) {
-		List<BcReportZeitNachweisKSaldo> saldo = new ArrayList<BcReportZeitNachweisKSaldo>();
+	private ArrayList<BcReportZeitNachweisKSaldo> getKSaldo(List<Node> dataItemNodes) {
+		ArrayList<BcReportZeitNachweisKSaldo> saldo = new ArrayList<BcReportZeitNachweisKSaldo>();
 		for (Node nodeDataItem : dataItemNodes) {
 			List<Node> dSaldoNodes = getDataItems(nodeDataItem, "KSaldo");
 

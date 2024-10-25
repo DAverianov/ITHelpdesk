@@ -37,6 +37,8 @@ public class TimeReport {
 	private List<TimeRegisterEvent> timeRecords;
 	private List<TimeReportRecord> recordsWithGroups;
 	private String comment;
+	private String urlaubSaldo;
+	private String timeSaldoBefor;
 
 	public void createReportRecords() {
 		this.recordsWithGroups = new ArrayList<TimeReportRecord>();

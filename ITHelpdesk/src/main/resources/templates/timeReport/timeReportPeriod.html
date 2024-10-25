@@ -16,7 +16,7 @@
 
 	<h2 th:text="${timeReport.header}">Time Report>"</h2>
 
-	<form method="post" action="#" th:action="@{/timeReport/me}"	th:object="${timeReport}">
+	<form method="post" action="#" th:action="@{/timeReport/me}" th:object="${timeReport}">
 		<input type="hidden" name="person" th:field="*{person}"/>
 		<input type="hidden" name="period" th:field="*{period}"/>
 		<input type="hidden" name="period.start" th:field="*{period.start}"/>
@@ -28,6 +28,9 @@
 			<button type="submit" name="action" value="update" class="btn btn-secondary">Update</button>
 		</div>
 	</form>
+	<dev>
+		<label> Url saldo: <a type="text" name="urlaubSaldo" data-th-value="${timeReport.urlaubSaldo}"></a>
+	</dev>
 
 	<table id="timeReport" class="table table-striped border-2">
 		<thead>
