@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>de.lewens-markisen</groupId>
 	<artifactId>ITHelpdesk</artifactId>
-	<version>0.0.20</version>
+	<version>0.0.21</version>
 	<name>ITHelpdesk</name>
 	<description>IT Helpdesk</description>
 	<url />

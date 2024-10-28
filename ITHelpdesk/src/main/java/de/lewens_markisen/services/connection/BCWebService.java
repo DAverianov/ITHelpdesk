@@ -31,6 +31,7 @@ import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
 import de.lewens_markisen.storage.FileSystemStorageService;
+import de.lewens_markisen.storage.StorageService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeReport.PeriodReport;
 import de.lewens_markisen.utils.TimeUtils;
@@ -45,7 +46,7 @@ public class BCWebService {
 	private final PersonService personService;
 	private final BcReportParser bcReportParser;
 	private final PersonInBcReportService personInBcReportService;
-	private final FileSystemStorageService fileSystemStorageService;
+	private final StorageService storageService;
 	
 	@Value("${import.reports.zeitnachweismitarbeiter}")
 	private String fileZeitnachweisMitarbeiter;
@@ -316,7 +317,7 @@ public class BCWebService {
 	}
 
 	private Path getFilePathWithReport() {
-		return fileSystemStorageService.load(fileZeitnachweisMitarbeiter);
+		return storageService.load(fileZeitnachweisMitarbeiter);
 	}
 
 	private LocalDate readDateFromString(String reportMonth) {

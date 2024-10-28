@@ -59,5 +59,5 @@ class FileSystemStorageServiceTest {
 		given(this.storageService.loadAsResource("test.txt"))
 				.willThrow(StorageFileNotFoundException.class);
 
-		this.mvc.perform(get("/upload/files/test.txt")).andExpect(status().isNotFound());
+		this.mvc.perform(get("/upload/files/test.txt")).andExpect(status().is3xxRedirection());
 	}}

@@ -1,28 +1,45 @@
 package de.lewens_markisen.services.connection;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.ActiveProfiles;
 
 import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
+import de.lewens_markisen.storage.StorageService;
 import de.lewens_markisen.timeReport.PeriodReport;
 
 @ActiveProfiles("test")
 @SpringBootTest()
 class BCWebServiceTest {
 	private final String BC_CODE = "645";
+	private final String fileWithReport = "ZeitnachweisMitarbeiter.xml";
+
 	@Autowired
-	BCWebService bcWebService;
+	private BCWebService bcWebService;
+
+	@MockBean
+	private StorageService storageService;
 
 	@Test
 	void readTimeRegisterEventsFromBC_whenRead_thenReceive() {
@@ -32,7 +49,7 @@ class BCWebServiceTest {
 		assertThat(events.isPresent());
 		assertThat(events.get()).isNotEmpty().hasAtLeastOneElementOfType(TimeRegisterEvent.class);
 	}
-	
+
 	@Test
 	void compoundDublRecords() {
 		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
@@ -59,18 +76,28 @@ class BCWebServiceTest {
 		assertThat(eventsWithoutDoubl.get(0).getStartTime()).isEqualTo("7:00");
 		assertThat(eventsWithoutDoubl.get(0).getEndTime()).isEqualTo("17:00");
 	}
-	
+
 	@Test
 	void readPersonsFromBC_whenQuery_thenReceive() {
 		Optional<List<Person>> personsOpt = bcWebService.readPersonsFromBC();
 		assertThat(personsOpt).isNotEmpty();
 		assertThat(personsOpt.get()).isNotEmpty().hasAtLeastOneElementOfType(Person.class);
 	}
-	
+
 	@Test
-	void loadBCZeitnachweis_whenLoad_thenReceive() {
+	void loadBCZeitnachweis_whenLoad_thenReceive() throws IOException {
+	    String path = "/src/test/resources";
+	    
+	    Path originalPath = new File("."+path+"/testFiles", fileWithReport).toPath();
+	    Path copied = Paths.get("src/test/resources/"+fileWithReport);
+	    Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
+
+	    File file = new File("."+path, fileWithReport);
+
+		given(this.storageService.load(anyString())).willReturn(file.toPath());
+
 		List<PersonInBcReport> personsInBcRep = bcWebService.loadBCZeitnachweis();
-		
+
 		assertThat(personsInBcRep).isNotEmpty();
 		PersonInBcReport personInBcRep = personsInBcRep.get(0);
 		assertThat(personInBcRep.getAttribute().get("AZ_Person__Code")).isNotNull();
