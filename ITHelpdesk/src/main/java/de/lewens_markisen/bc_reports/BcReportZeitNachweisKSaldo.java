@@ -19,5 +19,5 @@ public class BcReportZeitNachweisKSaldo implements Serializable  {
 	private String kSaldo_Bezeichnung;
 	private String kSaldo_Code;
 	private String gtisBASaldoEndeAktPer;
-
+	private String gtisBASaldoEndeVorPer;
 }

@@ -1,11 +1,13 @@
 package de.lewens_markisen.services.connection;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,8 +17,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.google.gson.Gson;
-
 import de.lewens_markisen.bc_reports.BcReportParser;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescriptionList;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisKSaldoList;
@@ -30,9 +30,9 @@ import de.lewens_markisen.services.connection.jsonModele.PersonBcJson;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
+import de.lewens_markisen.storage.FileSystemStorageService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeReport.PeriodReport;
-import de.lewens_markisen.utils.FileOperations;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,7 @@ public class BCWebService {
 	private final PersonService personService;
 	private final BcReportParser bcReportParser;
 	private final PersonInBcReportService personInBcReportService;
+	private final FileSystemStorageService fileSystemStorageService;
 	
 	@Value("${import.reports.zeitnachweismitarbeiter}")
 	private String fileZeitnachweisMitarbeiter;
@@ -274,7 +275,8 @@ public class BCWebService {
 		
 		List<PersonInBcReport> personsInBcRep = new ArrayList<PersonInBcReport>();
 		
-		List<BcReportZeitnachweisPerson> personsXml = bcReportParser.parse(getFilePathWithReport());
+		Path fileWithReport = getFilePathWithReport();
+		List<BcReportZeitnachweisPerson> personsXml = bcReportParser.parse(fileWithReport.toString());
 		for (BcReportZeitnachweisPerson personXml: personsXml) {
 			
 			String bcCode = personXml.getAttribute().get("AZ_Person__Code");
@@ -300,14 +302,21 @@ public class BCWebService {
 			
 			personsInBcRep.add(personInBcReportService.save(personInBcReport));
 		}
+		deleteFile(fileWithReport);
 		return personsInBcRep;
 		
 	}
 
-	private String getFilePathWithReport() {
-		FileOperations fileOp = new FileOperations();
-		File file = fileOp.getFileFromResources(fileZeitnachweisMitarbeiter);
-		return file.getAbsolutePath();
+	private void deleteFile(Path fileWithReport) {
+		try {
+			Files.delete(fileWithReport);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Path getFilePathWithReport() {
+		return fileSystemStorageService.load(fileZeitnachweisMitarbeiter);
 	}
 
 	private LocalDate readDateFromString(String reportMonth) {

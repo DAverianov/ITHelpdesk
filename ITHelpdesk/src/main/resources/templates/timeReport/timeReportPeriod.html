@@ -23,13 +23,31 @@
 		<input type="hidden" name="period.end" th:field="*{period.end}"/>
 		<div>
 			<button type="submit" name="action" value="period_minus" class="btn btn-secondary">&lt;</button>
-			<label> Period: <input type="text" name="periodString" data-th-value="${timeReport.period.toString}"></label>
+			<label> Period: <input type="text" name="periodString" th:value="${timeReport.period.toString}"></label>
 			<button type="submit" name="action" value="period_plus" class="btn btn-secondary">&gt;</button>
 			<button type="submit" name="action" value="update" class="btn btn-secondary">Update</button>
 		</div>
 	</form>
-	<dev>
-		<label> Url saldo: <a type="text" name="urlaubSaldo" data-th-value="${timeReport.urlaubSaldo}"></a>
+	</br>
+	<dev th:if="${timeReport.isLastReport}">
+		<a>Aus dem Zeitnachweis-Mitarbeiter-Bericht (</a><a th:text="${timeReport.lastMonat}"></a><a>)</a>
+		<table id="saldo" class="table table-info">
+			<thead>
+				<tr>
+					<th style="width: 100px;">Kalender</th>
+					<th style="width: 200px;">Saldo der Zeit</th>
+					<th style="width: 100px;">..des Urlaubs</th>
+				</tr>
+			</thead>
+			<tr>
+				<td style="width: 100px;" align="left" th:text="${timeReport.CalendarArt}" />
+				<td align="right" 
+					 th:style="${timeReport.timeSaldoSign > 0 ? 'color: red;' : _}" 
+					 th:text="${timeReport.timeSaldo}" />
+				<td style="width: 100px;" align="right" th:text="${timeReport.urlaubSaldo}" />
+			</tr>
+			</tbody>
+		</table>
 	</dev>
 
 	<table id="timeReport" class="table table-striped border-2">

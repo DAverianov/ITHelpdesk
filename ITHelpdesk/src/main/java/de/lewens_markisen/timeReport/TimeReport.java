@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,7 +16,9 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
 import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
+import de.lewens_markisen.utils.StringUtilsLSS;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,8 +40,8 @@ public class TimeReport {
 	private List<TimeRegisterEvent> timeRecords;
 	private List<TimeReportRecord> recordsWithGroups;
 	private String comment;
-	private String urlaubSaldo;
-	private String timeSaldoBefor;
+	private Optional<PersonInBcReport> personInBcReportLastMonat;
+	private Optional<PersonInBcReport> personInBcReport;
 
 	public void createReportRecords() {
 		this.recordsWithGroups = new ArrayList<TimeReportRecord>();
@@ -100,6 +103,48 @@ public class TimeReport {
 		} else {
 			return periodStart;
 		}
+	}
+	
+	public Boolean getIsLastReport() {
+		return this.personInBcReportLastMonat !=null & this.personInBcReportLastMonat.isPresent();
+	}
+	
+	public String getUrlaubSaldo() {
+		return getSaldoLastMonat("Urlaubssaldo in Tagen");
+	}
+	
+	public String getTimeSaldo() {
+		return getSaldoLastMonat("Arbeitsvertrags-Saldo");
+	}
+	
+	public Integer getTimeSaldoSign() {
+		return getTimeSaldo().indexOf("-");
+	}
+	
+	public String getCalendarArt() {
+		return getAttributeLastMonat("gtxtStammAZM");
+	}
+	
+	private String getAttributeLastMonat(String key) {
+		if (this.personInBcReportLastMonat.isEmpty()) {
+			return "";
+		}
+		return this.personInBcReportLastMonat.get().getAttribute().get(key);
+	}
+
+	private String getSaldoLastMonat(String fieldName) {
+		if (this.personInBcReportLastMonat.isEmpty()) {
+			return "";
+		}
+		return this.personInBcReportLastMonat.get().getSaldo().getSaldoList()
+				.stream()
+				.filter(s -> fieldName.equals(s.getKSaldo_Bezeichnung()))
+				.findFirst()
+				.map(u -> u.getGtisBASaldoEndeAktPer()).orElse("0");
+	}
+	
+	public String getLastMonat() {
+		return PeriodReport.formatMonth(this.period.getStart().minusMonths(1));
 	}
 
 }

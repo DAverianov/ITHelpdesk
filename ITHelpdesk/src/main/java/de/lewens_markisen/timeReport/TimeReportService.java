@@ -61,14 +61,15 @@ public class TimeReportService {
 		logRecord(person, period);
 		timeRegisterEventService.readEventsProPerson(person, period);
 		
-		Optional<PersonInBcReport> personInBcRepOpt = personInBcReportService.findByPersonAndMonth(person, period.getStart());
+		Optional<PersonInBcReport> personInBcRepOpt = personInBcReportService.findByPersonAndMonth(person, period.getStart().minusMonths(1));
 		
 		TimeReport timeReport = TimeReport.builder()
 				.person(person)
 				.period(period)
 				.header(createHeader(person, period))
 				.timeRecords(timeRegisterEventService.findAllByPersonAndMonth(person, period.getStart()))
-				.urlaubSaldo(getFromPersonInBcSaldo(personInBcRepOpt, "Urlaubssaldo in Tagen"))
+				.personInBcReportLastMonat(personInBcRepOpt)
+//				.personInBcReportLastMonat(getFromPersonInBcSaldo(personInBcRepOpt, "Urlaubssaldo in Tagen"))
 				.build();
 		timeReport.createReportRecords();
 		timeReport.createGroup(1
@@ -79,17 +80,6 @@ public class TimeReportService {
 				, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
 		return Optional.of(timeReport);
 		//@formatter:on
-	}
-	
-	private String getFromPersonInBcSaldo(Optional<PersonInBcReport> personInBcRepOpt, String fieldName) {
-		if (personInBcRepOpt.isEmpty()) {
-			return "";
-		}
-		return personInBcRepOpt.get().getSaldo().getSaldoList()
-				.stream()
-				.filter(s -> fieldName.equals(s.getKSaldo_Bezeichnung()))
-				.findFirst()
-				.map(u -> u.getGtisBASaldoEndeAktPer()).orElse("0");
 	}
 
 	private void logRecord(Person person, PeriodReport period) {

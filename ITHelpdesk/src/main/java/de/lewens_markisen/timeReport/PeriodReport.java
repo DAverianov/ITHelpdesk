@@ -54,6 +54,11 @@ public class PeriodReport {
 			return "(" + getStart().format(formatter) + " - " + getEnd().format(formatter) + ")";
 		}
 	}
+	
+	public static String formatMonth(LocalDate date) {
+		DateTimeFormatter formatterMonat = DateTimeFormatter.ofPattern("MMMM.yyyy");
+		return date.format(formatterMonat);
+	}
 
 	public static PeriodReport thisMonat() {
 		return PeriodReport.builder().start(DateUtils.startMonat(LocalDate.now())).end(LocalDate.now()).build();
