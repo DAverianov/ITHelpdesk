@@ -74,6 +74,11 @@
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Logs</span>
 					</li>
+					<li sec:authorize="hasAnyAuthority('person.read')" 
+						th:replace="~{::menuItem ('/upload','upload','upload','th-list','Upload')}">
+						<span class="fa fa-th-list" aria-hidden="true"></span> 
+						<span>Logs</span>
+					</li>
 					<li th:replace="~{::menuItem ('/logout','exit','exit','exit','Exit')}">
 						<span class="fa fa-home" aria-hidden="true"></span> <span>Exit</span>
 					</li>
