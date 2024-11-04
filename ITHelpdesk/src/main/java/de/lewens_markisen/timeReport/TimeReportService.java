@@ -96,9 +96,10 @@ public class TimeReportService {
 
 	private PeriodReport periodCurrentWithLastMonats() {
 		//@formatter:off
+		LocalDate start = getStartDateReport();
 		return PeriodReport.builder()
-				.start(getStartDateReport())
-				.end(LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()))
+				.start(start)
+				.end(DateUtils.endMonat(start))
 				.build();
 		//@formatter:on
 	}
@@ -113,7 +114,7 @@ public class TimeReportService {
 
 	private LocalDate getStartDateReport() {
 		LocalDate now = LocalDate.now();
-		if (now.getDayOfMonth() > 10) {
+		if (now.getDayOfMonth() > 5) {
 			return now.withDayOfMonth(1);
 		} else {
 			return now.minusMonths(1).withDayOfMonth(1);

@@ -35,7 +35,7 @@ class TimeReportTest {
 	void createWeek_whenCreate_thenSorted() {
 //		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<Person> personOpt = personService.findByBcCode(BC_CODE);
-		PeriodReport period = PeriodReport.periodReportMonth();
+		PeriodReport period = PeriodReport.periodReportMonth(LocalDate.of(2024, 10, 1));
 		Optional<PersonInBcReport> personInBcRepOpt = personInBcReportService.findByPersonAndMonth(personOpt.get(), period.getStart().minusMonths(1));
 		
 		TimeReport timeReport = TimeReport.builder()

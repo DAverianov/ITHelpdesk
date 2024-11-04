@@ -188,6 +188,7 @@ public class BCWebService {
 		//@formatter:off
 		if (personsBCOpt.isPresent()) {
 			personsBCOpt.get().stream()
+				.filter(p -> p.getBcCode().length()<=4)
 				.forEach(p -> {
 					Optional<Person> personFetchOpt = personService.findByBcCode(p.getBcCode());
 					if (personFetchOpt.isPresent()) { // TODO control Name
