@@ -7,10 +7,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -30,7 +33,6 @@ import de.lewens_markisen.services.connection.jsonModele.PersonBcJson;
 import de.lewens_markisen.services.connection.jsonModele.PersonBcJsonList;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJson;
 import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonList;
-import de.lewens_markisen.storage.FileSystemStorageService;
 import de.lewens_markisen.storage.StorageService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeReport.PeriodReport;
@@ -47,14 +49,13 @@ public class BCWebService {
 	private final BcReportParser bcReportParser;
 	private final PersonInBcReportService personInBcReportService;
 	private final StorageService storageService;
-	
-	@Value("${import.reports.zeitnachweismitarbeiter}")
-	private String fileZeitnachweisMitarbeiter;
+
+	private final String FILE_ZEITNACHWEIS_MITARBEITER = "ZeitnachweisMitarbeiter";
 
 	public Optional<List<TimeRegisterEvent>> readTimeRegisterEventsFromBC(Person person, PeriodReport period) {
 		Optional<List<TimeRegisterEvent>> result = Optional.empty();
 		try {
-			log.debug("BC read from "+connectionBC.getWsZeitpunktposten());
+			log.debug("BC read from " + connectionBC.getWsZeitpunktposten());
 			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsZeitpunktposten()
 					+ connectionBC.getFilter(createFilterPersonsTime(person.getBcCode(), period));
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
@@ -117,7 +118,7 @@ public class BCWebService {
 	    //@formatter:on
 		return result;
 	}
-	
+
 	public Optional<List<TimeRegisterEvent>> convertToTimeRegisterEvent(List<TimeRegisterEventJson> value) {
 		if (value.size() == 0) {
 			return Optional.empty();
@@ -128,12 +129,8 @@ public class BCWebService {
 		}
 		List<TimeRegisterEvent> events = new ArrayList<TimeRegisterEvent>();
 		// @formatter:0ff
-		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder()
-				.person(personOpt.get())
-				.eventDate(tR.getEventDate())
-				.startTime(tR.getStartDate())
-				.endTime(tR.getEndDate())
-				.build()));
+		value.stream().forEach(tR -> events.add(TimeRegisterEvent.builder().person(personOpt.get())
+				.eventDate(tR.getEventDate()).startTime(tR.getStartDate()).endTime(tR.getEndDate()).build()));
 		//@formatter:on
 		return Optional.of(compoundDublRecords(events));
 	}
@@ -191,7 +188,13 @@ public class BCWebService {
 				.filter(p -> p.getBcCode().length()<=4)
 				.forEach(p -> {
 					Optional<Person> personFetchOpt = personService.findByBcCode(p.getBcCode());
-					if (personFetchOpt.isPresent()) { // TODO control Name
+					if (personFetchOpt.isPresent()) {
+						if (!p.getName().equals(personFetchOpt.get().getName())) {
+							Person personForSave = personFetchOpt.get();
+							personForSave.setName(p.getName());
+							personService.save(personForSave);
+							log.debug("loaded new Name for Person: " + p.getName()+" "+p.getBcCode());
+						}
 					}
 					else {
 						personService.save(p);
@@ -205,9 +208,8 @@ public class BCWebService {
 	public Optional<List<Person>> readPersonsFromBC() {
 		Optional<List<Person>> result = Optional.empty();
 		try {
-			String requestZeitpunktposten = connectionBC.getUrl() + "/" 
-				+ connectionBC.getWsPersonenkarte()
-				+ "?$filter=Konzernaustritt_SOC%20eq%200001-01-01%20&%20$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
+			String requestZeitpunktposten = connectionBC.getUrl() + "/" + connectionBC.getWsPersonenkarte()
+					+ "?$filter=Konzernaustritt_SOC%20eq%200001-01-01%20&%20$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
 			Optional<String> anserOpt = connectionBC.createGETRequest(requestZeitpunktposten);
 			if (anserOpt.isPresent()) {
 				result = readPersonFromJson(anserOpt.get());
@@ -262,33 +264,44 @@ public class BCWebService {
 		}
 		List<Person> persons = new ArrayList<Person>();
 		// @formatter:0ff
-		value.stream()
-			.filter(p -> p.getKonzernaustritt_SOC().isBefore(LocalDate.now()))
-			.forEach(p -> persons.add(
-				Person.builder()
-					.name(p.getName())
-					.bcCode(p.getCode())
-					.build()));
+		value.stream().filter(p -> p.getKonzernaustritt_SOC().isBefore(LocalDate.now()))
+				.forEach(p -> persons.add(Person.builder().name(p.getName()).bcCode(p.getCode()).build()));
 		//@formatter:on
 		return Optional.of(persons);
 	}
 
 	public List<PersonInBcReport> loadBCZeitnachweis() {
-		
+
 		List<PersonInBcReport> personsInBcRep = new ArrayList<PersonInBcReport>();
-		
-		Path fileWithReport = getFilePathWithReport();
-		List<BcReportZeitnachweisPerson> personsXml = bcReportParser.parse(fileWithReport.toString());
-		for (BcReportZeitnachweisPerson personXml: personsXml) {
-			
+
+		String mask = FILE_ZEITNACHWEIS_MITARBEITER + ".*\\.xml";
+
+		//@formatter:off
+		storageService.loadAll()
+			.filter(path -> path.getFileName().toString().matches(mask))
+			.forEach(path -> {
+				personsInBcRep.addAll(loadBCZeitnachweisFromFile(storageService.load(path.getFileName().toString())));
+			});
+		//@formatter:on
+
+		return personsInBcRep;
+	}
+
+	public List<PersonInBcReport> loadBCZeitnachweisFromFile(Path path) {
+
+		List<PersonInBcReport> personsInBcRep = new ArrayList<PersonInBcReport>();
+
+		List<BcReportZeitnachweisPerson> personsXml = bcReportParser.parse(path.toString());
+		for (BcReportZeitnachweisPerson personXml : personsXml) {
+
 			String bcCode = personXml.getAttribute().get("AZ_Person__Code");
 			Optional<Person> personOpt = personService.findByBcCode(bcCode);
 			if (personOpt.isEmpty()) {
-				log.debug("Person with BC Code "+bcCode+" wasnt found!");
+				log.debug("Person with BC Code " + bcCode + " wasnt found!");
 				continue;
 			}
 			LocalDate month = readDateFromString(personXml.getAttribute().get("gtxtPeriodenText"));
-			
+
 			//@formatter:off
 			PersonInBcReport personInBcReport = new PersonInBcReport();
 			personInBcReport.setPerson(personOpt.get());
@@ -301,12 +314,12 @@ public class BCWebService {
 					.saldoList(personXml.getSaldo())
 					.build());
 			//@formatter:on
-			
+
 			personsInBcRep.add(personInBcReportService.save(personInBcReport));
 		}
-		deleteFile(fileWithReport);
+		deleteFile(path);
+		log.info("File "+path+" was downloaded and deleted.");
 		return personsInBcRep;
-		
 	}
 
 	private void deleteFile(Path fileWithReport) {
@@ -315,10 +328,6 @@ public class BCWebService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private Path getFilePathWithReport() {
-		return storageService.load(fileZeitnachweisMitarbeiter);
 	}
 
 	private LocalDate readDateFromString(String reportMonth) {

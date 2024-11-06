@@ -11,26 +11,27 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-import org.springframework.stereotype.Component;
-
+import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescription;
 import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.Pause;
 import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
-import de.lewens_markisen.utils.StringUtilsLSS;
+import de.lewens_markisen.timeRegisterEvent.PauseService;
+import de.lewens_markisen.utils.DateUtils;
+import de.lewens_markisen.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Component
 public class TimeReport {
 
 	private Person person;
@@ -45,7 +46,15 @@ public class TimeReport {
 
 	public void createReportRecords() {
 		this.recordsWithGroups = new ArrayList<TimeReportRecord>();
-		this.timeRecords.stream().forEach(tr -> this.recordsWithGroups.add(new TimeReportRecord(tr)));
+		//@formatter:off
+		this.timeRecords.stream()
+			.forEach(tr -> this.recordsWithGroups.add(
+				TimeReportRecord.builder()
+					.timeRegisterEvent(tr)
+					.eventDate(tr.getEventDate())
+					.group(0)
+					.build()));
+		//@formatter:on
 	}
 
 	public void createGroup(int groupNummer, Function<TimeReportRecord, String> getGroupName,
@@ -105,38 +114,17 @@ public class TimeReport {
 		}
 	}
 	
-	public Boolean getIsLastReport() {
-		return this.personInBcReportLastMonat !=null & this.personInBcReportLastMonat.isPresent();
+	public Boolean getIsBcReport() {
+		return this.personInBcReport !=null & this.personInBcReport.isPresent()
+			|| this.personInBcReportLastMonat !=null & this.personInBcReportLastMonat.isPresent();
 	}
 	
-	public String getUrlaubSaldo() {
-		return getSaldoLastMonat("Urlaubssaldo in Tagen");
-	}
-	
-	public String getTimeSaldo() {
-		return getSaldoLastMonat("Arbeitsvertrags-Saldo");
-	}
-	
-	public Integer getTimeSaldoSign() {
-		return getTimeSaldo().indexOf("-");
-	}
-	
-	public String getCalendarArt() {
-		return getAttributeLastMonat("gtxtStammAZM");
-	}
-	
-	private String getAttributeLastMonat(String key) {
-		if (this.personInBcReportLastMonat.isEmpty()) {
-			return "";
-		}
-		return this.personInBcReportLastMonat.get().getAttribute().get(key);
+	private String getAttribute(PersonInBcReport personInBcReport, String key) {
+		return personInBcReport.getAttribute().get(key);
 	}
 
-	private String getSaldoLastMonat(String fieldName) {
-		if (this.personInBcReportLastMonat.isEmpty()) {
-			return "";
-		}
-		return this.personInBcReportLastMonat.get().getSaldo().getSaldoList()
+	private String getSaldoLastMonat(PersonInBcReport personInBcReport, String fieldName) {
+		return personInBcReport.getSaldo().getSaldoList()
 				.stream()
 				.filter(s -> fieldName.equals(s.getKSaldo_Bezeichnung()))
 				.findFirst()
@@ -145,6 +133,68 @@ public class TimeReport {
 	
 	public String getLastMonat() {
 		return PeriodReport.formatMonth(this.period.getStart().minusMonths(1));
+	}
+	
+	public List<TimeReportRecordFromBcReport> getBcReports() {
+		List<TimeReportRecordFromBcReport> reports = new ArrayList<>();
+		addToTimeReportRecord(reports, this.personInBcReportLastMonat);
+		addToTimeReportRecord(reports, this.personInBcReport);
+		return reports;
+	}
+
+	private void addToTimeReportRecord(List<TimeReportRecordFromBcReport> reports, Optional<PersonInBcReport> personInBcReport) {
+		if (personInBcReport.isEmpty()) {
+			return;
+		}
+		//@formatter:off
+		reports.add(TimeReportRecordFromBcReport.builder()
+			.month(getAttribute(personInBcReport.get(), "gtxtPeriodenText"))
+			.calendarArt(getAttribute(personInBcReport.get(), "gtxtStammAZM"))
+			.timeSaldo(getSaldoLastMonat(personInBcReport.get(), "Arbeitsvertrags-Saldo"))
+			.timeSaldoSign(getSaldoLastMonat(personInBcReport.get(), "Arbeitsvertrags-Saldo").indexOf("-"))
+			.urlaubSaldo(getSaldoLastMonat(personInBcReport.get(), "Urlaubssaldo in Tagen"))
+			.sollStunde(countSollStunde(personInBcReport.get()))
+			.build());
+		//@formatter:on
+	}
+
+	private String countSollStunde(PersonInBcReport personInBcReport) {
+		Double res = 0.;
+		if (personInBcReport.getDateTable()!=null) {
+			for (BcReportZeitNachweisDateDescription rec: personInBcReport.getDateTable().getDateTable()) {
+				res += TimeUtils.convertTimeToMinuten(rec.getSoll());
+			}
+		}
+		return String.format("%.2f", res/60);
+	}
+
+	public Optional<BcReportZeitNachweisDateDescription> getDateTableRecord(LocalDate eventDate) {
+		if (this.personInBcReport.isEmpty()) {
+			return Optional.empty();
+		}
+		if (this.personInBcReport.get().getDateTable()==null) {
+			return Optional.empty();
+		}
+		if (this.personInBcReport.get().getDateTable().getDateTable()==null) {
+			return Optional.empty();
+		}
+		for (BcReportZeitNachweisDateDescription rec: this.personInBcReport.get().getDateTable().getDateTable()) {
+			if (rec.getDate_Period_Start().startsWith(DateUtils.formattDDMMYYY(eventDate))) {
+				return Optional.of(rec);
+			}
+		}
+		return Optional.empty();
+	}
+	
+	private String getSollDateAttribute(LocalDate eventDate) {
+		if (this.personInBcReport.isEmpty()) {
+			return "";
+		}
+		Optional<BcReportZeitNachweisDateDescription> dateTableRecordOpt = getDateTableRecord(eventDate);
+		if (dateTableRecordOpt.isEmpty()) {
+			return "";
+		}
+		return dateTableRecordOpt.get().getSoll();
 	}
 
 }

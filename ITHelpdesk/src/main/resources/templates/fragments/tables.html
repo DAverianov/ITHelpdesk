@@ -1,12 +1,7 @@
 <html>
 <body>
-  <form th:fragment="table(theadFields, tableData, columnNames)"
-   		method="post" th:action="@{/instructions/newline}" 
-  		class="table table-primary">
-  	<div class="navbar-link">
-		<button type="submit">neu</button>
-  	</div>
-  	<table class="table table-primary">
+  <dev th:fragment="table(theadFields, tableData, columnNames)" class="table table-primary">
+   	<table class="table table-primary">
     <thead>
         <tr th:replace="${theadFields}">
         </tr>
@@ -15,7 +10,7 @@
         <tr th:each="row, i: ${tableData}">
         	<td th:each="col: ${columnNames}"> 
  			<input type="text" 
- 				th:id="${__'line_'+${col}+'_' + ${row.id}__}" 
+ 				th:id="${__'line_'+${col}+'_' + ${row.id}__}"  
  				th:value="${row['__${col}__']}" 
  				th:placeholder="${col}" 
  				class="form-control" /> 
@@ -24,6 +19,6 @@
          </tr>
     </tbody>
     </table>
-  </form>
+  </dev>
 </body>
 </html>

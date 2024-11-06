@@ -2,10 +2,7 @@ package de.lewens_markisen.domain.local_db.time_register_event;
 
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import de.lewens_markisen.domain.local_db.BaseEntity;
@@ -52,132 +49,6 @@ public class TimeRegisterEvent extends BaseEntity {
 
 	@Column(name = "end_time")
 	private String endTime;
-
-	public Long getMo() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.MONDAY);
-	}
-
-	public Long getTu() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.TUESDAY);
-	}
-
-	public Long getWe() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.WEDNESDAY);
-	}
-
-	public Long getTh() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.THURSDAY);
-	}
-
-	public Long getFr() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.FRIDAY);
-	}
-
-	public Long getSa() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.SATURDAY);
-	}
-
-	public Long getSo() {
-		return timeOfWorkInDayOfWeek(DayOfWeek.SUNDAY);
-	}
-
-	public String getMoDecimal() {
-		return TimeUtils.secondsToHourMinutes(getMo(), true);
-	}
-
-	public String getTuDecimal() {
-		return TimeUtils.secondsToHourMinutes(getTu(), true);
-	}
-
-	public String getWeDecimal() {
-		return TimeUtils.secondsToHourMinutes(getWe(), true);
-	}
-
-	public String getThDecimal() {
-		return TimeUtils.secondsToHourMinutes(getTh(), true);
-	}
-
-	public String getFrDecimal() {
-		return TimeUtils.secondsToHourMinutes(getFr(), true);
-	}
-
-	public String getSaDecimal() {
-		return TimeUtils.secondsToHourMinutes(getSo(), true);
-	}
-
-	public String getSoDecimal() {
-		return TimeUtils.secondsToHourMinutes(getSo(), true);
-	}
-	public String getSumDecimal() {
-		return TimeUtils.secondsToHourMinutes(getSum(), true);
-	}
-
-	private Long timeOfWorkInDayOfWeek(DayOfWeek dayOfWeek) {
-		if (this.eventDate.getDayOfWeek().equals(dayOfWeek)) {
-			return timeOfWorkInDay(true);
-		} else {
-			return 0l;
-		}
-	}
-
-	public Long timeOfWorkInDay(boolean inDecimal) {
-		//@formatter:off
-		if (this.startTime != null 
-				&& !this.startTime.equals("") 
-				&& this.endTime != null 
-				&& !this.endTime.equals("")) {
-//			return secondsToHourMinutes(seconds, inDecimal);
-			return timeOfWork();
-		} else {
-			return 0l;
-		}
-		//@formatter:on
-	}
-
-	public Long timeOfWork() {
-		long seconds = 0l;
-		//@formatter:off
-		if (this.eventDate != null 
-				&& this.startTime != null 
-				&& !this.startTime.equals("") 
-				&& this.endTime != null
-				&& !this.endTime.equals("")) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H[H]:mm");
-			LocalDateTime startDateTime = LocalDateTime.parse(this.eventDate + " " + this.startTime, formatter);
-			LocalDateTime endDateTime = LocalDateTime.parse(this.eventDate + " " + this.endTime, formatter);
-			Duration duration = Duration.between(startDateTime, endDateTime);
-			seconds = duration.getSeconds() - pauseLang();
-		}
-		//@formatter:on
-		return seconds;
-	}
-
-	public Long getSum() {
-		return timeOfWork();
-	}
-
-	private Long pauseLang() {
-		//@formatter:off
-		DayOfWeek dw = this.eventDate.getDayOfWeek();
-		if (dw.equals(DayOfWeek.FRIDAY)) {
-			return 15l * TimeUtils.SECONDS_PER_MINUTE;
-		} else if (dw.equals(DayOfWeek.MONDAY) 
-				|| dw.equals(DayOfWeek.TUESDAY) 
-				|| dw.equals(DayOfWeek.WEDNESDAY)
-				|| dw.equals(DayOfWeek.THURSDAY)) {
-			return 45l * TimeUtils.SECONDS_PER_MINUTE;
-		} else {
-			return 0l;
-		}
-		//@formatter:on
-	}
-
-	public String toStringReport() {
-		return "" + getEventDate() + "  /" + getStartTime() + " - " + getEndTime() + "/ - "
-				+ TimeUtils.secondsToHourMinutes(pauseLang(), false) 
-				+ " = " 
-				+ TimeUtils.secondsToHourMinutes(timeOfWork(), false);
-	}
 
 	@Override
 	public String toString() {

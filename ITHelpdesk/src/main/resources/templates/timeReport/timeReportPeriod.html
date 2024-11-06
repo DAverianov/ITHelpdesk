@@ -29,22 +29,26 @@
 		</div>
 	</form>
 	</br>
-	<dev th:if="${timeReport.isLastReport}">
-		<a>Aus dem Zeitnachweis-Mitarbeiter-Bericht (</a><a th:text="${timeReport.lastMonat}"></a><a>)</a>
+	<dev th:if="${timeReport.isBcReport}">
+		<a>Aus dem Zeitnachweis-Mitarbeiter-Bericht</a>
 		<table id="saldo" class="table table-info">
 			<thead>
 				<tr>
+					<th style="width: 100px;">Monat</th>
 					<th style="width: 100px;">Kalender</th>
 					<th style="width: 200px;">Saldo der Zeit</th>
 					<th style="width: 100px;">..des Urlaubs</th>
+					<th style="width: 100px;">Soll St.</th>
 				</tr>
 			</thead>
-			<tr>
-				<td style="width: 100px;" align="left" th:text="${timeReport.CalendarArt}" />
-				<td align="right" 
-					 th:style="${timeReport.timeSaldoSign > 0 ? 'color: red;' : _}" 
-					 th:text="${timeReport.timeSaldo}" />
-				<td style="width: 100px;" align="right" th:text="${timeReport.urlaubSaldo}" />
+			<tr th:each="report : ${timeReport.bcReports}">
+				<td style="width: 100px;" align="left" th:text="${report.month}" />
+				<td style="width: 100px;" align="left" th:text="${report.CalendarArt}" />
+				<td align="center" 
+					 th:style="${report.timeSaldoSign > 0 ? 'color: red;' : _}" 
+					 th:text="${report.timeSaldo}" />
+				<td style="width: 100px;" align="center" th:text="${report.urlaubSaldo}" />
+				<td style="width: 100px;" align="right" th:text="${report.sollStunde}" />
 			</tr>
 			</tbody>
 		</table>
@@ -54,6 +58,7 @@
 		<thead>
 			<tr>
 				<th style="width: 400px;">der Monat / die Woche / das Ereignis</th>
+				<th style="width: 50px; color: gray;">Soll</th>
 				<th style="width: 100px;">Mo</th>
 				<th style="width: 100px;">Di</th>
 				<th style="width: 100px;">Mi</th>
@@ -64,17 +69,16 @@
 				<th style="width: 100px;">Insgesamt</th>
 			</tr>
 		</thead>
-		<tr th:each="record : ${timeReport.recordsWithGroups}"
-			class="collapsible"
-			th:style="${record.group}>0? 'font-weight: bold;'">
+		<tr th:each="record : ${timeReport.recordsWithGroups}" class="collapsible" th:style="${record.group}>0? 'font-weight: bold;'">
 			<td style="width: 400px;" th:text="${record.name}" />
+			<td align="right" th:text="${record.soll}" style="color: gray;"/>
 			<td align="right" th:text="${record.moDecimal}" />
 			<td align="right" th:text="${record.tuDecimal}" />
 			<td align="right" th:text="${record.weDecimal}" />
 			<td align="right" th:text="${record.thDecimal}" />
 			<td align="right" th:text="${record.frDecimal}" />
 			<td align="right" th:text="${record.saDecimal}" />
-			<td align="right" th:text="${record.soDecimal}" />
+			<td align="right" th:text="${record.suDecimal}" />
 			<td align="right" th:text="${record.sumDecimal}" />
 		</tr>
 		</tbody>

@@ -49,7 +49,7 @@ public class Instruction extends BaseEntity implements AuthoritieNames{
     @Singular
 	@OneToMany(mappedBy = "instruction", cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
-	private Set<InstructionLine> instructionLines;
+	private List<InstructionLine> instructionLines;
 
 	public void addLine(InstructionLinePayload l) {
 		//@formatter:off

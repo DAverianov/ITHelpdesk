@@ -1,5 +1,7 @@
 package de.lewens_markisen.domain.local_db.instruction;
 
+import java.sql.Timestamp;
+
 import de.lewens_markisen.domain.local_db.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +24,14 @@ import lombok.Setter;
 @Entity
 @Table(name = "instruction_line")
 public class InstructionLine extends BaseEntity {
+
+	public InstructionLine(Instruction instruction,
+			@NotNull @Size(min = 1, max = 5) Integer stringNummer,
+			@NotNull @Size(min = 2, max = 300) String description) {
+		this.stringNummer = stringNummer;
+		this.instruction = instruction;
+		this.description = description;
+	}
 
 	@NotNull
 	@Size(min = 1, max = 5)

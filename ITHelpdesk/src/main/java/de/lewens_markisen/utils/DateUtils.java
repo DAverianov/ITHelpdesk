@@ -2,6 +2,7 @@ package de.lewens_markisen.utils;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
 	
@@ -11,6 +12,10 @@ public class DateUtils {
 	
 	public static LocalDate endMonat(LocalDate dat) {
 		return dat.withDayOfMonth(dat.lengthOfMonth());
+	}
+	
+	public static String formattDDMMYYY(LocalDate dat) {
+		return dat.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 	}
 
 	public static LocalDate startWeekInMonat(LocalDate date) {

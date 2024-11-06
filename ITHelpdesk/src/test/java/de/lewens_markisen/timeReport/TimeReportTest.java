@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import de.lewens_markisen.domain.local_db.Person;
-import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
@@ -33,15 +32,15 @@ class TimeReportTest {
 
 	@Test
 	void createWeek_whenCreate_thenSorted() {
-//		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<Person> personOpt = personService.findByBcCode(BC_CODE);
+		Person person = personOpt.get();
 		PeriodReport period = PeriodReport.periodReportMonth(LocalDate.of(2024, 10, 1));
-		Optional<PersonInBcReport> personInBcRepOpt = personInBcReportService.findByPersonAndMonth(personOpt.get(), period.getStart().minusMonths(1));
 		
 		TimeReport timeReport = TimeReport.builder()
 				.person(personOpt.get())
 				.period(period)
-				.personInBcReportLastMonat(personInBcRepOpt)
+				.personInBcReportLastMonat(personInBcReportService.findByPersonAndMonth(person, period.getStart().minusMonths(1)))
+				.personInBcReport(personInBcReportService.findByPersonAndMonth(person, period.getStart()))
 				.timeRecords(createTimeRecords(personOpt.get()))
 				.build();
 		timeReport.createReportRecords();
@@ -56,7 +55,6 @@ class TimeReportTest {
 		
 		assertThat(timeReport.getRecordsWithGroups()).isNotEmpty();
 		assertThat(timeReport.getRecordsWithGroups()).hasSize(5);
-		assertThat(timeReport.getUrlaubSaldo()).isEqualTo("11,0");
 	}
 
 	private List<TimeRegisterEvent> createTimeRecords(Person person) {
@@ -71,5 +69,4 @@ class TimeReportTest {
 				.build());
 		return timeRecords;
 	}
-
 }

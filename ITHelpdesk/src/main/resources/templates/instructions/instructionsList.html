@@ -19,7 +19,7 @@
 	  <tr th:each="inst,stat : ${instructions}">
 	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
 	    <td>
-	        <a th:href="@{/instructions/edit/{id}(id=${inst.id})}" th:text="${inst.name}"/></a>
+	        <a th:href="@{/instruction/{id}/edit(id=${inst.id})}" th:text="${inst.name}"/></a>
 	    </td>
 	    <td>
 	        <a th:text="${inst.description}"/></a>

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
@@ -31,6 +32,7 @@ class FileSystemStorageServiceTest {
 	@MockBean
 	private StorageService storageService;
 
+	@WithUserDetails("spring")
 	@Test
 	public void shouldListAllFiles() throws Exception {
 		given(this.storageService.loadAll())
@@ -42,6 +44,7 @@ class FileSystemStorageServiceTest {
 								"http://localhost/upload/files/second.txt")));
 	}
 
+	@WithUserDetails("spring")
 	@Test
 	public void shouldSaveUploadedFile() throws Exception {
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
