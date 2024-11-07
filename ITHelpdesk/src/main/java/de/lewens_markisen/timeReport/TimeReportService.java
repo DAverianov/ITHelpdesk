@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import de.lewens_markisen.domain.local_db.Log;
 import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
-import de.lewens_markisen.domain.local_db.time_register_event.Pause;
+import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
 import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.LssUserService;
 import de.lewens_markisen.security.UserSpringService;
-import de.lewens_markisen.timeRegisterEvent.PauseService;
+import de.lewens_markisen.timeRegisterEvent.DayArtService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
@@ -34,7 +34,7 @@ public class TimeReportService {
 	private final UserSpringService userService;
 	private final LssUserService lssUserService;
 	private final PersonInBcReportService personInBcReportService;
-	private final PauseService pauseService;
+	private final DayArtService dayArtService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		PeriodReport period = PeriodReport.thisMonat();
@@ -97,8 +97,9 @@ public class TimeReportService {
 		if (tagCode.isBlank()) {
 			return 0l;
 		}
-		Optional<Pause> pauseOpt = pauseService.findByName(tagCode);
+		Optional<DayArt> pauseOpt = dayArtService.findByName(tagCode);
 		if (pauseOpt.isEmpty()) {
+			dayArtService.save(DayArt.builder().name(tagCode).build());
 			return 0l;
 		}
 		return (long) pauseOpt.get().getMinuten();

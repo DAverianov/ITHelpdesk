@@ -44,7 +44,7 @@ class PersonControllerEditTest extends BaseIT {
 	
 	@WithUserDetails("userPersonDepartment")
 	@Test
-	void eeditPersonUserAuthUserPersonDepartment() throws Exception {
+	void editPersonUserAuthUserPersonDepartment() throws Exception {
 		mockMvc.perform(get(API_EDIT)).andExpect(status().isForbidden());
 		mockMvc.perform(post(API_UPDATE)).andExpect(status().is4xxClientError());
 	}

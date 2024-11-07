@@ -130,11 +130,4 @@ public class UserSpringController {
 		return "redirect:/users/list";
 	}
 
-	@UserUpdatePermission
-	@GetMapping(path = "/rewriteNames")
-	public String rewriteUsernames() {
-		userSpringService.rewriteUsernames();
-		return "redirect:/users/list";
-	}
-
 }

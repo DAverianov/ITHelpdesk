@@ -31,14 +31,14 @@ import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
 import de.lewens_markisen.domain.local_db.security.Authority;
 import de.lewens_markisen.domain.local_db.security.Role;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
-import de.lewens_markisen.domain.local_db.time_register_event.Pause;
+import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
 import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.repository.local.PersonRepository;
 import de.lewens_markisen.repository.local.security.UserSpringRepository;
 import de.lewens_markisen.security.AuthorityService;
 import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.security.UserSpringService;
-import de.lewens_markisen.timeRegisterEvent.PauseService;
+import de.lewens_markisen.timeRegisterEvent.DayArtService;
 import de.lewens_markisen.utils.FileOperations;
 
 @Slf4j
@@ -54,7 +54,7 @@ public class initialFilling implements CommandLineRunner {
 	private final AuthorityService authorityService;
 	private final UserSpringRepository userRepository;
 	private final UserSpringService userSpringService;
-	private final PauseService pauseService;
+	private final DayArtService pauseService;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
@@ -70,8 +70,8 @@ public class initialFilling implements CommandLineRunner {
 		if (pauseService.count() > 0) {
 			return;
 		}
-		pauseService.save(Pause.builder().name("GLZ 8,5").minuten(45).build());
-		pauseService.save(Pause.builder().name("GLZ6").minuten(15).build());
+		pauseService.save(DayArt.builder().name("GLZ 8,5").minuten(45).build());
+		pauseService.save(DayArt.builder().name("GLZ6").minuten(15).build());
 	}
 
 	private void assignAuthorityToAdmin() {

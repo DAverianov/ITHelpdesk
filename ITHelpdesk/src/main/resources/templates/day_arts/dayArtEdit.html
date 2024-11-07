@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'day_art')}">
+<head>
+<meta charset="UTF-8">
+<title>Person</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+</head>
+<body>
+	<h1>Edit Arten von Tagen</h1>
+
+	<form action="#" th:action="@{/day_arts/update}" th:object="${dayArt}" method="post">
+	
+		<input type="hidden" th:field="*{id}" />
+
+		<table>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" required /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Minuten', 'minuten', 'number')}" disabled /></td></tr>
+			</tr>
+		</table>
+
+		<p>
+			<button type="submit" name="action" value="update" class="btn btn-primary">Update</button>
+			&nbsp;&nbsp;
+			<button type="submit" name="action" value="cancel" class="btn btn-info">Cancel</button>
+		</p>
+	</form>
+</body>
+</html>

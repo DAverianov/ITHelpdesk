@@ -19,8 +19,7 @@
 	    <th>Person</th>
 	  </tr>
   </thead>
-  <a class="btn btn-primary" th:href="@{/users/rewriteNames}">Rewrite usernames in lowcase</a>   
-  <tbody>
+   <tbody>
 	  <tr th:each="user,stat : ${users}">
 	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
 	    <td>

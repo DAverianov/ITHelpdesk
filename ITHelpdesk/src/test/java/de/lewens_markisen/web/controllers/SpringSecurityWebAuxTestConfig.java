@@ -1,16 +1,14 @@
 package de.lewens_markisen.web.controllers;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-
 import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.domain.local_db.security.Role;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
@@ -29,6 +27,10 @@ public class SpringSecurityWebAuxTestConfig {
 		Role adminRole = roleRepository.findByName("ADMIN").get();
 		Role userRole = roleRepository.findByName("USER").get();
 		Role personDepartmentRole = roleRepository.findByName("PERSON_DEPARTMENT").get();
+		
+		Set<Role> personDepartmentRoles = new HashSet<Role>();
+		personDepartmentRoles.add(userRole);
+		personDepartmentRoles.add(personDepartmentRole);
 		
 		Person person = Person.builder().id(1l).name("Test").build();
 
@@ -49,7 +51,8 @@ public class SpringSecurityWebAuxTestConfig {
 				.username("userPersonDepartment")
 				.password("pass")
 				.person(person)
-				.role(personDepartmentRole).build();
+				.roles(personDepartmentRoles)
+				.build();
 				
 		//@formatter:on
 
