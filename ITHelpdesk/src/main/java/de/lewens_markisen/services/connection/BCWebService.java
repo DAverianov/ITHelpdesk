@@ -36,6 +36,7 @@ import de.lewens_markisen.services.connection.jsonModele.TimeRegisterEventJsonLi
 import de.lewens_markisen.storage.StorageService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeReport.PeriodReport;
+import de.lewens_markisen.utils.DateUtils;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -300,7 +301,7 @@ public class BCWebService {
 				log.debug("Person with BC Code " + bcCode + " wasnt found!");
 				continue;
 			}
-			LocalDate month = readDateFromString(personXml.getAttribute().get("gtxtPeriodenText"));
+			LocalDate month = DateUtils.readDateFromString(personXml.getAttribute().get("gtxtPeriodenText"), "dd.MM.yy");
 
 			//@formatter:off
 			PersonInBcReport personInBcReport = new PersonInBcReport();
@@ -328,11 +329,6 @@ public class BCWebService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private LocalDate readDateFromString(String reportMonth) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
-		return LocalDate.parse(reportMonth.substring(0, 8), formatter);
 	}
 
 }

@@ -24,7 +24,7 @@ public class LewensportalRepository {
 		try {
 			//@formatter:off
 			List<Map<String, Object>> dbRow = jdbcTemplate.queryForList(
-			"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password " + 
+			"SELECT user.username, user.email, user_password.algorithm, user_password.salt, user_password.password " + 
 			"FROM user " +
 			"LEFT OUTER JOIN user_password" + " ON (user_password.user_id = user.id) " +
 			"WHERE user.status = 1 and user.username = '" + name +"'" +
@@ -36,6 +36,7 @@ public class LewensportalRepository {
 				dbRow.stream().forEach(r -> lssUsers.add(
 					LssUser.builder()
 						.username(name)
+						.email((String) r.get("email"))
 						.algorithm((String) r.get("algorithm"))
 						.salt((String) r.get("salt"))
 						.password((String) r.get("password"))
@@ -48,33 +49,6 @@ public class LewensportalRepository {
 			return Optional.empty();
 		}
 	}
-//	public Optional<List<LssUser>> findUserByName(String name) {
-//		
-//		try {
-//			//@formatter:off
-//			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
-//					"SELECT user.username, user_password.algorithm, user_password.salt, user_password.password " + 
-//							"FROM user " +
-//							"LEFT OUTER JOIN user_password" + " ON (user_password.user_id = user.id) " +
-//							"WHERE user.status = 1 and user.username = '" + name +"'" +
-//					"ORDER BY user_password.created_at desc");
-//			//@formatter:on
-//			if (dbRow.size() == 0) {
-//				return Optional.empty();
-//			} else {
-//				//@formatter:off
-//				return Optional.of(LssUser.builder()
-//						.username(name)
-//						.algorithm((String) dbRow.get("algorithm"))
-//						.salt((String) dbRow.get("salt"))
-//						.password((String) dbRow.get("password"))
-//						.build());
-//				//@formatter:on
-//			}
-//		} catch (Exception e) {
-//			return Optional.empty();
-//		}
-//	}
 
 	public Optional<String> getBcCodeByUsername(String username) {
 
@@ -106,7 +80,8 @@ public class LewensportalRepository {
 		try {
 			//@formatter:off
 			Map<String, Object> dbRow = jdbcTemplate.queryForMap(
-			"SELECT * FROM profile " + 
+			"SELECT user.email AS email, " +
+			"profile.* FROM profile " + 
 			"INNER JOIN user ON profile.user_id = user.id " + 
 			"WHERE user.username = '" + username + "'");
 			//@formatter:on

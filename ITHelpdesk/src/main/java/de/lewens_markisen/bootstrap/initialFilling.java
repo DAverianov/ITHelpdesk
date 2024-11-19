@@ -26,12 +26,15 @@ import com.opencsv.exceptions.CsvException;
 import de.lewens_markisen.domain.local_db.Access;
 import de.lewens_markisen.domain.local_db.Log;
 import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.email.EmailAcсount;
+import de.lewens_markisen.domain.local_db.email.EmailLetter;
 import de.lewens_markisen.domain.local_db.instruction.Instruction;
 import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
 import de.lewens_markisen.domain.local_db.security.Authority;
 import de.lewens_markisen.domain.local_db.security.Role;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
+import de.lewens_markisen.email.EmailAccountService;
 import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.repository.local.PersonRepository;
 import de.lewens_markisen.repository.local.security.UserSpringRepository;
@@ -56,6 +59,7 @@ public class initialFilling implements CommandLineRunner {
 	private final UserSpringService userSpringService;
 	private final DayArtService pauseService;
 	private final PasswordEncoder passwordEncoder;
+	private final EmailAccountService emailAcountService;
 
 	@Override
 	public void run(String... args) {
@@ -64,6 +68,24 @@ public class initialFilling implements CommandLineRunner {
 		loadPersonData();
 		assignAuthorityToAdmin();
 		loadPause();
+		loadEmailAccount();
+	}
+
+	private void loadEmailAccount() {
+		if (emailAcountService.count() == 0) {
+			//@formatter:off
+			EmailAcсount account = EmailAcсount.builder()
+					.email("d.averianov@lewens-markisen.de")
+					.username("d.averianov@lewens-markisen.de")
+					.host("192.168.0.15")
+					.port(25)
+					.outgoingProtocol("smtp")
+					.smtpAuth("true")
+					.smtpStarttlsEnable("true")
+					.build();
+			emailAcountService.save(account);
+			//@formater:on
+		}
 	}
 
 	private void loadPause() {
@@ -90,6 +112,8 @@ public class initialFilling implements CommandLineRunner {
 		classes.add(UserSpring.class);
 		classes.add(Log.class);
 		classes.add(Instruction.class);
+		classes.add(EmailAcсount.class);
+		classes.add(EmailLetter.class);
 		return classes;
 	}
 

@@ -144,6 +144,11 @@ public class UserSpringServiceImpl implements UserSpringService {
 				(attrMap, attrName) -> Integer.toString((Integer) attr.get("bccode")),
 				a -> a.getBcCode(),
 				(a, bcCode) -> a.setBcCode(bcCode));
+		isCorrect = isCorrect & 
+				checkAttribute(userWithAttr, "email", attr,
+						(attrMap, attrName) -> (String) attr.get("email"),
+						a -> a.getEmail(),
+						(a, email) -> a.setEmail(email));
 		//@formatter:on
 		
 		isCorrect = isCorrect & 

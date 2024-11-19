@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'emailAccount')}">
+
+<body>
+
+<h2>
+    <th:block th:if="${account['new']}">New Account</th:block>
+    Update Account
+</h2>
+    <form action="#" th:action="@{/email_acсounts/update}" th:object="${account}" class="form-horizontal" id="add-access-form" method="post">
+    <div class="form-group has-feedback">
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{createdDate}" />
+        <input type="hidden" th:field="*{version}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Email', 'email', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Host', 'host', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Port', 'port', 'number')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Username', 'username', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Access', 'access', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('outgoingProtocol', 'outgoingProtocol', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('smtpAuth', 'smtpAuth', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('smtpStarttlsEnable', 'smtpStarttlsEnable', 'text')}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
+    </div>
+    <p>
+        <button th:with="text=${account['new']} ? 'Add Account' : 'Update Account'"
+               	type="submit" name="action" th:text="${text}" value="update" class="btn btn-primary">Save
+        </button>&nbsp;&nbsp;
+        <button type="submit" name="action" value="cancel" class="btn btn-info">Cancel</button>
+    </p>
+</form>
+</body>
+</html>

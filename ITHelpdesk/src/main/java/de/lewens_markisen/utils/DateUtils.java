@@ -28,4 +28,10 @@ public class DateUtils {
 			return startMonth;
 		}
 	}
+
+	public static LocalDate readDateFromString(String reportMonth, String format) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+		return LocalDate.parse(reportMonth.substring(0, 8), formatter);
+	}
+
 }

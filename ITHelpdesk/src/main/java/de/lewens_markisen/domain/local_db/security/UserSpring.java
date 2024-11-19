@@ -36,6 +36,7 @@ public class UserSpring implements UserDetails, CredentialsContainer, Authoritie
     private String firstname;
     private String lastname;
     private String bcCode;
+    private String email;
     @OneToOne(fetch = FetchType.EAGER)
     private Person person;
 
