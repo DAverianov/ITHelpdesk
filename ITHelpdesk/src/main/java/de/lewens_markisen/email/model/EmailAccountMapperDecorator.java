@@ -3,7 +3,7 @@ package de.lewens_markisen.email.model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import de.lewens_markisen.domain.local_db.email.EmailAcсount;
+import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 
 public abstract class EmailAccountMapperDecorator implements EmailAccountMapper{
 
@@ -16,7 +16,7 @@ public abstract class EmailAccountMapperDecorator implements EmailAccountMapper{
     }
 
     @Override
-    public EmailAccountDto emailAccountToEmailAccountDto(EmailAcсount emailAccount) {
+    public EmailAccountDto emailAccountToEmailAccountDto(EmailAccountLss emailAccount) {
     	EmailAccountDto dto = emailAccountMapper.emailAccountToEmailAccountDto(emailAccount);
         return dto;
     }

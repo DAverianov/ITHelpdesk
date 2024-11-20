@@ -11,6 +11,7 @@
 		<thead>
 			<tr>
 				<th style="width: 150px;">No</th>
+				<th style="width: 150px;">Name</th>
 				<th style="width: 150px;">Email</th>
 				<th style="width: 150px;">Host</th>
 				<th style="width: 60px;">Port</th>
@@ -22,12 +23,13 @@
 				<th style="width: 200px">Description</th>
 			</tr>
 		</thead>
-		<a class="btn btn-primary" th:href="@{/email_acсounts/new}">New</a>
+		<a class="btn btn-primary" th:href="@{/email_accounts/new}">New</a>
 		<tbody>
 			<tr th:each="account,stat : ${accounts}">
 				<td th:text="${stat.count}" />
 				<td><a th:href="@{/email_accounts/__${account.id}__}"
-					th:text="${account.email}" /></a></td>
+					th:text="${account.name}" /></a></td>
+				<td	th:text="${account.email}" />
 				<td th:text="${account.host}" />
 				<td th:text="${account.port}" />
 				<td th:text="${account.username}" />

@@ -5,12 +5,12 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import de.lewens_markisen.domain.local_db.email.EmailAcсount;
+import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 
 public interface EmailAccountService {
 	public Long count();
-	public EmailAcсount save(EmailAcсount account);
-	public Page<EmailAcсount> findAll(Pageable pageable);
-	public Optional<EmailAcсount> findById(Long id);
-	public EmailAcсount update(EmailAcсount account);
+	public EmailAccountLss save(EmailAccountLss account);
+	public Page<EmailAccountLss> findAll(Pageable pageable);
+	public Optional<EmailAccountLss> findById(Long id);
+	public EmailAccountLss update(EmailAccountLss account);
 }

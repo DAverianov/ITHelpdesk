@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.domain.local_db.email.EmailAcсount;
+import de.lewens_markisen.access.AccessService;
+import de.lewens_markisen.domain.local_db.Access;
+import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 import de.lewens_markisen.email.EmailAccountService;
 import de.lewens_markisen.email.model.EmailAccounts;
 import de.lewens_markisen.security.perms.EmailAccountCreatePermission;
@@ -26,7 +28,7 @@ import de.lewens_markisen.security.perms.EmailAccountUpdatePermission;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/email_acсounts")
+@RequestMapping("/email_accounts")
 @Controller
 public class EmailAccountController {
 
@@ -36,21 +38,21 @@ public class EmailAccountController {
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 		EmailAccounts accounts = new EmailAccounts();
-		Page<EmailAcсount> paginated = findPaginated(page);
+		Page<EmailAccountLss> paginated = findPaginated(page);
 		accounts.getAccountList().addAll(paginated.toList());
 		return addPaginationModel(page, paginated, model);
 	}
 
-	private String addPaginationModel(int page, Page<EmailAcсount> paginated, Model model) {
-		List<EmailAcсount> accounts = paginated.getContent();
+	private String addPaginationModel(int page, Page<EmailAccountLss> paginated, Model model) {
+		List<EmailAccountLss> accounts = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("accounts", accounts);
-		return "email_acсounts/emailAccountList";
+		return "email_accounts/emailAccountList";
 	}
 
-	private Page<EmailAcсount> findPaginated(int page) {
+	private Page<EmailAccountLss> findPaginated(int page) {
 		int pageSize = 12;
 		Sort sort = Sort.by("email").ascending();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
@@ -60,10 +62,11 @@ public class EmailAccountController {
 	@EmailAccountReadPermission
 	@GetMapping(value = "/{id}")
 	public ModelAndView showEditAccountForm(@PathVariable(name = "id") Long id) {
-		ModelAndView modelAndView = new ModelAndView("email_acсounts/emailAccountEdit");
-		Optional<EmailAcсount> accountOpt = emailAccountService.findById(id);
+		ModelAndView modelAndView = new ModelAndView("email_accounts/emailAccountEdit");
+		Optional<EmailAccountLss> accountOpt = emailAccountService.findById(id);
 		if (accountOpt.isPresent()) {
-			modelAndView.addObject("account", accountOpt.get());
+			EmailAccountLss account = accountOpt.get();
+			modelAndView.addObject("account", account);
 		} else {
 			modelAndView.addObject("message", "Account mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
@@ -74,15 +77,15 @@ public class EmailAccountController {
 	@EmailAccountCreatePermission
 	@GetMapping("/new")
 	public String initCreationForm(Model model) {
-		model.addAttribute("account", EmailAcсount.builder().build());
-		return "email_acсounts/createEmailAccount";
+		model.addAttribute("account", EmailAccountLss.builder().build());
+		return "email_accounts/createEmailAccount";
 	}
 
 	@EmailAccountCreatePermission
 	@PostMapping("/new")
-	public String processCreationForm(EmailAcсount emailAccount) {
+	public String processCreationForm(EmailAccountLss emailAccount) {
 		//@formatter:off
-		EmailAcсount newAccount = EmailAcсount.builder()
+		EmailAccountLss newAccount = EmailAccountLss.builder()
 				.email(emailAccount.getEmail())
 				.host(emailAccount.getHost())
 				.port(emailAccount.getPort())
@@ -93,18 +96,19 @@ public class EmailAccountController {
 				.smtpStarttlsEnable(emailAccount.getSmtpStarttlsEnable())
 				.build();
 		//@formatter:on
-		EmailAcсount savedAccess = emailAccountService.save(newAccount);
-		return "redirect:/email_acсounts/list";
+		EmailAccountLss savedAccount = emailAccountService.save(newAccount);
+		return "redirect:/email_accounts/list";
 	}
 
 	@EmailAccountUpdatePermission
 	@PostMapping(value = "/update")
-    public String update(@ModelAttribute("access") EmailAcсount access, @RequestParam(value="action", required=true) String action) {
-		System.out.println("ich bin bei Update");
+    public String update(
+    		@ModelAttribute("account") EmailAccountLss account, 
+     		@RequestParam(value="action", required=true) String action) {
      	if (action.equals("update")) {
-     		emailAccountService.update(access);
+      		emailAccountService.update(account);
         }
-        return "redirect:/email_acсounts/list";
+        return "redirect:/email_accounts/list";
     }
 
 }

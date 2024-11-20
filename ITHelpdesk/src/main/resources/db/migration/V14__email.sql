@@ -3,7 +3,8 @@ drop table if exists email_account;
 create table email_account (
       id BIGSERIAL PRIMARY KEY,
       version BIGINT,
-      email varchar,
+      name varchar(120),
+      email varchar(120),
       host varchar,
       port int,
       username varchar,

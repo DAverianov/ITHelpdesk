@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout (~{::body},'emailAccount')}">
+      th:replace="~{fragments/layout :: layout (~{::body},'account')}">
 
 <body>
 
@@ -7,11 +7,13 @@
     <th:block th:if="${account['new']}">New Account</th:block>
     Update Account
 </h2>
-    <form action="#" th:action="@{/email_acсounts/update}" th:object="${account}" class="form-horizontal" id="add-access-form" method="post">
+    <form action="#" th:action="@{/email_accounts/update}" th:object="${account}" class="form-horizontal" id="add-account-form" method="post">
     <div class="form-group has-feedback">
         <input type="hidden" th:field="*{id}" />
         <input type="hidden" th:field="*{createdDate}" />
         <input type="hidden" th:field="*{version}" />
+        <input
+                th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
         <input
                 th:replace="~{fragments/inputField :: input ('Email', 'email', 'text')}" />
         <input
@@ -20,8 +22,6 @@
                 th:replace="~{fragments/inputField :: input ('Port', 'port', 'number')}" />
         <input
                 th:replace="~{fragments/inputField :: input ('Username', 'username', 'text')}" />
-        <input
-                th:replace="~{fragments/inputField :: input ('Access', 'access', 'text')}" />
         <input
                 th:replace="~{fragments/inputField :: input ('outgoingProtocol', 'outgoingProtocol', 'text')}" />
         <input
@@ -37,6 +37,6 @@
         </button>&nbsp;&nbsp;
         <button type="submit" name="action" value="cancel" class="btn btn-info">Cancel</button>
     </p>
-</form>
+	</form>
 </body>
 </html>

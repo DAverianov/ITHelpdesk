@@ -26,7 +26,7 @@ import com.opencsv.exceptions.CsvException;
 import de.lewens_markisen.domain.local_db.Access;
 import de.lewens_markisen.domain.local_db.Log;
 import de.lewens_markisen.domain.local_db.Person;
-import de.lewens_markisen.domain.local_db.email.EmailAcсount;
+import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 import de.lewens_markisen.domain.local_db.email.EmailLetter;
 import de.lewens_markisen.domain.local_db.instruction.Instruction;
 import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
@@ -74,7 +74,8 @@ public class initialFilling implements CommandLineRunner {
 	private void loadEmailAccount() {
 		if (emailAcountService.count() == 0) {
 			//@formatter:off
-			EmailAcсount account = EmailAcсount.builder()
+			EmailAccountLss account = EmailAccountLss.builder()
+					.name("service email account")
 					.email("d.averianov@lewens-markisen.de")
 					.username("d.averianov@lewens-markisen.de")
 					.host("192.168.0.15")
@@ -112,7 +113,7 @@ public class initialFilling implements CommandLineRunner {
 		classes.add(UserSpring.class);
 		classes.add(Log.class);
 		classes.add(Instruction.class);
-		classes.add(EmailAcсount.class);
+		classes.add(EmailAccountLss.class);
 		classes.add(EmailLetter.class);
 		return classes;
 	}

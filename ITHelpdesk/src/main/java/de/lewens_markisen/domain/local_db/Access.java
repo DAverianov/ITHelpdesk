@@ -70,11 +70,6 @@ public class Access extends BaseEntity implements AuthoritieNames{
 	@Column(name = "description", length = 200)
 	private String description;
 
-	@PrePersist
-	public void prePersistCallback() {
-		System.out.println("JPA PrePersist Callback was called");
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

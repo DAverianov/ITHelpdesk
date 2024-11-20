@@ -23,6 +23,6 @@ public class EmailAccountDto extends BaseItem {
     private String smtpAuth;
     private String smtpStarttlsEnable;
     private String description;
-    private Access access;
+    private String access;
 
 }

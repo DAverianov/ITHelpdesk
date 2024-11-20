@@ -29,7 +29,7 @@ import lombok.Setter;
 public class EmailLetter extends BaseEntity implements AuthoritieNames{
 	
 	@ManyToOne
-	private EmailAcсount sender;
+	private EmailAccountLss sender;
 	
 	@NotNull
 	@Size(min = 10, max = 120)
