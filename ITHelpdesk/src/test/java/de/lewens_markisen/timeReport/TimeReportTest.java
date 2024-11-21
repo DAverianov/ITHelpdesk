@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;

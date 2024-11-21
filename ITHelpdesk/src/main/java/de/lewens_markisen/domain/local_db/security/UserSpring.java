@@ -13,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import jakarta.persistence.*;
 
 @Setter

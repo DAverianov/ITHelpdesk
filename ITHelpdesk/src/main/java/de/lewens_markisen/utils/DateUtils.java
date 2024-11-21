@@ -15,7 +15,12 @@ public class DateUtils {
 	}
 	
 	public static String formattDDMMYYY(LocalDate dat) {
-		return dat.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+		if (dat == null) {
+			return "";
+		}
+		else {
+			return dat.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+		}
 	}
 
 	public static LocalDate startWeekInMonat(LocalDate date) {

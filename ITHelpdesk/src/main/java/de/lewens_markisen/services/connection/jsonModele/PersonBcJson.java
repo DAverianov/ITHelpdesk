@@ -29,6 +29,11 @@ public class PersonBcJson {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate geburtsdatum;
 	
+	@JsonProperty("Konzerneintritt")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate Konzerneintritt;
+	
 	@JsonProperty("Konzernaustritt_SOC")
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonFormat(pattern = "yyyy-MM-dd")

@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import de.lewens_markisen.domain.local_db.Person;
+
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.security.Role;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.repository.local.security.RoleRepository;

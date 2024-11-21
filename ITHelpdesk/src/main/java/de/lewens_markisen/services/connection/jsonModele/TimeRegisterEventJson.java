@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.timeReport.PeriodReport;
 

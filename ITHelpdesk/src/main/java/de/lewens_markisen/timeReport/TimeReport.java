@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescription;
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
 import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.repository.local.PersonInBcReportRepository;
 import lombok.RequiredArgsConstructor;

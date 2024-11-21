@@ -3,7 +3,7 @@ package de.lewens_markisen.timeRegisterEvent;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.EventPersonMonth;
 import de.lewens_markisen.domain.local_db.time_register_event.EventPersonMonthLoaded;
 

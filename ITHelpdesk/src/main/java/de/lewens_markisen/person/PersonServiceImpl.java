@@ -1,12 +1,13 @@
 package de.lewens_markisen.person;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.repository.local.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,11 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public void delete(Person person) {
 		personRepository.delete(person);
+	}
+
+	@Override
+	public List<Person> findAllByBcCode(String bcCode) {
+		return personRepository.findAllByBcCode(bcCode);
 	}
 
 }

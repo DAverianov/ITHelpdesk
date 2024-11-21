@@ -6,7 +6,7 @@ import java.util.Map;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescriptionList;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisKSaldoList;
 import de.lewens_markisen.domain.local_db.BaseEntity;
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.converters.AttributeMapStringConverter;
 import de.lewens_markisen.domain.local_db.time_register_event.converters.BcReportZeitNachweisDateDescriptionListConverter;
 import de.lewens_markisen.domain.local_db.time_register_event.converters.BcReportZeitNachweisKSaldoListConverter;

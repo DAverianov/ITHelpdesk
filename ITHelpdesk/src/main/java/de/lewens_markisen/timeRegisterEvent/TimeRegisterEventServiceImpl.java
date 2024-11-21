@@ -6,11 +6,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.EventPersonMonth;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
-import de.lewens_markisen.services.connection.BCWebService;
+import de.lewens_markisen.services.connection.BCWebServiceTimeRegisterEvent;
 import de.lewens_markisen.timeReport.PeriodReport;
 import de.lewens_markisen.utils.DateUtils;
 import jakarta.transaction.Transactional;
@@ -22,7 +22,7 @@ public class TimeRegisterEventServiceImpl implements TimeRegisterEventService {
 
 	private final TimeRegisterEventRepository timeRegisterEventRepository;
 	private final EventPersonMonthLoadedService timeRegisterEventMonthLoadedService;
-	private final BCWebService bcWebService;
+	private final BCWebServiceTimeRegisterEvent bcWebService;
 
 	@Override
 	@Transactional

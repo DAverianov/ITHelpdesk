@@ -3,7 +3,7 @@ package de.lewens_markisen.domain.local_db.time_register_event;
 import java.time.LocalDate;
 
 import de.lewens_markisen.domain.local_db.BaseEntity;
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

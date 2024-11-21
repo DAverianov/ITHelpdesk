@@ -25,10 +25,10 @@ import com.opencsv.exceptions.CsvException;
 
 import de.lewens_markisen.domain.local_db.Access;
 import de.lewens_markisen.domain.local_db.Log;
-import de.lewens_markisen.domain.local_db.Person;
 import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 import de.lewens_markisen.domain.local_db.email.EmailLetter;
 import de.lewens_markisen.domain.local_db.instruction.Instruction;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
 import de.lewens_markisen.domain.local_db.security.Authority;
 import de.lewens_markisen.domain.local_db.security.Role;

@@ -22,22 +22,33 @@
 	    <th>No</th>
 	    <th>Name</th>
 	    <th>bcCode</th>
+	    <th>Anwesenheit</th>
+	    <th>Ankunftszeit</th>
+	    <th>Hiring</th>
+	    <th>Firing</th>
 	    <th scope="col">Action</th>
 	  </tr>
   </thead>
   <tbody>
-	  <tr th:each="person,stat : ${persons}">
+	  <tr th:each="personGlock,stat : ${persons}">
 	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
 	    <td>
-	        <a th:href="@{/persons/edit/{id}(id=${person.id})}" th:text="${person.name}"/></a>
+	        <a th:href="@{/persons/edit/{id}(id=${personGlock.person.id})}" th:text="${personGlock.person.name}"/></a>
 	    </td>
-	    <td th:text="${person.bcCode}"></td>
+	    <td th:text="${personGlock.person.bcCode}"></td>
+	    <td th:text="${personGlock.inPresence} ? 'V' : ''"></td>
+	    <td th:text="${personGlock.arrivalTime}"></td>
+	    <td th:text="${personGlock.person.hiringDateStr}"></td>
+	    <td th:text="${personGlock.person.firingDateStr}"></td>
 	    <td><a sec:authorize="hasAnyAuthority('person.delete')" 
-	    		th:href="@{/persons/delete/{id}(id=${person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
+	    		th:href="@{/persons/delete/{id}(id=${personGlock.person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
 	        <a sec:authorize="hasAnyAuthority('person.update')"
-	        	th:href="@{/persons/edit/{id}(id=${person.id})}" class="btn btn-info">Edit</a>&nbsp;
+	        	th:href="@{/persons/edit/{id}(id=${personGlock.person.id})}" class="btn btn-info">Edit</a>&nbsp;
 	       	<a sec:authorize="hasAnyAuthority('person.timeReport.run')"
-	       		th:href="@{/timeReport/{bcCode}(bcCode=${person.bcCode})}" class="btn btn-info">Timereport</a>
+	       		th:href="@{/timeReport/{bcCode}(bcCode=${personGlock.person.bcCode})}" class="btn btn-info">Timereport</a>
+	       	<a th:href="@{/persons/set_glock/{id}(id=${personGlock.person.id})}">
+	       		<img th:src="${personGlock.glock} ? '/resources/images/glock_orange.png' : '/resources/images/glock_white.png'"/>
+	       	</a>
 	    </td>
 	  </tr>
   </tbody>

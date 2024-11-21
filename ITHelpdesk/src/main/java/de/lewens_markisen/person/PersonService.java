@@ -1,11 +1,12 @@
 package de.lewens_markisen.person;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 
 public interface PersonService {
 
@@ -19,4 +20,5 @@ public interface PersonService {
 	Person save(Person p);
     Person updatePerson(Person person);
 	void delete(Person person);
+	List<Person> findAllByBcCode(String bcCode);
 }

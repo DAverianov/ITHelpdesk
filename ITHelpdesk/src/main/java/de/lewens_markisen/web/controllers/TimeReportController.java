@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.security.perms.PersonTimeReportPermission;
 import de.lewens_markisen.security.perms.TimeReportPermission;

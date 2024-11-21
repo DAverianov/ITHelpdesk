@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.domain.local_db.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.repository.local.PersonRepository;
