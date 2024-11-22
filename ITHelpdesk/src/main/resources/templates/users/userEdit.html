@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org"
-	th:replace="~{fragments/layout :: layout (~{::body},'users')}">
+	th:replace="~{fragments/layout :: layout (~{::body},'user')}">
 <head>
 <meta charset="UTF-8">
 <title>Person</title>
@@ -10,24 +10,22 @@
 	crossorigin="anonymous">
 </head>
 <body>
-	<h1>Edit Person</h1>
+	<h1>Edit User</h1>
 
-	<form action="#" th:action="@{/users/update}" th:object="${user}" method="post">
+	<form action="#" th:action="@{/users/update}" th:object="${userRolesChecked}" method="post">
 	
-		<input type="hidden" th:field="*{id}" />
-		<input type="hidden" th:field="*{roles}" />
-		<input type="hidden" th:field="${userRolesChecked}" />
+		<input type="hidden" th:field="*{user.id}" />
+		<input type="hidden" th:field="*{rolesChecked}" />
 
 		<table>
-			<tr><td><input th:replace="~{fragments/inputField :: input ('Username', 'username', 'text')}" required /></td></tr>
-			<tr><td><input th:replace="~{fragments/inputField :: input ('Firstname', 'firstname', 'text')}" disabled /></td></tr>
-			<tr><td><input th:replace="~{fragments/inputField :: input ('Lastname', 'lastname', 'text')}" disabled /></td></tr>
-			<tr><td><input th:replace="~{fragments/inputField :: input ('BC Code', 'bcCode', 'text')}" disabled /></td></tr>
-			<tr><td><label class="col-auto col-form-label control-label">Person <span class=sub></span></label></td>
-			<td>
-					<!-- <input th:replace="~{fragments/inputField :: input ('Person', '*{person.name}', 'text')}" disabled /> -->
-					<input type="text" th:field="*{person.name}" class="form-control" placeholder="person" disabled>
-			</td>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Username', 'user.username', 'text')}" required /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Firstname', 'user.firstname', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Lastname', 'user.lastname', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('BC Code', 'user.bcCode', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Email', 'user.email', 'text')}" disabled /></td></tr>
+			<tr>
+				<td><label class="col-auto col-form-label control-label">Person <span class=sub></span></label></td>
+				<td><input type="text" th:field="*{user.person.name}" class="form-control" placeholder="person" disabled></td>
 			</tr>
 		</table>
 
@@ -39,8 +37,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="roleChecked,stat : ${userRolesChecked.rolesChecked}"></td>
-				
+				<tr th:each="roleChecked,stat : *{rolesChecked}"></td>
 	    			<td th:text="${stat.count}"></td>
 					<td>
 						<input type="checkbox" th:checked="${roleChecked.active}" th:value="${roleChecked.role.id}" class="form-check-input">

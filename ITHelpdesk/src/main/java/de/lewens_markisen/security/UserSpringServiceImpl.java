@@ -198,4 +198,18 @@ public class UserSpringServiceImpl implements UserSpringService {
 		}
 		return isCorrect;
 	}
+
+	@Override
+	public Boolean userHasEmail() {
+		Optional<UserSpring> currUserOpt = getCurrentUser();
+		if (currUserOpt.isEmpty()) {
+			return false;
+		}
+		else if (currUserOpt.get().getEmail().isBlank()) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 }

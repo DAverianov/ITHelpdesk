@@ -46,4 +46,15 @@ public class EmailAccountServiceImpl implements EmailAccountService{
 		return emailAccountRepository.save(account);
 	}
 
+	@Override
+	public EmailAccountLss getServiceAccount() {
+		Optional<EmailAccountLss> account = emailAccountRepository.findByPredeterminedName(EmailAccountLss.SERVICE_ACCOUNT);
+		return account.get();
+	}
+
+	@Override
+	public EmailAccountLss findFirst() {
+		return emailAccountRepository.findFirst();
+	}
+
 }

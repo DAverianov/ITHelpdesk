@@ -160,7 +160,7 @@ public class BCWebServiceTimeRegisterEvent {
 		//@formatter:off
 		return events.stream()
 				.filter(e -> e.getEndTime().isBlank())
-				.collect(Collectors.toMap(TimeRegisterEvent::getPerson, TimeRegisterEvent::getStartTime));
+				.collect(Collectors.toMap(TimeRegisterEvent::getPerson, TimeRegisterEvent::getStartTime, (existing, replacement) -> existing));
 		//@formatter:on
 	}
 

@@ -26,16 +26,20 @@ import lombok.Setter;
 @Table(name = "email_account")
 public class EmailAccountLss extends BaseEntity implements AuthoritieNames{
 	
+	public static String SERVICE_ACCOUNT = "service account";
+
 	@Builder
 	public EmailAccountLss(Long id, Long version, Timestamp createdDate,
 			Timestamp lastModifiedDate,
 			@NotNull @Size(min = 2, max = 120) String name,
+			@Size(max = 120) String predeterminedName,
 			@NotNull @Size(min = 12, max = 120) String email, String host,
 			Integer port, String username, String outgoingProtocol,
 			String smtpAuth, String smtpStarttlsEnable,
 			@Size(min = 0, max = 300) String description, Access access) {
 		super(id, version, createdDate, lastModifiedDate);
 		this.name = name;
+		this.predeterminedName = predeterminedName;
 		this.email = email;
 		this.host = host;
 		this.port = port;
@@ -50,6 +54,10 @@ public class EmailAccountLss extends BaseEntity implements AuthoritieNames{
 	@NotNull
 	@Size(min = 2, max = 120)
 	private String name;
+	
+	@Size(max = 120)
+	private String predeterminedName;
+	
 	@NotNull
 	@Size(min = 12, max = 120)
 	private String email;

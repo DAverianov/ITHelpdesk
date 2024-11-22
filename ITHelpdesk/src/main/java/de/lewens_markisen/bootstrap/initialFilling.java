@@ -59,7 +59,7 @@ public class initialFilling implements CommandLineRunner {
 	private final UserSpringService userSpringService;
 	private final DayArtService pauseService;
 	private final PasswordEncoder passwordEncoder;
-	private final EmailAccountService emailAcountService;
+	private final EmailAccountService emailAccountService;
 
 	@Override
 	public void run(String... args) {
@@ -72,10 +72,12 @@ public class initialFilling implements CommandLineRunner {
 	}
 
 	private void loadEmailAccount() {
-		if (emailAcountService.count() == 0) {
+		long quaAccounts = emailAccountService.count();
+		if (quaAccounts == 0) {
 			//@formatter:off
 			EmailAccountLss account = EmailAccountLss.builder()
 					.name("service email account")
+					.predeterminedName(EmailAccountLss.SERVICE_ACCOUNT)
 					.email("d.averianov@lewens-markisen.de")
 					.username("d.averianov@lewens-markisen.de")
 					.host("192.168.0.15")
@@ -84,8 +86,15 @@ public class initialFilling implements CommandLineRunner {
 					.smtpAuth("true")
 					.smtpStarttlsEnable("true")
 					.build();
-			emailAcountService.save(account);
+			emailAccountService.save(account);
 			//@formater:on
+		}
+		else if (quaAccounts == 1l) {
+			EmailAccountLss account = emailAccountService.findFirst();
+			if (account.getPredeterminedName()==null || account.getPredeterminedName().isBlank()) {
+				account.setPredeterminedName(EmailAccountLss.SERVICE_ACCOUNT);
+				emailAccountService.save(account);
+			}
 		}
 	}
 

@@ -52,7 +52,7 @@ class UserSpringControllerEditTest extends BaseIT {
 		UserRolesChecked userRoles = new UserRolesChecked();
 		userRoles.setUser(user);
 		userRoles.setAllRoles(roleService.findAll());
-		userRoles.fullRoles();
+		userRoles.checkRoles();
 		return userRoles;
 	}
 	

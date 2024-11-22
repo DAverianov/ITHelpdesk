@@ -28,6 +28,7 @@ import de.lewens_markisen.security.perms.UserReadPermission;
 import de.lewens_markisen.security.perms.UserUpdatePermission;
 import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,7 +76,7 @@ public class UserSpringController {
 		ModelAndView modelAndView = new ModelAndView("users/userEdit");
 		Optional<UserSpring> userOpt = userSpringService.findById(id);
 		if (userOpt.isPresent()) {
-			modelAndView.addObject("user", userOpt.get());
+//			modelAndView.addObject("user", userOpt.get());
 			modelAndView.addObject("userRolesChecked", createUserRoles(userOpt.get()));
 		} else {
 			modelAndView.addObject("message", "User mit id wurde nicht gefunden!");
@@ -88,16 +89,19 @@ public class UserSpringController {
 		UserRolesChecked userRoles = new UserRolesChecked();
 		userRoles.setUser(user);
 		userRoles.setAllRoles(roleService.findAll());
-		userRoles.fullRoles();
+		userRoles.checkRoles();
 		return userRoles;
 	}
 
 	@UserUpdatePermission
 	@PostMapping(value = "/update")
 	@Transactional
-	public String updateUser(@ModelAttribute("user") UserSpring user,
-			@ModelAttribute("userRolesChecked") UserRolesChecked userRolesChecked,
+	public String updateUser(
+			@Valid @ModelAttribute("userRolesChecked") UserRolesChecked userRolesChecked,
 			@RequestParam(value = "action", required = true) String action) {
+		UserSpring user = userRolesChecked.getUser();
+		System.out.println(".. "+userRolesChecked);
+		System.out.println(".. "+user);
 		userRolesChecked.getRolesChecked().stream().forEach(rch -> System.out.println(" "+rch));
 		if (action.equals("update")) {
 			try {

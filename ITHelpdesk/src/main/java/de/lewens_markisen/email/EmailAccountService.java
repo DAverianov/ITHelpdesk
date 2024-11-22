@@ -13,4 +13,6 @@ public interface EmailAccountService {
 	public Page<EmailAccountLss> findAll(Pageable pageable);
 	public Optional<EmailAccountLss> findById(Long id);
 	public EmailAccountLss update(EmailAccountLss account);
+	public EmailAccountLss getServiceAccount();
+	public EmailAccountLss findFirst();
 }

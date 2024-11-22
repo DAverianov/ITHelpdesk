@@ -83,6 +83,7 @@ public class PersonController {
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("persons", addPresence(convertToPersonWithGlock(persons)));
 		model.addAttribute("findField", findField);
+		model.addAttribute("userHasEmail", userService.userHasEmail());
 		return "persons/personsList";
 	}
 

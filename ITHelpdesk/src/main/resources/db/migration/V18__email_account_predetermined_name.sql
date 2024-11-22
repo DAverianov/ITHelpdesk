@@ -1,0 +1,1 @@
+ALTER TABLE email_account add predetermined_name varchar(120);

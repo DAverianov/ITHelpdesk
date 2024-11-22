@@ -82,6 +82,15 @@ public class UserSpring implements UserDetails, CredentialsContainer, Authoritie
 		return getFirstname()+" "+getLastname()+" /"+getUsername()+"/";
 	}
 
+	public String getEmail() {
+		if (this.email == null || this.email.isBlank()) {
+			return "";
+		}
+		else {
+			return this.email;
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "UserSpring [id=" + id + ", username=" + username + ", password=" + password + ", firstname=" + firstname

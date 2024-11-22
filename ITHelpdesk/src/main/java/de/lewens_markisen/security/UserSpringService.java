@@ -23,5 +23,6 @@ public interface UserSpringService {
 
 	public void rewriteUsernames();
 	public UserSpring fillAttributsFromLss(UserSpring user);
+	public Boolean userHasEmail();
 
 }

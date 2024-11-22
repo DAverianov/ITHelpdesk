@@ -20,7 +20,7 @@ public class UserRolesChecked {
 		super();
 	}
 
-	public void fullRoles() {
+	public void checkRoles() {
 		List<RoleChecked> rolesCh = new ArrayList<RoleChecked>();
 		allRoles.stream().forEach(r -> rolesCh.add(RoleChecked.builder().role(r).build()));
 		for (Role role : user.getRoles()) {
@@ -31,6 +31,12 @@ public class UserRolesChecked {
 			}
 		}
 		this.rolesChecked = rolesCh;
+	}
+
+	@Override
+	public String toString() {
+		return "UserRolesChecked [user=" + user + ", allRoles=" + allRoles
+				+ ", rolesChecked=" + rolesChecked + "]";
 	}
 
 }

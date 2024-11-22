@@ -19,4 +19,6 @@ public interface PersonDefferedEventRepository
 	public List<PersonDefferedEvent> findAllByUserAndPersonAndDefferedEvent(
 			UserSpring userSpring, Person person, DefferedEvent event);
 
+	public List<PersonDefferedEvent> findAllByDefferedEventAndDone(DefferedEvent event, boolean done);
+
 }

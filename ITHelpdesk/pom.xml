@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>de.lewens-markisen</groupId>
 	<artifactId>ITHelpdesk</artifactId>
-	<version>0.0.26</version>
+	<version>0.0.28</version>
 	<name>ITHelpdesk</name>
 	<description>IT Helpdesk</description>
 	<url />
@@ -53,7 +53,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-data</artifactId>
 		</dependency>
-
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		
 		<!-- Whirlpool hash code for lewensportal password decode -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
