@@ -8,5 +8,4 @@ import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 
 public interface EmailAccountRepository extends JpaRepository<EmailAccountLss, Long>{
 	public Optional<EmailAccountLss> findByPredeterminedName(String name);
-	public EmailAccountLss findFirst();
 }

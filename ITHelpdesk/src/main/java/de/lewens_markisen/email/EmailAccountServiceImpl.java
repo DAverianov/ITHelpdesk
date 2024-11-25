@@ -54,7 +54,7 @@ public class EmailAccountServiceImpl implements EmailAccountService{
 
 	@Override
 	public EmailAccountLss findFirst() {
-		return emailAccountRepository.findFirst();
+		return emailAccountRepository.findAll().get(0);
 	}
 
 }
