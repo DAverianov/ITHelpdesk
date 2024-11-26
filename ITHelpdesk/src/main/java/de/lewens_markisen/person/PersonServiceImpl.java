@@ -1,5 +1,6 @@
 package de.lewens_markisen.person;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,8 +56,18 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
+	public Page<Person> findAllActive(Pageable pageable) {
+		return personRepository.findAllByFiringDate(pageable, LocalDate.of(1, 1, 1));
+	}
+
+	@Override
 	public Page<Person> findAllByNameIsLikeIgnoreCase(Pageable pageable, String findField) {
 		return personRepository.findAllByNameIsLikeIgnoreCase(pageable, findField);
+	}
+
+	@Override
+	public Page<Person> findAllByNameIsLikeIgnoreCaseAndActive(	Pageable pageable, String findField) {
+		return personRepository.findAllByNameIsLikeIgnoreCaseAndFiringDate(pageable, findField, LocalDate.of(1, 1, 1));
 	}
 
 	@Override

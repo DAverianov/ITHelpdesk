@@ -38,6 +38,7 @@ import de.lewens_markisen.security.perms.PersonUpdatePermission;
 import de.lewens_markisen.services.connection.BCWebServiceLoadZeitnachweis;
 import de.lewens_markisen.services.connection.BCWebServiceLoadPerson;
 import de.lewens_markisen.web.controllers.playlocad.PersonWithGlock;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -59,30 +60,41 @@ public class PersonController {
 	@PersonReadPermission
 	@GetMapping(path = "/list")
 	public String list(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<Person> paginated = findPaginated(page, "");
-		return addPaginationModel(page, paginated, model, "");
+		Page<Person> paginated = findPaginated(page, "", true);
+		return addPaginationModel(page, paginated, model, "", true);
 	}
 
 	@PersonReadPermission
 	@PostMapping(path = "/list")
-	public String listPost(@ModelAttribute(name = "findField") String findField,
+	public String listPost(
+			@ModelAttribute(name = "findField") String findField,
+			@RequestParam(value = "findFieldActive", required = false) String findFieldActiveValue,
 			@RequestParam(defaultValue = "1") int page, 
 			@RequestParam(value = "action", required = true) String action,
 			Model model) {
+		Boolean findFieldActive;
+		if (findFieldActiveValue==null) {
+			findFieldActive = false;
+		}
+		else {
+			findFieldActive = true;
+		}
 		if (action.equals("clearFilter")) {
 			findField = "";
 		}
-		Page<Person> paginated = findPaginated(page, findField);
-		return addPaginationModel(page, paginated, model, findField);
+		System.out.println(".. findFieldActive = "+findFieldActive);
+		Page<Person> paginated = findPaginated(page, findField, findFieldActive);
+		return addPaginationModel(page, paginated, model, findField, findFieldActive);
 	}
 
-	private String addPaginationModel(int page, Page<Person> paginated, Model model, String findField) {
+	private String addPaginationModel(int page, Page<Person> paginated, Model model, String findField, Boolean findFieldActive) {
 		List<Person> persons = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("persons", addPresence(convertToPersonWithGlock(persons)));
 		model.addAttribute("findField", findField);
+		model.addAttribute("findFieldActive", findFieldActive);
 		model.addAttribute("userHasEmail", userService.userHasEmail());
 		return "persons/personsList";
 	}
@@ -121,17 +133,22 @@ public class PersonController {
 		if (userOpt.isPresent()) {
 			events = personDefferedEventService.findAllByUserAndDefferedEvent(userOpt.get(), DefferedEvent.PERSON_KOMMEN);
 		}
-		return events.stream().filter(e -> e.getDone()).map(PersonDefferedEvent::getPerson).collect(Collectors.toList());
+		return events.stream().filter(e -> !e.getDone()).map(PersonDefferedEvent::getPerson).collect(Collectors.toList());
 	}
 
-	private Page<Person> findPaginated(int page, String findField) {
+	private Page<Person> findPaginated(int page, String findField, Boolean findFieldActive) {
 		int pageSize = 50;
 		Sort sort = Sort.by("name").ascending();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
-		if (findField == null || findField.isBlank()) {
+		if ((findField == null || findField.isBlank()) & !findFieldActive) {
 			return personService.findAll(pageable);
-		} else {
-	        return personService.findAllByNameIsLikeIgnoreCase(pageable, "%" + findField + "%");
+		} else if ((findField == null || findField.isBlank()) & findFieldActive) {
+	        return personService.findAllActive(pageable);
+		} else if (!findFieldActive & !findFieldActive) {
+			return personService.findAllByNameIsLikeIgnoreCase(pageable, "%" + findField + "%");
+		}
+		else {
+			return personService.findAllByNameIsLikeIgnoreCaseAndActive(pageable, "%" + findField + "%");
 		}
 	}
 
@@ -151,14 +168,17 @@ public class PersonController {
 	}
 
 	@PersonReadPermission
-	@GetMapping(value = "/set_glock/{id}")
+	@GetMapping(value = "/set_glock/{id}/{page}")
 	@Transactional
-	public String setGlock(@PathVariable(name = "id") Long person_id, Model model) {
+	public String setGlock(@PathVariable(name = "id") Long person_id, 
+			@PathVariable(name = "page") int page, 
+			HttpServletRequest request) {
 		Optional<UserSpring> userOpt = userService.getCurrentUser();
 		if (userOpt.isPresent()) {
-			personDefferedEventService.changeGlock(userOpt.get(), person_id);
+			Boolean resultChange = personDefferedEventService.changeGlock(userOpt.get(), person_id);
 		}
-		return "redirect:/persons/list";
+	    String referer = request.getHeader("Referer");
+	    return "redirect:"+ referer;
 	}
 
 	@PersonUpdatePermission

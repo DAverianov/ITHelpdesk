@@ -52,7 +52,7 @@ public class PersonDefferedEventServiceImpl
 				result = true;
 			} else {
 				changeEvents(events);
-				result = false;
+				result = true;
 			}
 		}
 		return result;
@@ -74,8 +74,12 @@ public class PersonDefferedEventServiceImpl
 			DefferedEvent eventType) {
 		// @formatter:off
 		personDefferedEventRepository.save(
-				PersonDefferedEvent.builder().user(userSpring).person(person)
-						.defferedEvent(eventType).done(false).build());
+				PersonDefferedEvent.builder()
+					.user(userSpring)
+					.person(person)
+					.defferedEvent(eventType)
+					.done(false)
+					.build());
 		// @formatter:on
 	}
 
@@ -110,10 +114,10 @@ public class PersonDefferedEventServiceImpl
 
 	private void sendMassage(PersonDefferedEvent personEvent) {
 		emailLetterService.save(EmailLetter.builder()
-				.sender(emailLetterService.getServiceAccount())
+				.sender(EmailLetter.DEFAULT_SENDER)
 				.recipient(personEvent.getUser().getEmail())
 				.subject("Der Mitarbeiter ist bereits im Büro: "+personEvent.getPerson())
-				.text("Autocreated Email!")
+				.text("Automatisch generierte Email! Nicht antworten!")
 				.dateToSenden(LocalDateTime.now())
 				.boundaryDate(LocalDateTime.now().plus(3l, ChronoUnit.HOURS))
 				.build()

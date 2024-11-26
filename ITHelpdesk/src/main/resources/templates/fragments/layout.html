@@ -69,11 +69,6 @@
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>Accesses</span>
 					</li>
-					<li sec:authorize="hasAnyAuthority('email_account.read')" 
-						th:replace="~{::menuItem ('/email_accounts/list','email_accounts','email_accounts','th-list','Email accounts')}">
-						<span class="fa fa-th-list" aria-hidden="true"></span>
-						<span>Email accounts</span>
-					</li>
 					<li sec:authorize="hasAnyAuthority('user.read')" 
 						th:replace="~{::menuItem ('/users/list','users','users','th-list','Users')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 

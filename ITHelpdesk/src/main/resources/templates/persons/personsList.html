@@ -8,9 +8,10 @@
 <h2>Persons</h2>
 
 <form method="post" action="#" th:action="@{/persons/list}"	th:object="${persons}">
-	<input type="hidden" name="findField" th:field="${findField}"/>
 	<div>
 		<label> Name contents: <input type="text" name="findField" data-th-value="${findField}"></label>
+		<input type="checkbox" name="findFieldActive" th:checked="${findFieldActive}"/>
+		<label> nur aktuell</label>
 		<button type="submit" name="action" value="clearFilter" class="btn btn-secondary">X</button>
 		<button type="submit" name="action" value="update" class="btn btn-secondary">find</button>
 	</div>
@@ -49,7 +50,7 @@
 	       		<img src='/resources/images/uhr_20_20.png' placeholder="Zeitbericht"/>
 	       	</a>
 	       	<d th:if="${userHasEmail} and ${personGlock.inPresence}!=true"> 
-		       	<a th:href="@{/persons/set_glock/{id}(id=${personGlock.person.id})}">
+		       	<a th:href="@{/persons/set_glock/{id}/{page}(id=${personGlock.person.id},page=${currentPage})}">
 		       		<img th:src="${personGlock.glock} ? '/resources/images/glock_orange.png' : '/resources/images/glock_white.png'"/>
 	       	</d>
 	       	</a>

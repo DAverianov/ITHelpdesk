@@ -114,4 +114,8 @@ public class Person extends BaseEntity implements AuthoritieNames {
 		authNames.add("person.delete");
 		return authNames;
 	}
+	
+	public static String getDefaultFiringDate() {
+		return "0001-01-01";
+	}
 }

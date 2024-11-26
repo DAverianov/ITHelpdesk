@@ -33,7 +33,7 @@ public class BCWebServiceLoadPerson {
 				.filter(p -> p.getBcCode().length() > 0	& p.getBcCode().length() <= 4)
 				.forEach(p -> {
 					List<Person> personList = personService.findAllByBcCode(p.getBcCode());
-					if (personList.size() == 0) {
+					if (personList.size() == 0 && p.getFiringDate().equals(Person.getDefaultFiringDate())) {
 						createPerson(p);
 					} else if (personList.size() == 1) {
 						correctPerson(personList.get(0), p);
@@ -77,7 +77,8 @@ public class BCWebServiceLoadPerson {
 		try {
 			String requestZeitpunktposten = connectionBC.getUrl() + "/"
 					+ connectionBC.getWsPersonenkarte()
-					+ "?$filter=Konzernaustritt_SOC%20eq%200001-01-01%20&%20&%20$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
+//					+ "?$filter=Konzernaustritt_SOC%20eq%200001-01-01%20&%20&%20$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
+					+ "?$select=Code,Name,Geburtsdatum,Konzerneintritt,Konzernaustritt_SOC,Benutzer";
 			Optional<String> anserOpt = connectionBC
 					.createGETRequest(requestZeitpunktposten);
 			if (anserOpt.isPresent()) {

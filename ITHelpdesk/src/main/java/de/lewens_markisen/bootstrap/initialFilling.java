@@ -25,7 +25,6 @@ import com.opencsv.exceptions.CsvException;
 
 import de.lewens_markisen.domain.local_db.Access;
 import de.lewens_markisen.domain.local_db.Log;
-import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 import de.lewens_markisen.domain.local_db.email.EmailLetter;
 import de.lewens_markisen.domain.local_db.instruction.Instruction;
 import de.lewens_markisen.domain.local_db.person.Person;
@@ -34,7 +33,6 @@ import de.lewens_markisen.domain.local_db.security.Authority;
 import de.lewens_markisen.domain.local_db.security.Role;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
-import de.lewens_markisen.email.EmailAccountService;
 import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.repository.local.PersonRepository;
 import de.lewens_markisen.repository.local.security.UserSpringRepository;
@@ -59,7 +57,6 @@ public class initialFilling implements CommandLineRunner {
 	private final UserSpringService userSpringService;
 	private final DayArtService pauseService;
 	private final PasswordEncoder passwordEncoder;
-	private final EmailAccountService emailAccountService;
 
 	@Override
 	public void run(String... args) {
@@ -68,34 +65,6 @@ public class initialFilling implements CommandLineRunner {
 		loadPersonData();
 		assignAuthorityToAdmin();
 		loadPause();
-		loadEmailAccount();
-	}
-
-	private void loadEmailAccount() {
-		long quaAccounts = emailAccountService.count();
-		if (quaAccounts == 0) {
-			//@formatter:off
-			EmailAccountLss account = EmailAccountLss.builder()
-					.name("service email account")
-					.predeterminedName(EmailAccountLss.SERVICE_ACCOUNT)
-					.email("d.averianov@lewens-markisen.de")
-					.username("d.averianov@lewens-markisen.de")
-					.host("192.168.0.15")
-					.port(25)
-					.outgoingProtocol("smtp")
-					.smtpAuth("true")
-					.smtpStarttlsEnable("true")
-					.build();
-			emailAccountService.save(account);
-			//@formater:on
-		}
-		else if (quaAccounts == 1l) {
-			EmailAccountLss account = emailAccountService.findFirst();
-			if (account.getPredeterminedName()==null || account.getPredeterminedName().isBlank()) {
-				account.setPredeterminedName(EmailAccountLss.SERVICE_ACCOUNT);
-				emailAccountService.save(account);
-			}
-		}
 	}
 
 	private void loadPause() {
@@ -122,7 +91,6 @@ public class initialFilling implements CommandLineRunner {
 		classes.add(UserSpring.class);
 		classes.add(Log.class);
 		classes.add(Instruction.class);
-		classes.add(EmailAccountLss.class);
 		classes.add(EmailLetter.class);
 		return classes;
 	}

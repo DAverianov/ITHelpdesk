@@ -28,8 +28,9 @@ import lombok.Setter;
 @Table(name = "email")
 public class EmailLetter extends BaseEntity implements AuthoritieNames{
 	
-	@ManyToOne
-	private EmailAccountLss sender;
+	public static final String DEFAULT_SENDER = "d.averianov@lewens-markisen.de";
+	
+	private String sender;
 	
 	@NotNull
 	@Size(min = 10, max = 120)

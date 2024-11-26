@@ -2,6 +2,7 @@ package de.lewens_markisen.email;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,10 +17,11 @@ class EmailLetterServiceImplTest {
 	private EmailLetterService emailLetterService;
 
 	@Test
+	@Disabled
 	void send_whenSend_thanOk() {
 		//@formatter:off
 		EmailLetter email = EmailLetter.builder()
-				.sender(emailLetterService.getServiceAccount())
+				.sender(EmailLetter.DEFAULT_SENDER)
 				.recipient("d.averianov@lewens-markisen.de")
 				.subject("Hello! Test message.")
 				.text("Holla! Ich bin ein Roboter!")

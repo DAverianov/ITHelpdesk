@@ -5,7 +5,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.local_db.email.EmailAccountLss;
 import de.lewens_markisen.domain.local_db.email.EmailLetter;
 import de.lewens_markisen.repository.local.EmailLetterRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailLetterServiceImpl implements EmailLetterService{
 	
 	private final EmailLetterRepository emailLetterRepository;
-	private final EmailAccountService emailAccountService;
     private final JavaMailSender javaMailSender;
 
 	@Override
 	public EmailLetter save(EmailLetter email) {
 		return emailLetterRepository.save(email);
-	}
-
-	@Override
-	public EmailAccountLss getServiceAccount() {
-		return emailAccountService.getServiceAccount();
 	}
 
 	@Override
@@ -48,7 +41,7 @@ public class EmailLetterServiceImpl implements EmailLetterService{
 
 	private void sendEmail(EmailLetter email) {
         SimpleMailMessage message = new SimpleMailMessage(); 
-        message.setFrom(email.getSender().getEmail());
+        message.setFrom(email.getSender());
         message.setTo(email.getRecipient()); 
         message.setSubject(email.getSubject()); 
         message.setText(email.getText());
@@ -62,10 +55,6 @@ public class EmailLetterServiceImpl implements EmailLetterService{
 		}
 		if (email.getSender()==null) {
 			log.debug("Sender in email is null! Email dont send!");
-			return false;
-		}
-		if (email.getSender().getAccess()==null) {
-			log.debug("Access in email.sender is null! Email dont send!");
 			return false;
 		}
 		if (email.getRecipient()==null || email.getRecipient().isBlank()) {
