@@ -99,7 +99,7 @@ public class PersonDefferedEventServiceImpl
 				.entrySet()) {
 			if (personInPresence.containsKey(entry.getKey())) {
 				for (PersonDefferedEvent personEvent: entry.getValue()) {
-					sendMassage(personEvent);
+					createMassage(personEvent);
 					doneEvent(personEvent);
 				}
 			}
@@ -112,14 +112,15 @@ public class PersonDefferedEventServiceImpl
 		personDefferedEventRepository.save(personEvent);
 	}
 
-	private void sendMassage(PersonDefferedEvent personEvent) {
+	private void createMassage(PersonDefferedEvent personEvent) {
 		emailLetterService.save(EmailLetter.builder()
 				.sender(EmailLetter.DEFAULT_SENDER)
 				.recipient(personEvent.getUser().getEmail())
-				.subject("Der Mitarbeiter ist bereits im Büro: "+personEvent.getPerson())
+				.subject("Erinnerung: "+personEvent.getPerson().getName()+" ist bereits im Büro.")
 				.text("Automatisch generierte Email! Nicht antworten!")
 				.dateToSenden(LocalDateTime.now())
 				.boundaryDate(LocalDateTime.now().plus(3l, ChronoUnit.HOURS))
+				.send(false)
 				.build()
 		);
 		

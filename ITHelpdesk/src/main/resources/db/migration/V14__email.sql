@@ -11,8 +11,8 @@ create table email (
       author_id int,
       date_to_senden timestamp,
       boundary_date timestamp,
-      sent_date timestamp,
-      sent boolean,
+      send_date timestamp,
+      send boolean,
       
       created_date timestamp,
       last_modified_date timestamp,

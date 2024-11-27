@@ -1,6 +1,8 @@
 package de.lewens_markisen.email;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -28,14 +30,21 @@ public class EmailLetterServiceImpl implements EmailLetterService{
 		if (!checkEmailLetter(email)) {
 			return false;
 		}
+		log.debug("Email send -> "+email.getRecipient()+" -> " +email.getSubject());
 		sendEmail(email);
 		markEmail(email);
 		return true;
 	}
+
+	@Override
+	public void sendAll() {
+		List<EmailLetter> letters = emailLetterRepository.findAllBySend(false);
+		letters.stream().forEach(l -> send(l));
+	}
 	
 	private void markEmail(EmailLetter email) {
-        email.setSent(true);
-        email.setSentDate(LocalDateTime.now());
+        email.setSend(true);
+        email.setSendDate(LocalDateTime.now());
         emailLetterRepository.save(email);
 	}
 

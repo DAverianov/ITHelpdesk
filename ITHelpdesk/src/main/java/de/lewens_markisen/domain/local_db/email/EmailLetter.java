@@ -47,8 +47,8 @@ public class EmailLetter extends BaseEntity implements AuthoritieNames{
 	private UserSpring author;
 	private LocalDateTime dateToSenden;
 	private LocalDateTime boundaryDate;
-	private LocalDateTime sentDate;
-	private Boolean sent;
+	private LocalDateTime sendDate;
+	private Boolean send;
 
 	@Override
     public List<String> getAuthoritieNames() {
