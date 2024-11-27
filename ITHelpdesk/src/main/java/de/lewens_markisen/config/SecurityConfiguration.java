@@ -68,7 +68,9 @@ public class SecurityConfiguration {
 					.requestMatchers("/webjars/**", "/login", "/resources/**", "/error").permitAll()
 					.anyRequest().authenticated()
 				)
-            .formLogin(withDefaults())
+			.formLogin(form -> form
+					.loginPage("/login")
+					.permitAll())
             .rememberMe((remember) -> remember.tokenRepository(persistentTokenRepository)
                 	.userDetailsService(userDetailsService))
             .csrf(csrf -> csrf.disable());
