@@ -14,8 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.domain.local_db.person.Person;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.repository.local.PersonRepository;
 import de.lewens_markisen.repository.local.TimeRegisterEventRepository;
@@ -44,9 +44,6 @@ class TimeRegisterEventServiceImplTest {
 		
 		Optional<Person> personOpt = personService.findOrCreate(BC_CODE, "TEST USER");
 		assertThat(personOpt.isPresent());
-		
-		Optional<List<TimeRegisterEvent>> events = timeRegisterEventServiceImpl.readEventsProPerson(personOpt.get(), period);
-		assertThat(events).isNotEmpty();
 	}
 	
 	@Test

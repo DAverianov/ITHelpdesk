@@ -1,13 +1,14 @@
 package de.lewens_markisen.person;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.repository.local.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,21 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
+	public Page<Person> findAllActive(Pageable pageable) {
+		return personRepository.findAllByFiringDate(pageable, LocalDate.of(1, 1, 1));
+	}
+
+	@Override
+	public Page<Person> findAllByNameIsLikeIgnoreCase(Pageable pageable, String findField) {
+		return personRepository.findAllByNameIsLikeIgnoreCase(pageable, findField);
+	}
+
+	@Override
+	public Page<Person> findAllByNameIsLikeIgnoreCaseAndActive(	Pageable pageable, String findField) {
+		return personRepository.findAllByNameIsLikeIgnoreCaseAndFiringDate(pageable, findField, LocalDate.of(1, 1, 1));
+	}
+
+	@Override
 	public Optional<Person> findByNameForSearch(String name) {
 		return personRepository.findByNameForSearch(name);
 	}
@@ -72,6 +88,11 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public void delete(Person person) {
 		personRepository.delete(person);
+	}
+
+	@Override
+	public List<Person> findAllByBcCode(String bcCode) {
+		return personRepository.findAllByBcCode(bcCode);
 	}
 
 }

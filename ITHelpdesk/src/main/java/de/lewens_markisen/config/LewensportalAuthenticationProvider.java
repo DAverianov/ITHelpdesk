@@ -1,6 +1,7 @@
 package de.lewens_markisen.config;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -15,10 +16,11 @@ import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.security.LssUser;
 import de.lewens_markisen.security.LssUserService;
 import de.lewens_markisen.security.UserSpringService;
+import de.lewens_markisen.utils.StringUtilsLSS;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,47 +53,44 @@ public class LewensportalAuthenticationProvider implements AuthenticationProvide
 	private UsernamePasswordAuthenticationToken authenticateAgainstThirdPartyAndGetAuthentication(String username,
 			String password) throws UsernameNotFoundException {
 
-		Optional<LssUser> lssUserOpt;
+		Optional<List<LssUser>> lssUsersOpt;
+		
+		UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
+				"User " + username + " not found in lewensportal DB!");
 		try {
-			lssUserOpt = lssUserService.findUserByName(username);
+			lssUsersOpt = lssUserService.findUserByName(username);
 		} catch (Exception e) {
-			UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-					"User " + username + " not found in lewensportal DB!");
 			throw badCredentials(userNameNotFoundException);
 		}
-		if (lssUserOpt.isEmpty()) {
-			UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-					"User " + username + " not found in lewensportal DB!");
+		if (lssUsersOpt.isEmpty()) {
 			throw badCredentials(userNameNotFoundException);
 		}
+		
+		userNameNotFoundException = new UsernameNotFoundException(
+				"User " + username + " not correct password!");
 		try {
-			if (lssUserService.getLssHashPassword(password, lssUserOpt.get().getSalt())
-					.equals(lssUserOpt.get().getPassword())) {
-				//@formatter:off
-				UserSpring principal = UserSpring.builder()
-						.username(username)
-						.password(password).build();
-				//@formatter:on
-				return authoriseInLocalDB(new UsernamePasswordAuthenticationToken(principal, password));
-			} else {
-				UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-						"User " + username + " not correct password!");
-				throw badCredentials(userNameNotFoundException);
-
+			for (LssUser lssUser : lssUsersOpt.get()) {
+				if (lssUserService.getLssHashPassword(password, lssUser.getSalt()).equals(lssUser.getPassword())) {
+					//@formatter:off
+					UserSpring principal = UserSpring.builder()
+							.username(username)
+							.password(password).build();
+					//@formatter:on
+					return authoriseInLocalDB(new UsernamePasswordAuthenticationToken(principal, password));
+				}
 			}
 		} catch (NoSuchAlgorithmException e) {
-			UsernameNotFoundException userNameNotFoundException = new UsernameNotFoundException(
-					"NoSuchAlgorithmException", e);
+			userNameNotFoundException = new UsernameNotFoundException("NoSuchAlgorithmException", e);
 			throw badCredentials(userNameNotFoundException);
 		}
-
+		throw badCredentials(userNameNotFoundException);
 	}
 
 	@Transactional
 	public UsernamePasswordAuthenticationToken authoriseInLocalDB(UsernamePasswordAuthenticationToken authentication)
 			throws AuthenticationException {
 
-		String userName = userService.convertNameToLowCase(authentication.getName());
+		String userName = StringUtilsLSS.convertNameToLowCase(authentication.getName());
 		Optional<UserSpring> userOpt = userService.getUserByName(userName);
 		UserSpring user;
 		if (userOpt.isPresent()) {
@@ -99,6 +98,7 @@ public class LewensportalAuthenticationProvider implements AuthenticationProvide
 		} else {
 			user = userService.createUser(userName, "");
 		}
+		user = userService.fillAttributsFromLss(user);
 		return new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
 	}
 

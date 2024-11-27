@@ -1,12 +1,18 @@
 package de.lewens_markisen.timeReport;
 
+import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
+import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescription;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,33 +24,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class TimeReportRecord implements Comparable<TimeReportRecord> {
-
-	public TimeReportRecord(TimeRegisterEvent tr) {
-		this.name = tr.toStringReport();
-		this.eventDate = tr.getEventDate();
-		this.mo = tr.getMo();
-		this.tu = tr.getTu();
-		this.we = tr.getWe();
-		this.th = tr.getTh();
-		this.fr = tr.getFr();
-		this.sa = tr.getSa();
-		this.so = tr.getSo();
-		this.group = 0;
-	}
-
-	public TimeReportRecord(TimeReportRecord tr) {
-		this.name = tr.getName();
-		this.eventDate = tr.getEventDate();
-		this.mo = tr.getMo();
-		this.tu = tr.getTu();
-		this.we = tr.getWe();
-		this.th = tr.getTh();
-		this.fr = tr.getFr();
-		this.sa = tr.getSa();
-		this.so = tr.getSo();
-		this.group = tr.getGroup();
-	}
-
+	
+	private TimeRegisterEvent timeRegisterEvent;
+	private Optional<BcReportZeitNachweisDateDescription> bcReportZeitNachweisDateDescription;
 	private String name;
 	private LocalDate eventDate;
 	@Builder.Default
@@ -60,12 +42,77 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 	@Builder.Default
 	private Long sa = 0l;
 	@Builder.Default
-	private Long so = 0l;
+	private Long su = 0l;
 	@Builder.Default
 	private Integer group = 0;
+	@Builder.Default
+	private Long pause = 0l;
 
 	public Long getSum() {
-		return mo + tu + we + th + fr + sa + so;
+		return getMo() + getTu() + getWe() + getTh() + getFr() + getSa() + getSu();
+	}
+
+	public Long getMo() {
+		if (this.timeRegisterEvent==null) {
+			return this.mo;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.MONDAY);
+		}
+	}
+
+	public Long getTu() {
+		if (this.timeRegisterEvent==null) {
+			return this.tu;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.TUESDAY);
+		}
+	}
+
+	public Long getWe() {
+		if (this.timeRegisterEvent==null) {
+			return this.we;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.WEDNESDAY);
+		}
+	}
+
+	public Long getTh() {
+		if (this.timeRegisterEvent==null) {
+			return this.th;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.THURSDAY);
+		}
+	}
+
+	public Long getFr() {
+		if (this.timeRegisterEvent==null) {
+			return this.fr;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.FRIDAY);
+		}
+	}
+
+	public Long getSa() {
+		if (this.timeRegisterEvent==null) {
+			return this.sa;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.SATURDAY);
+		}
+	}
+
+	public Long getSu() {
+		if (this.timeRegisterEvent==null) {
+			return this.su;
+		}
+		else {
+			return timeOfWorkInDayOfWeek(DayOfWeek.SUNDAY);
+		}
 	}
 
 	public String getMoDecimal() {
@@ -92,22 +139,50 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 		return TimeUtils.secondsToHourMinutes(getSa(), true);
 	}
 
-	public String getSoDecimal() {
-		return TimeUtils.secondsToHourMinutes(getSo(), true);
+	public String getSuDecimal() {
+		return TimeUtils.secondsToHourMinutes(getSu(), true);
 	}
 
 	public String getSumDecimal() {
 		return TimeUtils.secondsToHourMinutes(getSum(), true);
 	}
 
-	public void addRecord(TimeRegisterEvent tr) {
-		setMo(this.getMo() + tr.getMo());
-		setTu(this.getTu() + tr.getTu());
-		setWe(this.getWe() + tr.getWe());
-		setTh(this.getTh() + tr.getTh());
-		setFr(this.getFr() + tr.getFr());
-		setSo(this.getSo() + tr.getSo());
-		setSa(this.getSa() + tr.getSa());
+	private Long timeOfWorkInDayOfWeek(DayOfWeek dayOfWeek) {
+		if (this.eventDate.getDayOfWeek().equals(dayOfWeek)) {
+			return timeOfWorkInDay();
+		} else {
+			return 0l;
+		}
+	}
+
+	public Long timeOfWorkInDay() {
+		if (this.timeRegisterEvent==null) {
+			return 0l;
+		}
+		//@formatter:off
+		if (this.timeRegisterEvent.getStartTime() != null 
+				&& !this.timeRegisterEvent.getStartTime().equals("") 
+				&& this.timeRegisterEvent.getEndTime() != null 
+				&& !this.timeRegisterEvent.getEndTime().equals("")) {
+			return timeOfWork(this.timeRegisterEvent.getStartTime(), this.timeRegisterEvent.getEndTime());
+		} else {
+			return 0l;
+		}
+		//@formatter:on
+	}
+
+	public Long timeOfWork(String startTime, String endTime) {
+		long seconds = 0l;
+		//@formatter:off
+		if (this.eventDate != null) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H[H]:mm");
+			LocalDateTime startDateTime = LocalDateTime.parse(this.eventDate + " " + startTime, formatter);
+			LocalDateTime endDateTime = LocalDateTime.parse(this.eventDate + " " + endTime, formatter);
+			Duration duration = Duration.between(startDateTime, endDateTime);
+			seconds = duration.getSeconds() - pauseLang();
+		}
+		//@formatter:on
+		return seconds;
 	}
 
 	public String getYearWeek() {
@@ -125,28 +200,35 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 		//@formatter:on
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(fr, mo, name, sa, so, th, tu, we);
+	public String getName() {
+		if (this.timeRegisterEvent==null) {
+			return this.name;
+		}
+		return "" + this.timeRegisterEvent.getEventDate() 
+				+ "  /" + this.timeRegisterEvent.getStartTime() + " - " + this.timeRegisterEvent.getEndTime() + "/ - "
+				+ TimeUtils.secondsToHourMinutes(pauseLang(), false) 
+				+ " = " 
+				+ TimeUtils.secondsToHourMinutes(timeOfWorkInDay(), false);
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TimeReportRecord other = (TimeReportRecord) obj;
-		return Objects.equals(fr, other.fr) && Objects.equals(mo, other.mo) && Objects.equals(name, other.name)
-				&& Objects.equals(sa, other.sa) && Objects.equals(so, other.so) && Objects.equals(th, other.th)
-				&& Objects.equals(tu, other.tu) && Objects.equals(we, other.we);
+	
+	public String getSoll() {
+		if (this.bcReportZeitNachweisDateDescription==null) {
+			return "";
+		}
+		if (this.bcReportZeitNachweisDateDescription.isEmpty()) {
+			return "";
+		}
+		return this.bcReportZeitNachweisDateDescription.get().getGtisSoll();
 	}
-
-	@Override
-	public String toString() {
-		return "" + name;
+	
+	private long pauseLang() {
+		if (this.bcReportZeitNachweisDateDescription==null) {
+			return 0;
+		}
+		if (this.bcReportZeitNachweisDateDescription.isEmpty()) {
+			return 0;
+		}
+		return (long) this.pause * TimeUtils.SECONDS_PER_MINUTE;
 	}
 
 	@Override
@@ -173,6 +255,30 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 		this.th += w.getTh();
 		this.fr += w.getFr();
 		this.sa += w.getSa();
-		this.so += w.getSo();
+		this.su += w.getSu();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(fr, mo, name, sa, su, th, tu, we);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TimeReportRecord other = (TimeReportRecord) obj;
+		return Objects.equals(fr, other.fr) && Objects.equals(mo, other.mo) && Objects.equals(name, other.name)
+				&& Objects.equals(sa, other.sa) && Objects.equals(su, other.su) && Objects.equals(th, other.th)
+				&& Objects.equals(tu, other.tu) && Objects.equals(we, other.we);
+	}
+
+	@Override
+	public String toString() {
+		return "" + name;
 	}
 }

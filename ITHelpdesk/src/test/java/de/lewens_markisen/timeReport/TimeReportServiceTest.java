@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
-import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.timeReport.TimeReport;
 import de.lewens_markisen.timeReport.TimeReportService;
@@ -29,14 +29,12 @@ class TimeReportServiceTest{
 
 	@Test
 	void createReport_whenCreate_then() {
-		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<TimeReport> timeReport = timeReportService.createReport(BC_CODE);
 		assertThat(timeReport).isNotEmpty();
 	}
 
 	@Test
 	void getWeeks_whenQuery_thenCompound() {
-		Person person = Person.builder().name("user").bcCode(BC_CODE).build();
 		Optional<TimeReport> timeReport = timeReportService.createReport(BC_CODE);
 		assertThat(timeReport).isNotEmpty();
 	}

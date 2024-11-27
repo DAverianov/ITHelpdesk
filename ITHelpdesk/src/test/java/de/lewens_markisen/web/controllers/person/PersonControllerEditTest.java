@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
-import de.lewens_markisen.domain.localDb.Person;
+import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.web.controllers.BaseIT;
 
 @SpringBootTest
@@ -44,7 +44,7 @@ class PersonControllerEditTest extends BaseIT {
 	
 	@WithUserDetails("userPersonDepartment")
 	@Test
-	void eeditPersonUserAuthUserPersonDepartment() throws Exception {
+	void editPersonUserAuthUserPersonDepartment() throws Exception {
 		mockMvc.perform(get(API_EDIT)).andExpect(status().isForbidden());
 		mockMvc.perform(post(API_UPDATE)).andExpect(status().is4xxClientError());
 	}

@@ -3,7 +3,7 @@ package de.lewens_markisen.log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import de.lewens_markisen.domain.localDb.Log;
+import de.lewens_markisen.domain.local_db.Log;
 
 public interface LogService {
 	public void save(Log log);

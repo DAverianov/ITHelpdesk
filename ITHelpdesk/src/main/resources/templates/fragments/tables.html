@@ -1,0 +1,24 @@
+<html>
+<body>
+  <dev th:fragment="table(theadFields, tableData, columnNames)" class="table table-primary">
+   	<table class="table table-primary">
+    <thead>
+        <tr th:replace="${theadFields}">
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="row, i: ${tableData}">
+        	<td th:each="col: ${columnNames}"> 
+ 			<input type="text" 
+ 				th:id="${__'line_'+${col}+'_' + ${row.id}__}"  
+ 				th:value="${row['__${col}__']}" 
+ 				th:placeholder="${col}" 
+ 				class="form-control" /> 
+        	
+        	</td>
+         </tr>
+    </tbody>
+    </table>
+  </dev>
+</body>
+</html>

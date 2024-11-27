@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'timeReport')}">
+
+<body>
+
+	<p align="left" th:text="${timeReport.headerService}">
+		<small>created by>"</small>
+	</p>
+	<p align="left">
+		<small> Im Bericht können Sie nur die Ankunfts- und
+			Abreisezeit überprüfen. Die Pausenzeit wird im Testmodus für eine
+			40-Stunden-Woche angegeben</small>
+	</p>
+
+	<h2 th:text="${timeReport.header}">Time Report>"</h2>
+
+	<form method="post" action="#" th:action="@{/timeReport/me}" th:object="${timeReport}">
+		<input type="hidden" name="person" th:field="*{person}"/>
+		<input type="hidden" name="period" th:field="*{period}"/>
+		<input type="hidden" name="period.start" th:field="*{period.start}"/>
+		<input type="hidden" name="period.end" th:field="*{period.end}"/>
+		<div>
+			<button type="submit" name="action" value="period_minus" class="btn btn-secondary">&lt;</button>
+			<label> Period: <input type="text" name="periodString" th:value="${timeReport.period.toString}"></label>
+			<button type="submit" name="action" value="period_plus" class="btn btn-secondary">&gt;</button>
+			<button type="submit" name="action" value="update" class="btn btn-secondary">Update</button>
+		</div>
+	</form>
+	</br>
+	<dev th:if="${timeReport.isBcReport}">
+		<a>Aus dem Zeitnachweis-Mitarbeiter-Bericht</a>
+		<table id="saldo" class="table table-info">
+			<thead>
+				<tr>
+					<th style="width: 100px;">Monat</th>
+					<th style="width: 100px;">Kalender</th>
+					<th style="width: 200px;">Saldo der Zeit</th>
+					<th style="width: 100px;">..des Urlaubs</th>
+					<th style="width: 100px;">Soll St.</th>
+				</tr>
+			</thead>
+			<tr th:each="report : ${timeReport.bcReports}">
+				<td style="width: 100px;" align="left" th:text="${report.month}" />
+				<td style="width: 100px;" align="left" th:text="${report.CalendarArt}" />
+				<td align="center" 
+					 th:style="${report.timeSaldoSign > 0 ? 'color: red;' : _}" 
+					 th:text="${report.timeSaldo}" />
+				<td style="width: 100px;" align="center" th:text="${report.urlaubSaldo}" />
+				<td style="width: 100px;" align="right" th:text="${report.sollStunde}" />
+			</tr>
+			</tbody>
+		</table>
+	</dev>
+
+	<table id="timeReport" class="table table-striped border-2">
+		<thead>
+			<tr>
+				<th style="width: 400px;">der Monat / die Woche / das Ereignis</th>
+				<th style="width: 50px; color: gray;">Soll</th>
+				<th style="width: 100px;">Mo</th>
+				<th style="width: 100px;">Di</th>
+				<th style="width: 100px;">Mi</th>
+				<th style="width: 100px;">Dn</th>
+				<th style="width: 100px;">Fr</th>
+				<th style="width: 100px; color: coral;">Sa</th>
+				<th style="width: 100px; color: coral;">So</th>
+				<th style="width: 100px;">Insgesamt</th>
+			</tr>
+		</thead>
+		<tr th:each="record : ${timeReport.recordsWithGroups}" class="collapsible" th:style="${record.group}>0? 'font-weight: bold;'">
+			<td style="width: 400px;" th:text="${record.name}" />
+			<td align="right" th:text="${record.soll}" style="color: gray;"/>
+			<td align="right" th:text="${record.moDecimal}" />
+			<td align="right" th:text="${record.tuDecimal}" />
+			<td align="right" th:text="${record.weDecimal}" />
+			<td align="right" th:text="${record.thDecimal}" />
+			<td align="right" th:text="${record.frDecimal}" />
+			<td align="right" th:text="${record.saDecimal}" />
+			<td align="right" th:text="${record.suDecimal}" />
+			<td align="right" th:text="${record.sumDecimal}" />
+		</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

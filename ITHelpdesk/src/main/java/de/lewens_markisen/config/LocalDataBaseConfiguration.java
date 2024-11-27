@@ -48,7 +48,7 @@ public class LocalDataBaseConfiguration {
 
 		//@formatter:off
 		LocalContainerEntityManagerFactoryBean efb = builder.dataSource(dataSource)
-				.packages("de.lewens_markisen.domain.localDb")
+				.packages("de.lewens_markisen.domain.local_db")
 				.persistenceUnit("local")
 				.build();
 		//@formatter:on

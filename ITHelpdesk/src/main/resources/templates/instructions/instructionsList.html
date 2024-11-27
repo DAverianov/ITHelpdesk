@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'instructions')}">
+
+<body>
+
+<h2>Anweisungen</h2>
+<a sec:authorize="hasAnyAuthority('instruction.create')" data-th-href="@{/instructions/create}" class="btn btn-secondary">+ Neu</a>
+<table id="instructions" class="table table-striped">
+  <thead>
+	  <tr>
+	    <th>No</th>
+	    <th>Name</th>
+	    <th>Description</th>
+	  </tr>
+  </thead>
+  <tbody>
+	  <tr th:each="inst,stat : ${instructions}">
+	    <td th:text="(${currentPage}-1)*50 + ${stat.count}"></td>
+	    <td>
+	        <a th:href="@{/instruction/{id}/edit(id=${inst.id})}" th:text="${inst.name}"/></a>
+	    </td>
+	    <td>
+	        <a th:text="${inst.description}"/></a>
+	    </td>
+	  </tr>
+  </tbody>
+</table>
+ 
+<div th:replace="fragments/pagination :: pagination ('instructions')"></div>
+
+</body>
+</html>

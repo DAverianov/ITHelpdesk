@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org"
-	th:replace="~{fragments/layout :: layout (~{::body},'users')}">
+	th:replace="~{fragments/layout :: layout (~{::body},'user')}">
 <head>
 <meta charset="UTF-8">
 <title>Person</title>
@@ -10,35 +10,39 @@
 	crossorigin="anonymous">
 </head>
 <body>
-	<h1>Edit Person</h1>
+	<h1>Edit User</h1>
 
-	<form action="#" th:action="@{/users/update}" th:object="${user}" method="post">
+	<form action="#" th:action="@{/users/update}" th:object="${userRolesChecked}" method="post">
 	
-		<input type="hidden" th:field="*{id}" />
+		<input type="hidden" th:field="*{user.id}" />
+		<input type="hidden" th:field="*{rolesChecked}" />
 
 		<table>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Username', 'user.username', 'text')}" required /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Firstname', 'user.firstname', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Lastname', 'user.lastname', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('BC Code', 'user.bcCode', 'text')}" disabled /></td></tr>
+			<tr><td><input th:replace="~{fragments/inputField :: input ('Email', 'user.email', 'text')}" disabled /></td></tr>
 			<tr>
-				<td><label class="col-auto col-form-label control-label">Id</label></td>
-				<td><input type="text" th:field="*{id}" class="form-control" placeholder="id" readonly></td>
-			</tr>
-			<tr>
-				<td><label class="col-auto col-form-label control-label">name <span class=sub>*</span>
-				</label></td>
-				<td><input type="text" th:field="*{username}" class="form-control" placeholder="Username" required></td>
+				<td><label class="col-auto col-form-label control-label">Person <span class=sub></span></label></td>
+				<td><input type="text" th:field="*{user.person.name}" class="form-control" placeholder="person" disabled></td>
 			</tr>
 		</table>
 
 		<table class="table table-striped">
 			<thead>
 				<tr>
+					<th>No</th>
 					<th>Role</th>
-					<th>Available</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="role : ${user.roles}">
-					<td th:text="${role.name}"></td>
-					<td></td>
+				<tr th:each="roleChecked,stat : *{rolesChecked}"></td>
+	    			<td th:text="${stat.count}"></td>
+					<td>
+						<input type="checkbox" th:checked="${roleChecked.active}" th:value="${roleChecked.role.id}" class="form-check-input">
+						<label th:text="${roleChecked.role.name}"></label>
+					</td>
 				</tr>
 			</tbody>
 		</table>

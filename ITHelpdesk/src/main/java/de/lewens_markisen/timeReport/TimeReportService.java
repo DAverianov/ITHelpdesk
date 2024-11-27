@@ -6,14 +6,18 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.localDb.Log;
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.TimeRegisterEvent;
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.Log;
+import de.lewens_markisen.domain.local_db.person.Person;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
+import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
+import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
+import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.security.LssUserService;
-import de.lewens_markisen.security.UserSpringServiceImpl;
+import de.lewens_markisen.security.UserSpringService;
+import de.lewens_markisen.timeRegisterEvent.DayArtService;
+import de.lewens_markisen.timeRegisterEvent.PersonInBcReportService;
 import de.lewens_markisen.timeRegisterEvent.TimeRegisterEventService;
 import de.lewens_markisen.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +31,10 @@ public class TimeReportService {
 	private final TimeRegisterEventService timeRegisterEventService;
 	private final PersonService personService;
 	private final LogService logService;
-	private final UserSpringServiceImpl userService;
+	private final UserSpringService userService;
 	private final LssUserService lssUserService;
+	private final PersonInBcReportService personInBcReportService;
+	private final DayArtService dayArtService;
 
 	public Optional<List<TimeRegisterEvent>> findPersonEvents(String bcCode) {
 		PeriodReport period = PeriodReport.thisMonat();
@@ -43,57 +49,95 @@ public class TimeReportService {
 
 	public Optional<TimeReport> createReport(String bcCode) {
 		//@formatter:off
-		log.info("Create TimeReport for " + bcCode);
+		PeriodReport period = periodCurrentWithLastMonats();
+		Optional<Person> personOpt = personService.findByBcCode(bcCode);
+		if (personOpt.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return createReport(personOpt.get(), period);
+		}
+		//@formatter:on
+	}
+	public Optional<TimeReport> createReport(Person person, PeriodReport period) {
+		//@formatter:off
+		logRecord(person, period);
+		timeRegisterEventService.readEventsProPerson(person, period);
+		
+		TimeReport timeReport = TimeReport.builder()
+			.person(person)
+			.period(period)
+			.header(createHeader(person, period))
+			.timeRecords(timeRegisterEventService.findAllByPersonAndMonth(person, period.getStart()))
+			.personInBcReportLastMonat(personInBcReportService.findByPersonAndMonth(person, period.getStart().minusMonths(1)))
+			.personInBcReport(personInBcReportService.findByPersonAndMonth(person, period.getStart()))
+			.build();
+		timeReport.createReportRecords();
+		calculatePause(timeReport);
+
+		timeReport.createGroup(1
+			, (tr) -> tr.getYearWeek()
+			, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startWeekInMonat(ld))); 
+		timeReport.createGroup(2
+			, (tr) -> tr.getYearMonat()
+			, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
+		return Optional.of(timeReport);
+		//@formatter:on
+	}
+
+	private void calculatePause(TimeReport timeReport) {
+		for (TimeReportRecord rec: timeReport.getRecordsWithGroups()) {
+			rec.setBcReportZeitNachweisDateDescription(timeReport.getDateTableRecord(rec.getEventDate()));
+			if (rec.getBcReportZeitNachweisDateDescription().isPresent()) {
+				rec.setPause(getPause(rec.getBcReportZeitNachweisDateDescription().get().getGcodTAZ()));
+			}
+		}
+	}
+
+	private Long getPause(String tagCode) {
+		if (tagCode.isBlank()) {
+			return 0l;
+		}
+		Optional<DayArt> pauseOpt = dayArtService.findByName(tagCode);
+		if (pauseOpt.isEmpty()) {
+			dayArtService.save(DayArt.builder().name(tagCode).build());
+			return 0l;
+		}
+		return (long) pauseOpt.get().getMinuten();
+	}
+
+	private void logRecord(Person person, PeriodReport period) {
+		log.info("Create TimeReport for " + person.getName());
 		Optional<UserSpring> userOpt = userService.getCurrentUser();
 		if (userOpt.isPresent()) {
 			logService.save(Log.builder()
 					.user(userOpt.get())
 					.event("TimeReport")
-					.description("time report ")
+					.description("time report for "+person.getName()+" "+period.toString())
 					.build());
 		}
-
-		PeriodReport period = PeriodReport.builder()
-				.start(getStartDateReport())
-				.end(LocalDate.now())
-				.build();
-		Optional<Person> personOpt = personService.findByBcCode(bcCode);
-		if (personOpt.isEmpty()) {
-			return Optional.empty();
-		} else {
-			timeRegisterEventService.readEventsProPerson(personOpt.get(), period);
-			
-			TimeReport timeReport = TimeReport.builder()
-					.person(personOpt.get())
-					.period(period)
-					.header(createHeader(personOpt.get(), period))
-					.timeRecords(timeRegisterEventService.findAllByPerson(personOpt.get(), period).get())
-					.build();
-			timeReport.createReportRecords();
-			timeReport.createGroup(1
-					, (tr) -> tr.getYearWeek()
-					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startWeekInMonat(ld))); 
-//							ld.with(DayOfWeek.MONDAY)));
-			timeReport.createGroup(2
-					, (tr) -> tr.getYearMonat()
-					, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
-			return Optional.of(timeReport);
-		}
-		//@formatter:on
-
 	}
-	
+
+	private PeriodReport periodCurrentWithLastMonats() {
+		//@formatter:off
+		LocalDate start = getStartDateReport();
+		return PeriodReport.builder()
+				.start(start)
+				.end(DateUtils.endMonat(start))
+				.build();
+		//@formatter:on
+	}
+
 	private String createHeader(Person person, PeriodReport period) {
 		//@formatter:off
 		return "Benutzer: "+userService.getAuthenticationName()
 			+" (" + person.getName() + " "+person.getBcCode()+") " 
-			+ period.getPeriod();
+			+ period.toString();
 		//@formatter:on
 	}
 
 	private LocalDate getStartDateReport() {
 		LocalDate now = LocalDate.now();
-		if (now.getDayOfMonth() > 10) {
+		if (now.getDayOfMonth() > 5) {
 			return now.withDayOfMonth(1);
 		} else {
 			return now.minusMonths(1).withDayOfMonth(1);

@@ -5,6 +5,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Chars;
 
 public class TimeUtils {
@@ -35,12 +36,25 @@ public class TimeUtils {
 		return "" + eventDate.getYear() + " " + eventDate.getMonthValue();
 	}
 
-	public static Integer convertTimeToInt(String startTime) {
+	public static Integer convertTimeToInt(String stringTime) {
+		String source = StringUtils.trim(stringTime);
 		char delimiter = ':';
-		String hour = (startTime.indexOf(delimiter) != -1) ? startTime.substring(0, startTime.indexOf(delimiter)) : "0";
-		String minuts = (startTime.indexOf(delimiter) != -1) ? startTime.substring(startTime.indexOf(delimiter)+1, startTime.length()) : "0";
+		String hour = (source.indexOf(delimiter) != -1) ? source.substring(0, source.indexOf(delimiter)) : "0";
+		String minuts = (source.indexOf(delimiter) != -1) ? source.substring(source.indexOf(delimiter)+1, source.length()) : "0";
 		
 		return Integer.valueOf(hour)*100 + Integer.valueOf(minuts);
+	}
+	public static Integer convertTimeToMinuten(String stringTime) {
+		String source = StringUtils.trim(stringTime);
+		char delimiter = ':';
+		String hour = (source.indexOf(delimiter) != -1) ? source.substring(0, source.indexOf(delimiter)) : "0";
+		String minuts = (source.indexOf(delimiter) != -1) ? source.substring(source.indexOf(delimiter)+1, source.length()) : "0";
+		
+		return Integer.valueOf(hour)*60 + Integer.valueOf(minuts);
+	}
+
+	public static String getHoures(String timeStr) {
+		return StringUtils.deleteWhitespace(timeStr.substring(0, timeStr.indexOf(":")));
 	}
 
 }

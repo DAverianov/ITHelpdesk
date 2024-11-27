@@ -1,8 +1,6 @@
 package de.lewens_markisen.timeReport;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import de.lewens_markisen.utils.TimeUtils;
@@ -46,12 +44,12 @@ public class TimeReportGroupRecords {
 		return elements.stream().mapToLong(TimeReportRecord::getSa).sum();
 	}
 	
-	public Long getSo() {
-		return elements.stream().mapToLong(TimeReportRecord::getSo).sum();
+	public Long getSu() {
+		return elements.stream().mapToLong(TimeReportRecord::getSu).sum();
 	}
 	
 	public Long getSum() {
-		return getMo() + getTu() + getWe() + getTh() + getFr() + getSa() + getSo();
+		return getMo() + getTu() + getWe() + getTh() + getFr() + getSa() + getSu();
 	}
 
 	public String getMoDecimal() {
@@ -72,8 +70,8 @@ public class TimeReportGroupRecords {
 	public String getSaDecimal() {
 		return TimeUtils.secondsToHourMinutes(getSa(), true);
 	}
-	public String getSoDecimal() {
-		return TimeUtils.secondsToHourMinutes(getSo(), true);
+	public String getSuDecimal() {
+		return TimeUtils.secondsToHourMinutes(getSu(), true);
 	}
 	public String getSumDecimal() {
 		return TimeUtils.secondsToHourMinutes(getSum(), true);

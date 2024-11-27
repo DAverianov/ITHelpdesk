@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.localDb.security.Authority;
+import de.lewens_markisen.domain.local_db.security.Authority;
 import de.lewens_markisen.repository.local.security.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
 

@@ -22,8 +22,9 @@ class HomeControllerLayoutTest extends BaseIT {
 	    String content = result.getResponse().getContentAsString();
 	    assertNotNull(content);
 	    assertFalse(content.contains("Home"));
+	    assertFalse(content.contains("Anweisungen"));
 	    assertFalse(content.contains("Persons"));
-	    assertFalse(content.contains("Time Report"));
+	    assertFalse(content.contains("Zeitbericht"));
 	    assertFalse(content.contains("Accesses"));
 	    assertFalse(content.contains("Users"));
 	    assertFalse(content.contains("Logs"));
@@ -37,8 +38,9 @@ class HomeControllerLayoutTest extends BaseIT {
 	    String content = result.getResponse().getContentAsString();
 	    assertNotNull(content);
 	    assertTrue(content.contains("Home"));
+	    assertTrue(content.contains("Anweisungen"));
 	    assertTrue(content.contains("Persons"));
-	    assertTrue(content.contains("Time Report"));
+	    assertTrue(content.contains("Zeitbericht"));
 	    assertTrue(content.contains("Accesses"));
 	    assertTrue(content.contains("Users"));
 	    assertTrue(content.contains("Logs"));
@@ -52,8 +54,9 @@ class HomeControllerLayoutTest extends BaseIT {
 	    String content = result.getResponse().getContentAsString();
 	    assertNotNull(content);
 	    assertTrue(content.contains("Home"));
+	    assertFalse(content.contains("Anweisungen"));
 	    assertTrue(content.contains("Persons"));
-	    assertTrue(content.contains("Time Report"));
+	    assertTrue(content.contains("Zeitbericht"));
 	    assertFalse(content.contains("Accesses"));
 	    assertFalse(content.contains("Users"));
 	    assertFalse(content.contains("Logs"));
@@ -67,8 +70,9 @@ class HomeControllerLayoutTest extends BaseIT {
 	    String content = result.getResponse().getContentAsString();
 	    assertNotNull(content);
 	    assertTrue(content.contains("Home"));
+	    assertFalse(content.contains("Anweisungen"));
 	    assertFalse(content.contains("Persons"));
-	    assertTrue(content.contains("Time Report"));
+	    assertTrue(content.contains("Zeitbericht"));
 	    assertFalse(content.contains("Accesses"));
 	    assertFalse(content.contains("Users"));
 	    assertFalse(content.contains("Logs"));

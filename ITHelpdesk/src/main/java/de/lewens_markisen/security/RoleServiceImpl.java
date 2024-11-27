@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import de.lewens_markisen.domain.localDb.security.Role;
+import de.lewens_markisen.domain.local_db.security.Role;
 import de.lewens_markisen.repository.local.security.RoleRepository;
 import lombok.AllArgsConstructor;
 
@@ -33,6 +33,11 @@ public class RoleServiceImpl implements RoleService{
 	@Override
 	public Optional<Role> findByName(String roleName) {
 		return roleRepository.findByName(roleName);
+	}
+
+	@Override
+	public List<Role> findAll() {
+		return roleRepository.findAll();
 	}
 
 }

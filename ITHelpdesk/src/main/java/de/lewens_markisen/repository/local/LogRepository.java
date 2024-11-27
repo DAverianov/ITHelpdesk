@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import de.lewens_markisen.domain.localDb.Log;
+import de.lewens_markisen.domain.local_db.Log;
 
 public interface LogRepository extends JpaRepository<Log, Long>{
 

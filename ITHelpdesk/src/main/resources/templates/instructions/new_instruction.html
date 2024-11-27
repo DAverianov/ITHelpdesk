@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'instruction')}">
+<head>
+<meta charset="UTF-8">
+<title>Neu Anweisung &ndash;</title>
+</head>
+<body>
+	<a th:href="@{/instructions/list}">&larr; Zur Liste</a>
+	<h1>Neu Anweisung</h1>
+	<div th:if="${errors}">
+		<h2>Es wurde Fehler gemacht</h2>
+		<ul>
+			<li th:each="error: ${errors}" th:text="${error}"></li>
+		</ul>
+	</div>
+	<form method="post" th:action="@{/instructions/create}">
+		
+		<label> Name:<input type="text" name="name" th:value="${payload.name}"></label>
+		<br> 
+		<label> Description:<textarea name="description" th:text="${payload.description}"></textarea></label>
+		<br>
+		<form th:replace="fragments/tables :: table(theadFields=~{ :: .myFields}, tableData=${payload_lines}, columnNames=${payload.linesColumnNames})">
+	        <tr class="myFields">
+	           <th>No</th>
+	           <th>Description</th>
+	        </tr>
+		</form>
+
+		<button type="submit">Erstellen</button>
+	</form>
+</body>
+</html>

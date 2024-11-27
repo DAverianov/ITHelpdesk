@@ -14,4 +14,5 @@ public class LssUser {
 	private String algorithm;
 	private String salt;
 	private String password;
+	private String email;
 }

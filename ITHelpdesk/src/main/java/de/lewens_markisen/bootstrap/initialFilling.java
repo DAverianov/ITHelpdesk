@@ -23,18 +23,23 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
-import de.lewens_markisen.domain.localDb.Access;
-import de.lewens_markisen.domain.localDb.Person;
-import de.lewens_markisen.domain.localDb.security.Authority;
-import de.lewens_markisen.domain.localDb.security.Role;
-import de.lewens_markisen.domain.localDb.security.UserSpring;
+import de.lewens_markisen.domain.local_db.Access;
+import de.lewens_markisen.domain.local_db.Log;
+import de.lewens_markisen.domain.local_db.email.EmailLetter;
+import de.lewens_markisen.domain.local_db.instruction.Instruction;
+import de.lewens_markisen.domain.local_db.person.Person;
+import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
+import de.lewens_markisen.domain.local_db.security.Authority;
+import de.lewens_markisen.domain.local_db.security.Role;
+import de.lewens_markisen.domain.local_db.security.UserSpring;
+import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
 import de.lewens_markisen.repository.local.AccessRepository;
 import de.lewens_markisen.repository.local.PersonRepository;
-import de.lewens_markisen.repository.local.security.AuthorityRepository;
 import de.lewens_markisen.repository.local.security.UserSpringRepository;
 import de.lewens_markisen.security.AuthorityService;
 import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.security.UserSpringService;
+import de.lewens_markisen.timeRegisterEvent.DayArtService;
 import de.lewens_markisen.utils.FileOperations;
 
 @Slf4j
@@ -50,6 +55,7 @@ public class initialFilling implements CommandLineRunner {
 	private final AuthorityService authorityService;
 	private final UserSpringRepository userRepository;
 	private final UserSpringService userSpringService;
+	private final DayArtService pauseService;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
@@ -58,24 +64,63 @@ public class initialFilling implements CommandLineRunner {
 		loadAccesses();
 		loadPersonData();
 		assignAuthorityToAdmin();
+		loadPause();
+	}
+
+	private void loadPause() {
+		if (pauseService.count() > 0) {
+			return;
+		}
+		pauseService.save(DayArt.builder().name("GLZ 8,5").minuten(45).build());
+		pauseService.save(DayArt.builder().name("GLZ6").minuten(15).build());
 	}
 
 	private void assignAuthorityToAdmin() {
-		List<String> authNames = new ArrayList<String>();
-		authNames.add("log.read");
-		
 		List<Role> rols = new ArrayList<Role>();
 		rols.add(roleService.findByName(ROLE_ADMIN).get());
 		
+		List<String> authNames = collectAuthFromClasses(getClassesWithAuthority());
+		
 		assignListAuthoritiesToRole(authNames, rols);
+	}
+	
+	private List<Class> getClassesWithAuthority() {
+		List<Class> classes = new ArrayList<Class>();
+		classes.add(Access.class);
+		classes.add(Person.class);
+		classes.add(UserSpring.class);
+		classes.add(Log.class);
+		classes.add(Instruction.class);
+		classes.add(EmailLetter.class);
+		return classes;
+	}
+
+	private List<String> collectAuthFromClasses(List<Class> classes) {
+		List<String> authNames = new ArrayList<String>();
+		for (Class cl: classes) {
+	        @SuppressWarnings("deprecation")
+			Object o;
+			try {
+				o = cl.newInstance();
+				List<String> authList = ((AuthoritieNames) o).getAuthoritieNames();
+				for (String auth : authList) {
+					authNames.add(auth);
+				}
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		return authNames;
 	}
 
 	private void assignListAuthoritiesToRole(List<String> authNames, List<Role> rols) {
 		List<Authority> auths = new ArrayList<Authority>(); 
 		for (String authName: authNames) {
-			Optional<Authority> readLogOpt = authorityService.findByPermission(authName);
-			if (readLogOpt.isEmpty()) {
-				auths.add( authorityService.save(Authority.builder().permission("log.read").build()) );
+			Optional<Authority> readAuthOpt = authorityService.findByPermission(authName);
+			if (readAuthOpt.isEmpty()) {
+				auths.add( authorityService.save(Authority.builder().permission(authName).build()) );
 			}
 		}
 		if (auths.size()==0) {
