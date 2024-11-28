@@ -37,11 +37,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="roleChecked,stat : *{rolesChecked}"></td>
+				<tr th:each="roleChecked,stat : ${userRolesChecked.rolesChecked}"></td>
 	    			<td th:text="${stat.count}"></td>
 					<td>
-						<input type="checkbox" th:checked="${roleChecked.active}" th:value="${roleChecked.role.id}" class="form-check-input">
-						<label th:text="${roleChecked.role.name}"></label>
+						<input type="checkbox" th:checked="${roleChecked.active}" th:value="${roleChecked.id}" class="form-check-input">
+						<label th:text="${roleChecked.role}"></label>
 					</td>
 				</tr>
 			</tbody>

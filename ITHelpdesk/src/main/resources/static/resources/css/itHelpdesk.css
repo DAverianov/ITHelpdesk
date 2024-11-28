@@ -1,24 +1,10 @@
-/*
- * Copyright 2016 the original author or authors.
- *
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*!
-   * Bootstrap  v5.3.3 (https://getbootstrap.com/)
-   * Copyright 2011-2024 The Bootstrap Authors
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
-   */
 :root,
 [data-bs-theme="light"] {
-  --bs-blue: #0d6efd;
+  --lss-anthrazit: #2E2D2C;  /*LSS Anthrazit 46/45/44  */
+  --lss-gelb: #FFDE13;  /*LSS Gelb 255/222/19 */
+  --lss-bronze: #D8AF78;  /*LSS Bronze 216/175/123 */
+  --lss-grau: #E4E4D8;  /*LSS Grau 228/228/216 */
+	--bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
   --bs-purple: #6f42c1;
   --bs-pink: #d63384;
@@ -95,7 +81,8 @@
   --bs-body-bg: #fff;
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-emphasis-color: #000;
-  --bs-emphasis-color-rgb: 0, 0, 0; 
+ /* --bs-emphasis-color-rgb: 0, 0, 0; */ 
+  --bs-emphasis-color-rgb: var(--lss-anthrazit); 
   --bs-secondary-color: rgba(33, 37, 41, 0.75);
   --bs-secondary-color-rgb: 33, 37, 41;
   --bs-secondary-bg: #e9ecef;
@@ -140,7 +127,12 @@
   color-scheme: dark;
   --bs-body-color: #dee2e6;
   --bs-body-color-rgb: 222, 226, 230;
-  --bs-body-bg: #212529;
+  /*--bs-body-bg: #212529; */
+  --bs-body-bg: #2E2D2C;  /*LSS Anthrazit*/
+  --lss-anthrazit: #2E2D2C;  /*LSS Anthrazit 46/45/44  */
+  --lss-gelb: #FFDE13;  /*LSS Gelb 255/222/19 */
+  --lss-bronze: #D8AF78;  /*LSS Bronze 216/175/123 */
+  --lss-grau: #E4E4D8;  /*LSS Grau 228/228/216 */
   --bs-body-bg-rgb: 33, 37, 41;
   --bs-emphasis-color: #fff;
   --bs-emphasis-color-rgb: 255, 255, 255;
@@ -3169,7 +3161,8 @@ textarea.form-control-lg {
 .navbar {
   --bs-navbar-padding-x: 0;
   --bs-navbar-padding-y: 0.5rem;
-  --bs-navbar-color: rgba(var(--bs-emphasis-color-rgb), 0.65);
+ /* --bs-navbar-color: rgba(var(--bs-emphasis-color-rgb), 0.65); */
+  --bs-navbar-color: rgba(var(--lss-anthrazit), 0.65);
   --bs-navbar-hover-color: rgba(var(--bs-emphasis-color-rgb), 0.8);
   --bs-navbar-disabled-color: rgba(var(--bs-emphasis-color-rgb), 0.3);
   --bs-navbar-active-color: rgba(var(--bs-emphasis-color-rgb), 1);

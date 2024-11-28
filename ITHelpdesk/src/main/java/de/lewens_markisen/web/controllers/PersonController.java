@@ -83,7 +83,7 @@ public class PersonController {
 			findField = "";
 		}
 		System.out.println(".. findFieldActive = "+findFieldActive);
-		Page<Person> paginated = findPaginated(page, findField, findFieldActive);
+		Page<Person> paginated = findPaginated(page, findField.toLowerCase(), findFieldActive);
 		return addPaginationModel(page, paginated, model, findField, findFieldActive);
 	}
 

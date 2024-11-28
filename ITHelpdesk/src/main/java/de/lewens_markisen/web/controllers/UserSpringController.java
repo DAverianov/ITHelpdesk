@@ -3,7 +3,6 @@ package de.lewens_markisen.web.controllers;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 import de.lewens_markisen.domain.local_db.BaseEntity;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.domain.local_db.security.UserSpringList;
-import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.security.UserSpringService;
 import de.lewens_markisen.security.perms.UserDeletePermission;
 import de.lewens_markisen.security.perms.UserReadPermission;
 import de.lewens_markisen.security.perms.UserUpdatePermission;
 import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
+import de.lewens_markisen.web.controllers.playlocad.UserRolesCheckedService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,7 @@ public class UserSpringController {
 	public static Comparator<UserSpring> COMPARATOR_BY_NAME = Comparator.comparing(UserSpring::getUsername);
 
 	private final UserSpringService userSpringService;
-	private final RoleService roleService;
+	private final UserRolesCheckedService userRolesCheckedService;
 
 	@UserReadPermission
 	@GetMapping(path = "/list")
@@ -76,8 +75,7 @@ public class UserSpringController {
 		ModelAndView modelAndView = new ModelAndView("users/userEdit");
 		Optional<UserSpring> userOpt = userSpringService.findById(id);
 		if (userOpt.isPresent()) {
-//			modelAndView.addObject("user", userOpt.get());
-			modelAndView.addObject("userRolesChecked", createUserRoles(userOpt.get()));
+			modelAndView.addObject("userRolesChecked", userRolesCheckedService.createUserRolesChecked(userOpt.get()));
 		} else {
 			modelAndView.addObject("message", "User mit id wurde nicht gefunden!");
 			modelAndView.setViewName("error");
@@ -85,27 +83,16 @@ public class UserSpringController {
 		return modelAndView;
 	}
 
-	private UserRolesChecked createUserRoles(UserSpring user) {
-		UserRolesChecked userRoles = new UserRolesChecked();
-		userRoles.setUser(user);
-		userRoles.setAllRoles(roleService.findAll());
-		userRoles.checkRoles();
-		return userRoles;
-	}
-
 	@UserUpdatePermission
 	@PostMapping(value = "/update")
 	@Transactional
 	public String updateUser(
-			@Valid @ModelAttribute("userRolesChecked") UserRolesChecked userRolesChecked,
+			@ModelAttribute UserRolesChecked userRolesChecked,
 			@RequestParam(value = "action", required = true) String action) {
 		UserSpring user = userRolesChecked.getUser();
-		System.out.println(".. "+userRolesChecked);
-		System.out.println(".. "+user);
-		userRolesChecked.getRolesChecked().stream().forEach(rch -> System.out.println(" "+rch));
 		if (action.equals("update")) {
 			try {
-				Optional<UserSpring> userFetchedOpt = userSpringService.findByUsername(user.getUsername());
+				Optional<UserSpring> userFetchedOpt = userSpringService.findById(userRolesChecked.getUser().getId());
 				if(userFetchedOpt.isEmpty()) {
 					userSpringService.saveUser(user);
 				}

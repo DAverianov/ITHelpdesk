@@ -12,15 +12,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
 
 import de.lewens_markisen.domain.local_db.security.UserSpring;
-import de.lewens_markisen.security.RoleService;
 import de.lewens_markisen.web.controllers.BaseIT;
-import de.lewens_markisen.web.controllers.playlocad.UserRolesChecked;
+import de.lewens_markisen.web.controllers.playlocad.UserRolesCheckedService;
 
 @SpringBootTest
 class UserSpringControllerEditTest extends BaseIT {
 
 	@Autowired
-	private RoleService roleService;
+	private UserRolesCheckedService userRolesCheckedService;
 	
 	public static final String API_EDIT = "/users/edit/1";
 	public static final String API_UPDATE = "/users/update";
@@ -44,16 +43,8 @@ class UserSpringControllerEditTest extends BaseIT {
 	        .characterEncoding("UTF-8")
 	        .contentType(MediaType.APPLICATION_JSON)
 	        .flashAttr("user", user)
-			.flashAttr("userRolesChecked", createUserRoles(user)))
+			.flashAttr("userRolesChecked", userRolesCheckedService.createUserRolesChecked(user)))
 	        .andExpect(status().is3xxRedirection());
-	}
-
-	private UserRolesChecked createUserRoles(UserSpring user) {
-		UserRolesChecked userRoles = new UserRolesChecked();
-		userRoles.setUser(user);
-		userRoles.setAllRoles(roleService.findAll());
-		userRoles.checkRoles();
-		return userRoles;
 	}
 	
 	@WithUserDetails("userPersonDepartment")
