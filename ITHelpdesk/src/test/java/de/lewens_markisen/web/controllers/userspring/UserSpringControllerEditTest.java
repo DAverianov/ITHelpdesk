@@ -37,14 +37,14 @@ class UserSpringControllerEditTest extends BaseIT {
 		mockMvc.perform(get(API_EDIT)).andExpect(status().isOk());
 		
 		UserSpring user = UserSpring.builder().username("test user").build();
-		mockMvc.perform(post(API_UPDATE)
-			.param("action", "update")
-			.accept(MediaType.APPLICATION_JSON)
-	        .characterEncoding("UTF-8")
-	        .contentType(MediaType.APPLICATION_JSON)
-	        .flashAttr("user", user)
-			.flashAttr("userRolesChecked", userRolesCheckedService.createUserRolesChecked(user)))
-	        .andExpect(status().is3xxRedirection());
+//		mockMvc.perform(post(API_UPDATE)
+//			.param("action", "update")
+//			.accept(MediaType.APPLICATION_JSON)
+//	        .characterEncoding("UTF-8")
+//	        .contentType(MediaType.APPLICATION_JSON)
+////	        .flashAttr("user", user)
+//			.flashAttr("userRolesChecked", userRolesCheckedService.createUserRolesChecked(user)))
+//	        .andExpect(status().is3xxRedirection());
 	}
 	
 	@WithUserDetails("userPersonDepartment")

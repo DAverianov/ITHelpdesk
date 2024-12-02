@@ -40,7 +40,8 @@ public class TimeReportService {
 		PeriodReport period = PeriodReport.thisMonat();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isPresent()) {
-			return Optional.of(timeRegisterEventService.findAllByPerson(personOpt.get(), period).get());
+			return Optional.of(timeRegisterEventService
+					.findAllByPerson(personOpt.get(), period).get());
 
 		} else {
 			return Optional.empty();
@@ -48,7 +49,7 @@ public class TimeReportService {
 	}
 
 	public Optional<TimeReport> createReport(String bcCode) {
-		//@formatter:off
+		// @formatter:off
 		PeriodReport period = periodCurrentWithLastMonats();
 		Optional<Person> personOpt = personService.findByBcCode(bcCode);
 		if (personOpt.isEmpty()) {
@@ -56,39 +57,69 @@ public class TimeReportService {
 		} else {
 			return createReport(personOpt.get(), period);
 		}
-		//@formatter:on
+		// @formatter:on
 	}
-	public Optional<TimeReport> createReport(Person person, PeriodReport period) {
-		//@formatter:off
+	public Optional<TimeReport> createReport(Person person,
+			PeriodReport period) {
+		// @formatter:off
 		logRecord(person, period);
 		timeRegisterEventService.readEventsProPerson(person, period);
-		
-		TimeReport timeReport = TimeReport.builder()
-			.person(person)
-			.period(period)
-			.header(createHeader(person, period))
-			.timeRecords(timeRegisterEventService.findAllByPersonAndMonth(person, period.getStart()))
-			.personInBcReportLastMonat(personInBcReportService.findByPersonAndMonth(person, period.getStart().minusMonths(1)))
-			.personInBcReport(personInBcReportService.findByPersonAndMonth(person, period.getStart()))
-			.build();
+
+		TimeReport timeReport = TimeReport.builder().person(person)
+				.period(period).header(createHeader(person, period))
+				.timeRecords(timeRegisterEventService
+						.findAllByPersonAndMonth(person, period.getStart()))
+				.personInBcReportLastMonat(
+						personInBcReportService.findByPersonAndMonth(person,
+								period.getStart().minusMonths(1)))
+				.personInBcReport(personInBcReportService
+						.findByPersonAndMonth(person, period.getStart()))
+				.build();
 		timeReport.createReportRecords();
 		calculatePause(timeReport);
+		deleteEmptyDate(timeReport);
 
-		timeReport.createGroup(1
-			, (tr) -> tr.getYearWeek()
-			, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startWeekInMonat(ld))); 
-		timeReport.createGroup(2
-			, (tr) -> tr.getYearMonat()
-			, (tr) -> timeReport.startGroup(tr.getEventDate(), (ld) -> DateUtils.startMonat(ld))); 
+		timeReport.createGroup(1, (tr) -> tr.getYearWeek(),
+				(tr) -> timeReport.startGroup(tr.getEventDate(),
+						(ld) -> DateUtils.startWeekInMonat(ld)));
+		timeReport.createGroup(2, (tr) -> tr.getYearMonat(),
+				(tr) -> timeReport.startGroup(tr.getEventDate(),
+						(ld) -> DateUtils.startMonat(ld)));
 		return Optional.of(timeReport);
-		//@formatter:on
+		// @formatter:on
+	}
+
+	private void deleteEmptyDate(TimeReport timeReport) {
+		List<TimeReportRecord> records = timeReport.getRecordsWithGroups();
+		int i = 0;
+		while (i < records.size()) {
+			TimeReportRecord rec = records.get(i);
+			//@formatter:off
+			if (rec.getMo() == 0 
+					& rec.getTu() == 0 
+					& rec.getWe() == 0
+					& rec.getTh() == 0 
+					& rec.getFr() == 0 
+					& rec.getSa() == 0
+					& rec.getSu() == 0 
+					& (rec.getSoll().equals("") | rec.getSoll().trim().equals("0:00"))) {
+				records.remove(i);
+			} else {
+				i++;
+			}
+			//@formatter:on
+		}
+		timeReport.setRecordsWithGroups(records);
 	}
 
 	private void calculatePause(TimeReport timeReport) {
-		for (TimeReportRecord rec: timeReport.getRecordsWithGroups()) {
-			rec.setBcReportZeitNachweisDateDescription(timeReport.getDateTableRecord(rec.getEventDate()));
+		for (TimeReportRecord rec : timeReport.getRecordsWithGroups()) {
+			rec.setBcReportZeitNachweisDateDescription(
+					timeReport.getDateTableRecord(rec.getEventDate()));
 			if (rec.getBcReportZeitNachweisDateDescription().isPresent()) {
-				rec.setPause(getPause(rec.getBcReportZeitNachweisDateDescription().get().getGcodTAZ()));
+				rec.setPause(
+						getPause(rec.getBcReportZeitNachweisDateDescription()
+								.get().getGcodTAZ()));
 			}
 		}
 	}
@@ -109,30 +140,27 @@ public class TimeReportService {
 		log.info("Create TimeReport for " + person.getName());
 		Optional<UserSpring> userOpt = userService.getCurrentUser();
 		if (userOpt.isPresent()) {
-			logService.save(Log.builder()
-					.user(userOpt.get())
-					.event("TimeReport")
-					.description("time report for "+person.getName()+" "+period.toString())
+			logService.save(Log.builder().user(userOpt.get())
+					.event("TimeReport").description("time report for "
+							+ person.getName() + " " + period.toString())
 					.build());
 		}
 	}
 
 	private PeriodReport periodCurrentWithLastMonats() {
-		//@formatter:off
+		// @formatter:off
 		LocalDate start = getStartDateReport();
-		return PeriodReport.builder()
-				.start(start)
-				.end(DateUtils.endMonat(start))
-				.build();
-		//@formatter:on
+		return PeriodReport.builder().start(start)
+				.end(DateUtils.endMonat(start)).build();
+		// @formatter:on
 	}
 
 	private String createHeader(Person person, PeriodReport period) {
-		//@formatter:off
-		return "Benutzer: "+userService.getAuthenticationName()
-			+" (" + person.getName() + " "+person.getBcCode()+") " 
-			+ period.toString();
-		//@formatter:on
+		// @formatter:off
+		return "Benutzer: " + userService.getAuthenticationName() + " ("
+				+ person.getName() + " " + person.getBcCode() + ") "
+				+ period.toString();
+		// @formatter:on
 	}
 
 	private LocalDate getStartDateReport() {
@@ -145,7 +173,8 @@ public class TimeReportService {
 	}
 
 	public Optional<TimeReport> createReportCurrentUser() {
-		Optional<String> bcCodeOpt = getUserBcCode(userService.getAuthenticationName());
+		Optional<String> bcCodeOpt = getUserBcCode(
+				userService.getAuthenticationName());
 		if (bcCodeOpt.isPresent()) {
 			return createReport(bcCodeOpt.get());
 		} else {
@@ -157,7 +186,8 @@ public class TimeReportService {
 		if (!username.equals("")) {
 			return lssUserService.getBcCodeByUsername(username);
 		} else {
-			log.info("Create TimeReport for " + username+". There is no BC Code for the user");
+			log.info("Create TimeReport for " + username
+					+ ". There is no BC Code for the user");
 			return Optional.empty();
 		}
 	}

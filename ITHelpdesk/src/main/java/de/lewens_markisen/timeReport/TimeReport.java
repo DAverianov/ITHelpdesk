@@ -11,21 +11,17 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescription;
 import de.lewens_markisen.domain.local_db.person.Person;
-import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
 import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
-import de.lewens_markisen.timeRegisterEvent.DayArtService;
 import de.lewens_markisen.utils.DateUtils;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter

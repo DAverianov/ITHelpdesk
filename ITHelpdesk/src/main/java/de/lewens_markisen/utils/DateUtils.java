@@ -3,6 +3,8 @@ package de.lewens_markisen.utils;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DateUtils {
 	
@@ -37,6 +39,16 @@ public class DateUtils {
 	public static LocalDate readDateFromString(String reportMonth, String format) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 		return LocalDate.parse(reportMonth.substring(0, 8), formatter);
+	}
+
+	public static List<LocalDate> getDateInMonth(LocalDate dayOfMonth) {
+		List<LocalDate> dates = new ArrayList<LocalDate>();
+		int year = dayOfMonth.getYear();
+		int month = dayOfMonth.getMonthValue();
+		for (int i = 1; i<=dayOfMonth.lengthOfMonth(); i++) {
+			dates.add(LocalDate.of(year, month, i));
+		}
+		return dates;
 	}
 
 }

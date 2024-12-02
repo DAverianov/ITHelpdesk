@@ -26,7 +26,7 @@ public class TimeRegisterEvent extends BaseEntity {
 
 	@Builder
 	public TimeRegisterEvent(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, Person person,
-			LocalDate eventDate, String startTime, String endTime) {
+			LocalDate month, LocalDate eventDate, String startTime, String endTime) {
 		super(id, version, createdDate, lastModifiedDate);
 		this.person = person;
 		this.eventDate = eventDate;
