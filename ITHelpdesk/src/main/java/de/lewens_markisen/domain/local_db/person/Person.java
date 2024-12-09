@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.lewens_markisen.domain.local_db.BaseEntity;
 import de.lewens_markisen.domain.local_db.security.AuthoritieNames;
 import de.lewens_markisen.utils.DateUtils;
-import de.lewens_markisen.utils.StringUtilsLSS;
+import de.lewens_markisen.utils.StringUtilsLss;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -62,7 +62,7 @@ public class Person extends BaseEntity implements AuthoritieNames {
 	private LocalDate dateOfBirthday;
 
 	public static String convertToNameForSearch(String name) {
-		return StringUtilsLSS.replaceUmlauts(
+		return StringUtilsLss.replaceUmlauts(
 				StringUtils.lowerCase(StringUtils.deleteWhitespace(name)));
 	}
 

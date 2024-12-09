@@ -2,7 +2,7 @@ package de.lewens_markisen.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class StringUtilsLSS {
+public class StringUtilsLss {
 	public static String replaceUmlauts(String source) {
 		//@formatter:off
 		return source
@@ -16,6 +16,16 @@ public class StringUtilsLSS {
 	}
 
 	public static String convertNameToLowCase(String username) {
-		return StringUtilsLSS.replaceUmlauts(StringUtils.lowerCase(StringUtils.deleteWhitespace(username)));
+		return StringUtilsLss.replaceUmlauts(StringUtils.lowerCase(StringUtils.deleteWhitespace(username)));
+	}
+
+	public static String cut(String text, int length) {
+		int lengthIs = text.length();
+		if (lengthIs > length) {
+			return StringUtils.left(text, length)+"..";
+		}
+		else {
+			return text;
+		}
 	}
 }

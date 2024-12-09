@@ -190,7 +190,8 @@ public class TimeReport {
 		if (dateTableRecordOpt.isEmpty()) {
 			return "";
 		}
-		return dateTableRecordOpt.get().getSoll();
+		BcReportZeitNachweisDateDescription descr = dateTableRecordOpt.get();
+		return descr.getGtxtText();
 	}
 
 }

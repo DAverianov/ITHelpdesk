@@ -20,7 +20,7 @@ import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.security.LssUser;
 import de.lewens_markisen.security.LssUserService;
 import de.lewens_markisen.security.UserSpringService;
-import de.lewens_markisen.utils.StringUtilsLSS;
+import de.lewens_markisen.utils.StringUtilsLss;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +90,7 @@ public class LewensportalAuthenticationProvider implements AuthenticationProvide
 	public UsernamePasswordAuthenticationToken authoriseInLocalDB(UsernamePasswordAuthenticationToken authentication)
 			throws AuthenticationException {
 
-		String userName = StringUtilsLSS.convertNameToLowCase(authentication.getName());
+		String userName = StringUtilsLss.convertNameToLowCase(authentication.getName());
 		Optional<UserSpring> userOpt = userService.getUserByName(userName);
 		UserSpring user;
 		if (userOpt.isPresent()) {

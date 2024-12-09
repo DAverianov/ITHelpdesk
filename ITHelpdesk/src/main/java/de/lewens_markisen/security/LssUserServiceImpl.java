@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import de.lewens_markisen.utils.StringUtilsLSS;
+import de.lewens_markisen.utils.StringUtilsLss;
 
 @Component
 public class LssUserServiceImpl implements LssUserService {
@@ -55,6 +55,6 @@ public class LssUserServiceImpl implements LssUserService {
 	@Override
 	public Optional<Map<String, Object>> getProfileAttributsByLssUser(String username) {
 		// firstname, lastname, bcCode
-		return lewensportalRepository.getProfileAttributsByUserId(StringUtilsLSS.convertNameToLowCase(username));
+		return lewensportalRepository.getProfileAttributsByUserId(StringUtilsLss.convertNameToLowCase(username));
 	}
 }

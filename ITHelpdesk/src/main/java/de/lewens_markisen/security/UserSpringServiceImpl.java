@@ -19,7 +19,7 @@ import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.person.PersonService;
 import de.lewens_markisen.repository.local.security.RoleRepository;
 import de.lewens_markisen.repository.local.security.UserSpringRepository;
-import de.lewens_markisen.utils.StringUtilsLSS;
+import de.lewens_markisen.utils.StringUtilsLss;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -80,7 +80,7 @@ public class UserSpringServiceImpl implements UserSpringService {
 	public void rewriteUsernames() {
 		List<UserSpring> users = userSpringRepository.findAll();
 		users.stream().forEach(user -> {
-			user.setUsername(StringUtilsLSS.convertNameToLowCase( user.getUsername()));
+			user.setUsername(StringUtilsLss.convertNameToLowCase( user.getUsername()));
 			userSpringRepository.save(user);
 		});
 	}

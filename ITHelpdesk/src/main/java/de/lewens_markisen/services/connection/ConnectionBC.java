@@ -38,6 +38,7 @@ import de.lewens_markisen.access.AccessService;
 import de.lewens_markisen.domain.local_db.Access;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -47,9 +48,6 @@ public class ConnectionBC implements ConnectionWebService {
 	@Value("${businesscentral.timeout}")
 	private Integer timeout;
 
-	@Autowired
-	private AccessService accessService;
-
 	@Value("${businesscentral.ws.zeitpunktposten}")
 	private String wsZeitpunktposten;
 	
@@ -58,6 +56,9 @@ public class ConnectionBC implements ConnectionWebService {
 	
 	@Value("${businesscentral.bcAccessName}") 
 	private String bcAccessName;
+
+	@Autowired
+	private AccessService accessService;
 	
 	private Access bcAccess;
 

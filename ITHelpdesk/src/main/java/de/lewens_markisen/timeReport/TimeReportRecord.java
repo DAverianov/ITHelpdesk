@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import de.lewens_markisen.bc_reports.BcReportZeitNachweisDateDescription;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
+import de.lewens_markisen.utils.StringUtilsLss;
 import de.lewens_markisen.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class TimeReportRecord implements Comparable<TimeReportRecord> {
+
+	public final String PRESENCE_TEXT = "Anwesenheit";
+	public final int SOLL_FIELD_LENGTH = 20;
 	
 	private TimeRegisterEvent timeRegisterEvent;
 	private Optional<BcReportZeitNachweisDateDescription> bcReportZeitNachweisDateDescription;
@@ -218,7 +222,13 @@ public class TimeReportRecord implements Comparable<TimeReportRecord> {
 		if (this.bcReportZeitNachweisDateDescription.isEmpty()) {
 			return "";
 		}
-		return this.bcReportZeitNachweisDateDescription.get().getGtisSoll();
+		String descr = this.bcReportZeitNachweisDateDescription.get().getGtxtText();
+		if (descr.equals(PRESENCE_TEXT) || descr.isBlank()) {
+			return this.bcReportZeitNachweisDateDescription.get().getGtisSoll();
+		}
+		else {
+			return StringUtilsLss.cut(descr, SOLL_FIELD_LENGTH);
+		}
 	}
 	
 	private long pauseLang() {

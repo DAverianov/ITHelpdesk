@@ -10,7 +10,6 @@ import de.lewens_markisen.domain.local_db.Log;
 import de.lewens_markisen.domain.local_db.person.Person;
 import de.lewens_markisen.domain.local_db.security.UserSpring;
 import de.lewens_markisen.domain.local_db.time_register_event.DayArt;
-import de.lewens_markisen.domain.local_db.time_register_event.PersonInBcReport;
 import de.lewens_markisen.domain.local_db.time_register_event.TimeRegisterEvent;
 import de.lewens_markisen.log.LogService;
 import de.lewens_markisen.person.PersonService;
@@ -102,6 +101,7 @@ public class TimeReportService {
 					& rec.getFr() == 0 
 					& rec.getSa() == 0
 					& rec.getSu() == 0 
+					& rec.getPause() == 0
 					& (rec.getSoll().equals("") | rec.getSoll().trim().equals("0:00"))) {
 				records.remove(i);
 			} else {
