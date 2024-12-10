@@ -40,13 +40,10 @@ public class UserSpringServiceImpl implements UserSpringService {
 		if (userRoleOpt.isEmpty()) {
 			throw new UsernameNotFoundException("Role USER not found!");
 		}
-		//@formatter:off
-		UserSpring user = UserSpring.builder()
-				.username(username)
-				.password(password)
-				.role(userRoleOpt.get())
-				.build();
-		//@formatter:on
+		// @formatter:off
+		UserSpring user = UserSpring.builder().username(username)
+				.password(password).role(userRoleOpt.get()).build();
+		// @formatter:on
 		return userSpringRepository.save(user);
 	}
 
@@ -63,12 +60,13 @@ public class UserSpringServiceImpl implements UserSpringService {
 	}
 
 	public UserSpring saveUser(UserSpring user) {
-		UserSpring userWithThatName = userSpringRepository.findByUsername(user.getUsername()).get();
+		UserSpring userWithThatName = userSpringRepository
+				.findByUsername(user.getUsername()).get();
 		if (userWithThatName.getId() != user.getId()) {
 			return userSpringRepository.save(user);
-		}
-		else {
-			throw new BadRequestException( List.of("User with Name "+user.getUsername()+" is allready exist!"));
+		} else {
+			throw new BadRequestException(List.of("User with Name "
+					+ user.getUsername() + " is allready exist!"));
 		}
 	}
 
@@ -80,7 +78,8 @@ public class UserSpringServiceImpl implements UserSpringService {
 	public void rewriteUsernames() {
 		List<UserSpring> users = userSpringRepository.findAll();
 		users.stream().forEach(user -> {
-			user.setUsername(StringUtilsLss.convertNameToLowCase( user.getUsername()));
+			user.setUsername(
+					StringUtilsLss.convertNameToLowCase(user.getUsername()));
 			userSpringRepository.save(user);
 		});
 	}
@@ -90,8 +89,7 @@ public class UserSpringServiceImpl implements UserSpringService {
 		Optional<UserSpring> userOpt = findByUsername(user.getUsername());
 		if (userOpt.isPresent()) {
 			return userOpt.get();
-		}
-		else {
+		} else {
 			return saveUser(user);
 		}
 	}
@@ -101,15 +99,15 @@ public class UserSpringServiceImpl implements UserSpringService {
 		String authName = getAuthenticationName();
 		if (authName.equals("")) {
 			return Optional.empty();
-		}
-		else {
+		} else {
 			return findByUsername(authName);
 		}
 	}
 
 	@Override
 	public String getAuthenticationName() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
 		if (auth == null) {
 			return "";
 		} else {
@@ -120,77 +118,68 @@ public class UserSpringServiceImpl implements UserSpringService {
 	@Override
 	public UserSpring fillAttributsFromLss(UserSpring user) {
 		UserSpring userWithAttr = findById(user.getId()).get();
-		Optional<Map<String, Object>> attrOpt = lssUserService.getProfileAttributsByLssUser(user.getUsername());
+		Optional<Map<String, Object>> attrOpt = lssUserService
+				.getProfileAttributsByLssUser(user.getUsername());
 		if (attrOpt.isEmpty()) {
 			return userWithAttr;
 		}
 		Map<String, Object> attr = attrOpt.get();
-		
+
 		Boolean isCorrect = true;
-		
-		//@formatter:off
-		isCorrect = isCorrect & 
-				checkAttribute(userWithAttr, "firstname", attr,
+
+		// @formatter:off
+		isCorrect = isCorrect & checkAttribute(userWithAttr, "firstname", attr,
 				(attrMap, attrName) -> (String) attrMap.get("firstname"),
-				a -> a.getFirstname(), 
+				a -> a.getFirstname(),
 				(a, firstname) -> a.setFirstname(firstname));
-		isCorrect = isCorrect & 
-				checkAttribute(userWithAttr, "lastname", attr, 
+		isCorrect = isCorrect & checkAttribute(userWithAttr, "lastname", attr,
 				(attrMap, attrName) -> (String) attrMap.get("lastname"),
-				a -> a.getLastname(), 
-				(a, lastname) -> a.setLastname(lastname));
-		isCorrect = isCorrect & 
-				checkAttribute(userWithAttr, "bccode", attr,
-				(attrMap, attrName) -> Integer.toString((Integer) attr.get("bccode")),
-				a -> a.getBcCode(),
-				(a, bcCode) -> a.setBcCode(bcCode));
-		isCorrect = isCorrect & 
-				checkAttribute(userWithAttr, "email", attr,
-						(attrMap, attrName) -> (String) attr.get("email"),
-						a -> a.getEmail(),
-						(a, email) -> a.setEmail(email));
-		//@formatter:on
-		
-		isCorrect = isCorrect & 
-				findPersonForUser(userWithAttr);
-		
+				a -> a.getLastname(), (a, lastname) -> a.setLastname(lastname));
+		isCorrect = isCorrect & checkAttribute(userWithAttr, "bccode", attr,
+				(attrMap, attrName) -> getIntAttribute(attr.get("bccode")),
+				a -> a.getBcCode(), (a, bcCode) -> a.setBcCode(bcCode));
+		isCorrect = isCorrect & checkAttribute(userWithAttr, "email", attr,
+				(attrMap, attrName) -> (String) attr.get("email"),
+				a -> a.getEmail(), (a, email) -> a.setEmail(email));
+		// @formatter:on
+
+		isCorrect = isCorrect & findPersonForUser(userWithAttr);
+
 		if (isCorrect) {
 			return userWithAttr;
-		}
-		else {
+		} else {
 			return userSpringRepository.save(userWithAttr);
 		}
 	}
 
-	//@formatter:off
-	private Boolean checkAttribute(
-			UserSpring userWithAttr, 
-			String attrName, 
+	// @formatter:off
+	private Boolean checkAttribute(UserSpring userWithAttr, String attrName,
 			Map<String, Object> attr,
-			BiFunction<Map<String, Object>, String, String> getLssAttribute, 
-			Function<UserSpring, String> getAttribute, 
+			BiFunction<Map<String, Object>, String, String> getLssAttribute,
+			Function<UserSpring, String> getAttribute,
 			BiConsumer<UserSpring, String> setAttribute) {
 		if (attr.containsKey(attrName)) {
 			String attrValue = getLssAttribute.apply(attr, attrName);
 			String attrValueUser = getAttribute.apply(userWithAttr);
 			if (attrValueUser != null && attrValueUser.equals(attrValue)) {
 				return true;
-			}
-			else {
+			} else {
 				setAttribute.accept(userWithAttr, attrValue);
 				return false;
 			}
 		}
 		return true;
 	}
-	//@formatter:on
+	// @formatter:on
 
 	private Boolean findPersonForUser(UserSpring userWithAttr) {
 		Boolean isCorrect = true;
-		if (userWithAttr.getBcCode() != null && !userWithAttr.getBcCode().isBlank()) {
-			Optional<Person> personOpt = personService.findByBcCode(userWithAttr.getBcCode());
+		if (userWithAttr.getBcCode() != null
+				&& !userWithAttr.getBcCode().isBlank()) {
+			Optional<Person> personOpt = personService
+					.findByBcCode(userWithAttr.getBcCode());
 			if (personOpt.isPresent()) {
-				if(userWithAttr.getPerson() != personOpt.get()) {
+				if (userWithAttr.getPerson() != personOpt.get()) {
 					isCorrect = false;
 					userWithAttr.setPerson(personOpt.get());
 				}
@@ -204,12 +193,24 @@ public class UserSpringServiceImpl implements UserSpringService {
 		Optional<UserSpring> currUserOpt = getCurrentUser();
 		if (currUserOpt.isEmpty()) {
 			return false;
-		}
-		else if (currUserOpt.get().getEmail().isBlank()) {
+		} else if (currUserOpt.get().getEmail().isBlank()) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
+
+	private String getIntAttribute(Object object) {
+		String result = "";
+		System.out.println(".. " + object);
+		if (object == null) {
+			return result;
+		}
+		if (object.toString().matches("\\d+")) {
+			return object.toString();
+		} else {
+			return result;
+		}
+	}
+
 }
