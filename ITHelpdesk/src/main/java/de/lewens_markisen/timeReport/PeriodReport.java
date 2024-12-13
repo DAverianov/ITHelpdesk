@@ -63,4 +63,5 @@ public class PeriodReport {
 	public static PeriodReport thisMonat() {
 		return PeriodReport.builder().start(DateUtils.startMonat(LocalDate.now())).end(LocalDate.now()).build();
 	}
+	
 }

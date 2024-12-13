@@ -8,7 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	<link rel="shortcut icon" type="image/x-icon" th:href="@{/resources/images/favicon.png}">
+	<link rel="shortcut icon" type="image/x-icon" th:href="@{~/resources/images/favicon.png}">
 	
 	<title>IT Helpdesk</title>
 	
@@ -17,15 +17,15 @@
 	    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
 	
-	<link th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}"	rel="stylesheet">
-	<link rel="stylesheet" th:href="@{/resources/css/itHelpdesk.css}" />
+	<link th:href="@{~/webjars/font-awesome/4.7.0/css/font-awesome.min.css}"	rel="stylesheet">
+	<link rel="stylesheet" th:href="@{~/resources/css/itHelpdesk.css}" />
 
 </head>
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
 		<div class="container-fluid">
-			<a class="navbar-brand" th:href="@{/}"><span></span></a>
+			<a class="navbar-brand" th:href="@{~/}"><span></span></a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -41,50 +41,50 @@
 				</ul> 
 
 				<ul class="nav navbar-nav me-auto">
-					<li th:replace="~{::menuItem ('/','home','home page','home','Home')}">
+					<li th:replace="~{::menuItem ('~/','home','home page','home','Home')}">
 						<span class="fa fa-home" aria-hidden="true"></span> <span>Home</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('instruction.read')"
-						th:replace="~{::menuItem ('/instructions/list','instructions','instructions','th-list','Anweisungen')}">
+						th:replace="~{::menuItem ('~/instructions/list','instructions','instructions','th-list','Anweisungen')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>Instructions</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('person.read')"
-						th:replace="~{::menuItem ('/persons/list','persons','persons','th-list','Persons')}">
+						th:replace="~{::menuItem ('~/persons/list','persons','persons','th-list','Persons')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>Person</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('person.read')" 
-						th:replace="~{::menuItem ('/day_arts/list','day_arts','day_arts','th-list','Arten von Tagen')}">
+						th:replace="~{::menuItem ('~/day_arts/list','day_arts','day_arts','th-list','Arten von Tagen')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Tag Arts</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('timeReport.run')"
-						th:replace="~{::menuItem ('/timeReport/me','timeReport','timeReport','th-list','Zeitbericht')}">
+						th:replace="~{::menuItem ('~/timeReport/me','timeReport','timeReport','th-list','Zeitbericht')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>TimeReport</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('access.read')" 
-						th:replace="~{::menuItem ('/accesses/list','accesses','accesses','th-list','Accesses')}">
+						th:replace="~{::menuItem ('~/accesses/list','accesses','accesses','th-list','Accesses')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span>
 						<span>Accesses</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('user.read')" 
-						th:replace="~{::menuItem ('/users/list','users','users','th-list','Users')}">
+						th:replace="~{::menuItem ('~/users/list','users','users','th-list','Users')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Users</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('log.read')" 
-						th:replace="~{::menuItem ('/logs/list','logs','logs','th-list','Logs')}">
+						th:replace="~{::menuItem ('~/logs/list','logs','logs','th-list','Logs')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Logs</span>
 					</li>
 					<li sec:authorize="hasAnyAuthority('person.read')" 
-						th:replace="~{::menuItem ('/upload','upload','upload','th-list','Upload')}">
+						th:replace="~{::menuItem ('~/upload','upload','upload','th-list','Upload')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> 
 						<span>Logs</span>
 					</li>
-					<li th:replace="~{::menuItem ('/logout','exit','exit','exit','Exit')}">
+					<li th:replace="~{::menuItem ('~/logout','exit','exit','exit','Exit')}">
 						<span class="fa fa-home" aria-hidden="true"></span> <span>Exit</span>
 					</li>
 

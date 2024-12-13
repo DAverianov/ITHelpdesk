@@ -16,7 +16,7 @@
 
 	<h2 th:text="${timeReport.header}">Time Report>"</h2>
 
-	<form method="post" action="#" th:action="@{/timeReport/me}" th:object="${timeReport}">
+	<form method="post" action="#" th:action="@{~/timeReport/me}" th:object="${timeReport}">
 		<input type="hidden" name="person" th:field="*{person}"/>
 		<input type="hidden" name="period" th:field="*{period}"/>
 		<input type="hidden" name="period.start" th:field="*{period.start}"/>

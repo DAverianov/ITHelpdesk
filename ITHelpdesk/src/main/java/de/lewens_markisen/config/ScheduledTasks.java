@@ -21,32 +21,33 @@ public class ScheduledTasks {
 	private final PersonDefferedEventService personDefferedEventService;
 	private final EmailLetterService emailLetterService;
 
-	@Scheduled(cron = "0 1 3 * * ?") // every Day in 03:01
-	public void localPersonsFromBC() {
+	@Scheduled(cron = "${cron.loadPersonsFromBC}") // every Day in 03:01
+	public void loadPersonsFromBC() {
 		bcWebServiceLoadPerson.loadPersonFromBC();
 	}
 
-	@Scheduled(cron = "0 2 3 * * ?") // every Day in 03:02
+	@Scheduled(cron = "${cron.deleteLogAltRecords}") // every Day in 03:02
 	public void deleteLogAltRecords() {
 		logService.deleteAltRecords();
 	}
 
-	@Scheduled(cron = "0 3 3 * * ?") // every Day in 03:03
+	@Scheduled(cron = "${cron.deleteRememberMe}") // every Day in 03:03
 	public void deleteRememberMe() {
 		rememberMeService.deleteAllRecords();
 	}
 	
-	@Scheduled(cron =  "0 */5 6-18 ? * *") // every 5 min
+	@Scheduled(cron =  "${cron.readPersonPresence}") // every 5 min
 	public void readPersonPresence() {
 		bcWebServiceTimeRegisterEvent.readPersonPresence();
 	}
 	
-	@Scheduled(cron =  "0 */5 6-18 ? * *") // every 5 min
+	@Scheduled(cron =  "${cron.processPersonDefferedEvents}") // every 5 min
 	public void processPersonDefferedEvents() {
 		personDefferedEventService.processEvents();
 	}
 	
 	@Scheduled(cron =  "0 */1 6-18 ? * *") // every 5 min
+	@Scheduled(cron =  "${cron.sendEmails}") // every 5 min
 	public void sendEmails() {
 		emailLetterService.sendAll();
 	}
