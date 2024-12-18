@@ -51,6 +51,11 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
+	public Optional<Person> findByIdCard(String idCard) {
+		return personRepository.findByIdCard(idCard);
+	}
+
+	@Override
 	public Page<Person> findAll(Pageable pageable) {
 		return personRepository.findAll(pageable);
 	}

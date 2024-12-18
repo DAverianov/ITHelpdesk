@@ -17,7 +17,7 @@ public class AccessDto extends BaseItem {
     @Builder
     public AccessDto(Long id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, String name,
     		String url, String domain, String user, String password, String description) {
-        super(id, version, createdDate, lastModifiedDate);
+        super();
         this.name = name;
         this.url = url;
         this.domain = domain;

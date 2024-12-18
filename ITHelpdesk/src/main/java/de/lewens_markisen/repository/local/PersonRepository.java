@@ -17,6 +17,8 @@ import de.lewens_markisen.domain.local_db.person.Person;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	public Optional<Person> findBybcCode(String bcCode);
+
+	public Optional<Person> findByIdCard(String idCard);
 	
 	@Transactional(readOnly = true)
 	@Cacheable("persons")

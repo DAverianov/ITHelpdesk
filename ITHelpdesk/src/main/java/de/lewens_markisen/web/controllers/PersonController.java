@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +40,7 @@ import de.lewens_markisen.security.perms.PersonUpdatePermission;
 import de.lewens_markisen.services.connection.BCWebServiceLoadZeitnachweis;
 import de.lewens_markisen.services.connection.BCWebServiceLoadPerson;
 import de.lewens_markisen.web.controllers.playlocad.PersonWithGlock;
+import de.lewens_markisen.web.model.PersonDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -211,6 +214,27 @@ public class PersonController {
 	public String loadBCZeitnachweis() {
 		bcWebServiceLoadZeitnachweis.loadBCZeitnachweis();
 		return "redirect:/persons/list";
+	}
+	
+	@PersonLoadPermission
+	@GetMapping(value = "/idcard/{idcard}")
+	public ResponseEntity<PersonDto> findPersonByIdCard(@PathVariable(name = "idcard") String idCard) {
+		Optional<Person> personOpt = personService.findByIdCard(idCard);
+		PersonDto personDto;
+		if (personOpt.isPresent()) {
+			Person person = personOpt.get();
+			personDto = PersonDto.builder()
+				.name(person.getName())
+				.bcCode(person.getBcCode())
+				.idCard(person.getIdCard())
+				.sex(person.getSex())
+				.nameForSearch(person.getNameForSearch())
+				.build();
+		}
+		else {
+			personDto = PersonDto.builder().build();
+		}
+		return new ResponseEntity<>(personDto, HttpStatus.OK);
 	}
 
 }

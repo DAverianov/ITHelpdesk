@@ -23,4 +23,5 @@ public interface PersonService {
     Person updatePerson(Person person);
 	void delete(Person person);
 	List<Person> findAllByBcCode(String bcCode);
+	Optional<Person> findByIdCard(String idCard);
 }

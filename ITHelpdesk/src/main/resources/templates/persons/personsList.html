@@ -27,6 +27,7 @@
 	    <th>Ankunftszeit</th>
 	    <th>Hiring</th>
 	    <th>Firing</th>
+	    <th>ID Card</th>
 	    <th scope="col">Action</th>
 	  </tr>
   </thead>
@@ -41,6 +42,7 @@
 	    <td th:text="${personGlock.arrivalTime}"></td>
 	    <td th:text="${personGlock.person.hiringDateStr}"></td>
 	    <td th:text="${personGlock.person.firingDateStr}"></td>
+	    <td th:text="${personGlock.person.idCard}"></td>
 	    <td><a th:if=false sec:authorize="hasAnyAuthority('person.delete')" 
 	    		th:href="@{/persons/delete/{id}(id=${personGlock.person.id})}" class="btn btn-danger">Delete</a>&nbsp;&nbsp;
 	        <a sec:authorize="hasAnyAuthority('person.update')"

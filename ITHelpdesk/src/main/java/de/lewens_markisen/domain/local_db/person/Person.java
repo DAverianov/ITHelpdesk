@@ -14,6 +14,8 @@ import de.lewens_markisen.utils.DateUtils;
 import de.lewens_markisen.utils.StringUtilsLss;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -60,6 +62,13 @@ public class Person extends BaseEntity implements AuthoritieNames {
 	private LocalDate hiringDate;
 	private LocalDate firingDate;
 	private LocalDate dateOfBirthday;
+	
+	@Size(min = 11, max = 11)
+	@Column(name = "id_card", length = 11)
+	private String idCard;
+	
+    @Enumerated(EnumType.STRING)
+	private Sex sex;
 
 	public static String convertToNameForSearch(String name) {
 		return StringUtilsLss.replaceUmlauts(
